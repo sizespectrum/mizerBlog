@@ -1,0 +1,56 @@
+---
+title: "A bit of History"
+description: |
+  A short description of the post.
+author:
+  - name: Gustav Delius
+    url: {}
+date: 08-01-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+
+Mizer was started by Ken Andersen, Julia Blanchard and Finlay Scott in 2012.
+Finlay put the first code onto GitHub in September 2012. 
+Version 0.1 was ready in October 2013 and version 0.2 in April 2014 coincided
+with the publication of the paper that presented mizer to the world. 
+
+In May 2014 I started to develop for mizer, and after the release
+of version 0.3 Finlay handed over his role as lead developer to me. Richard
+Southwell joined the efforts, funded by the EU MINOUW project, and this
+culminated in the release of version 1.0 in March 2018, which in particular
+improved the speed of simulations by using Fast Fourier Transform techniques
+to calculate the integrals giving the growth and death rates.
+
+April 2020 saw the release of version 2.0, with 
+[many new features](https://sizespectrum.org/mizer/dev/news/index.html#mizer-2-0-0-2020-04-04), 
+an internal refactoring of the code and a new extension mechanism. 
+The MizerParams object describing a model now also contains the initial values
+for the size spectra. This allows us to tune the model parameters to match the
+observed steady state. Along with this change came many new functions for making
+changes to the model parameters. This new version should have been presented to
+the world in a new paper, but we have as yet to write this paper.
+
+
+Since then there have been 8 more releases and another one is imminent.
+Development will only speed up more in the coming years because more
+
+Graph with download stats
+
+Lysekil
+
+Chile
+
+Spectre
+
+Pyramid of life
+
+add links
