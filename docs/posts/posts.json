@@ -1,36 +1,19 @@
 [
   {
-    "path": "posts/2021-08-01-testing/",
-    "title": "Testing",
-    "description": "A short description of the post.",
-    "author": [
-      {
-        "name": "Nora Jones",
-        "url": "https://example.com/norajones"
-      }
-    ],
-    "date": "2021-08-01",
-    "categories": [],
-    "contents": "\nDistill is a publication format for scientific and technical writing, native to the web.\nLearn more about using Distill at https://rstudio.github.io/distill.\n\n\n\n",
-    "preview": {},
-    "last_modified": "2021-08-01T11:37:16+01:00",
-    "input_file": {}
-  },
-  {
     "path": "posts/welcome/",
-    "title": "Welcome to mizer blog",
-    "description": "Welcome to our new blog, mizer blog. We hope you enjoy \nreading what we have to say!",
+    "title": "Welcome to the mizer blog",
+    "description": "and some information about the why and how of this blog.",
     "author": [
       {
-        "name": "Nora Jones",
-        "url": "https://example.com/norajones"
+        "name": "Gustav Delius",
+        "url": {}
       }
     ],
     "date": "2021-08-01",
     "categories": [],
-    "contents": "\n\n\n\n",
+    "contents": "\nThis is still in preparation. Come back next week.\n\n\n\n",
     "preview": {},
-    "last_modified": "2021-08-01T11:35:19+01:00",
+    "last_modified": "2021-08-01T18:35:32+01:00",
     "input_file": {}
   }
 ]

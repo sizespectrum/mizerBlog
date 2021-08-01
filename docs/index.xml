@@ -4,24 +4,16 @@
     <title>mizer blog</title>
     <link>https://sizespectrum.org/mizerBlog/</link>
     <atom:link href="https://sizespectrum.org/mizerBlog/index.xml" rel="self" type="application/rss+xml"/>
-    <description>Discussions of features of the mizer size-spectrum model
+    <description>Blog for anything related to mizer size-spectrum models: new applications, 
+new features, technical details, plans and ideas. Contributions welcome.
 </description>
     <generator>Distill</generator>
     <lastBuildDate>Sun, 01 Aug 2021 00:00:00 +0000</lastBuildDate>
     <item>
-      <title>Testing</title>
-      <dc:creator>Nora Jones</dc:creator>
-      <link>https://sizespectrum.org/mizerBlog/posts/2021-08-01-testing</link>
-      <description>A short description of the post.</description>
-      <guid>https://sizespectrum.org/mizerBlog/posts/2021-08-01-testing</guid>
-      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Welcome to mizer blog</title>
-      <dc:creator>Nora Jones</dc:creator>
+      <title>Welcome to the mizer blog</title>
+      <dc:creator>Gustav Delius</dc:creator>
       <link>https://sizespectrum.org/mizerBlog/posts/welcome</link>
-      <description>Welcome to our new blog, mizer blog. We hope you enjoy 
-reading what we have to say!</description>
+      <description>and some information about the why and how of this blog.</description>
       <guid>https://sizespectrum.org/mizerBlog/posts/welcome</guid>
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
     </item>

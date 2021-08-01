@@ -1,8 +1,10 @@
 name: "mizerBlog"
 title: "mizer blog"
 description: |
-  Discussions of features of the mizer size-spectrum model
+  Blog for anything related to mizer size-spectrum models: new applications, 
+  new features, technical details, plans and ideas. Contributions welcome.
 base_url: https://sizespectrum.org/mizerBlog/
+repository_url: https://github.com/sizespectrum/MizerBlog/
 collections:
   posts:
     disqus: 
@@ -11,12 +13,7 @@ collections:
     share: [twitter]
 output_dir: "docs"
 navbar:
-  left:
-    - text: "mizer"
-      href: https://sizespectrum.org/mizer/
   right:
-    - text: "Home"
-      href: index.html
-    - text: "About"
-      href: about.html
+    - text: "mizer home"
+      href: https://sizespectrum.org/mizer/
 output: distill::distill_article
