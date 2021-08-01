@@ -1,0 +1,22 @@
+name: "mizerBlog"
+title: "mizer blog"
+description: |
+  Discussions of features of the mizer size-spectrum model
+base_url: https://sizespectrum.org/mizerBlog/
+collections:
+  posts:
+    disqus: 
+      shortname: mizer
+      hidden: false
+    share: [twitter]
+output_dir: "docs"
+navbar:
+  left:
+    - text: "mizer"
+      href: https://sizespectrum.org/mizer/
+  right:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+output: distill::distill_article

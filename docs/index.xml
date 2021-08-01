@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+  <channel>
+    <title>mizer blog</title>
+    <link>https://sizespectrum.org/mizerBlog/</link>
+    <atom:link href="https://sizespectrum.org/mizerBlog/index.xml" rel="self" type="application/rss+xml"/>
+    <description>Discussions of features of the mizer size-spectrum model
+</description>
+    <generator>Distill</generator>
+    <lastBuildDate>Sun, 01 Aug 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Testing</title>
+      <dc:creator>Nora Jones</dc:creator>
+      <link>https://sizespectrum.org/mizerBlog/posts/2021-08-01-testing</link>
+      <description>A short description of the post.</description>
+      <guid>https://sizespectrum.org/mizerBlog/posts/2021-08-01-testing</guid>
+      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Welcome to mizer blog</title>
+      <dc:creator>Nora Jones</dc:creator>
+      <link>https://sizespectrum.org/mizerBlog/posts/welcome</link>
+      <description>Welcome to our new blog, mizer blog. We hope you enjoy 
+reading what we have to say!</description>
+      <guid>https://sizespectrum.org/mizerBlog/posts/welcome</guid>
+      <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>
