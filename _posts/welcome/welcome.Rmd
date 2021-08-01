@@ -1,7 +1,7 @@
 ---
 title: "Welcome to the mizer blog"
 description: |
-  and some information about the why and how of this blog.
+  mizer is now 9 years old. mizer is becoming more social. Time to start a blog. 
 author:
   - name: Gustav Delius
 date: 08-01-2021
@@ -14,7 +14,49 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This is still in preparation. Come back next week.
 
+There is now a sizeable and diverse community of mizer users. This blog, I hope,
+will help keep us informed of what we are all up to and to share our experiences
+and our best practices.
 
+I will use this blog from time to time to explain new or less well known
+features of mizer. But I would like to encourage you to contribute to this blog
+too. Introduce us to your model or to your research. Or discuss ways in which
+you have extended mizer or would like to extend mizer. Or show us new ways of
+using mizer. All you need to do is create an R Markdown document containing your
+text and your code and either email it to me at <mizer@sizespectrum.org> or, if
+you are more of a GitHub wizard, create a pull request directly to the
+repository at (https://github.com/sizespectrum/mizerBlog).
+
+This blog is using [distill for R Markdown](https://rstudio.github.io/distill/),
+which gives it some nice features. The one that
+I like the most is that any code blocks that you include in your post will 
+automatically be highlighted and linked to documentation pages. For example
+if your R Markdown document contains a code block with
+
+```
+library(mizer)
+plotlySpectra(NS_params)
+```
+
+then what will be displayed on the blog is
+
+```{r}
+library(mizer)
+plotlySpectra(NS_params)
+```
+
+Note how the function names and package names have become links. Click on them
+to see what they do. If you are using packages or functions that your readers
+are not familiar with yet, this autolinking allows them to look them up very
+conveniently.
+
+The output of the `plotlySpectra()` function is an interactive plot 
+and this got embedded into the blog automatically. Play around
+with it a bit. It behaves just as it would if you viewed it in your 
+RStudio viewer. 
+
+As the blog grows, we can start using categories to organise the posts.
+The distill framework provides all such standard blog features. One
+feature I have enabled already are comments, using the Disqus service.
 

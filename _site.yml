@@ -12,8 +12,13 @@ collections:
       hidden: false
     share: [twitter]
 output_dir: "docs"
+exclude: "README.md"
 navbar:
   right:
     - text: "mizer home"
       href: https://sizespectrum.org/mizer/
-output: distill::distill_article
+      
+output: 
+  distill::distill_article:
+    css: styles.css
+    toc_depth: 2
