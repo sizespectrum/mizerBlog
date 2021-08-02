@@ -15,6 +15,8 @@ output_dir: "docs"
 exclude: "README.md"
 navbar:
   right:
+    - text: "Publications"
+      href: publications.html
     - text: "mizer home"
       href: https://sizespectrum.org/mizer/
       

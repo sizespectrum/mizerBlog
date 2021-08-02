@@ -7,7 +7,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
   <meta name="generator" content="distill" />
-  <link rel="alternate" type="application/rss+xml" href="https://sizespectrum.org/mizerBlog/index.xml" />
 
   <style type="text/css">
   /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
@@ -87,26 +86,32 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>mizer blog</title>
+  <title>mizer blog: Publications and projects</title>
+
+  <meta property="description" itemprop="description" content="Listing publications and projects that involve mizer. Please help to update."/>
 
 
-
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2021-08-02"/>
+  <meta property="article:created" itemprop="dateCreated" content="2021-08-02"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="mizer blog"/>
+  <meta property="og:title" content="mizer blog: Publications and projects"/>
   <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Listing publications and projects that involve mizer. Please help to update."/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="mizer blog"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="mizer blog"/>
+  <meta property="twitter:title" content="mizer blog: Publications and projects"/>
+  <meta property="twitter:description" content="Listing publications and projects that involve mizer. Please help to update."/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","site","listing"]}},"value":[{"type":"character","attributes":{},"value":["mizer blog"]},{"type":"character","attributes":{},"value":["distill::distill_website"]},{"type":"character","attributes":{},"value":["posts"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Publications and projects"]},{"type":"character","attributes":{},"value":["Listing publications and projects that involve mizer. Please help to update.\n"]},{"type":"character","attributes":{},"value":["2021-08-02"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["toc","toc_depth"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[2]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2296,12 +2301,12 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 </head>
 
-<body class="layout-listing">
+<body>
 
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"mizer blog","authors":[]}
+{"title":"Publications and projects","description":"Listing publications and projects that involve mizer. Please help to update.","authors":[],"publishedDate":"2021-08-02T00:00:00.000+01:00"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2322,174 +2327,59 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_navigation_before_body-->
 <!--radix_placeholder_site_before_body-->
 <!--/radix_placeholder_site_before_body-->
-<!--radix_placeholder_article_listing-->
-
-
-<script type="application/javascript">
-
-function init_posts_list() {
-
-  function load_image(img) {
-    var src = $(img).attr('data-src');
-    if (src) {
-      $(img).attr('src', src);
-      $(img).load(function() {
-        img.removeAttribute('data-src');
-      });
-    }
-  }
-
-  function set_posts_visible(posts, visible) {
-    if (visible) {
-
-      // show bottom border by default
-      $(posts).removeClass('post-preview-last');
-
-      // apply limits if need be
-      var max_posts = 25;
-      var apply_limits = $('.posts-container').hasClass('posts-apply-limit');
-      if (apply_limits && posts.length > max_posts) {
-        posts = $(posts).slice(0, max_posts);
-      } else {
-        $('.posts-more a').addClass('hidden');
-      }
-
-      // apply last style
-      $(posts.slice(-1)[0]).addClass('post-preview-last');
-
-      $(posts).removeClass('hidden');
-      $(posts).find('img[data-src]').each(function(i, img) {
-        load_image(img);
-      });
-    } else {
-      $(posts).addClass('hidden');
-    }
-  }
-
-  function apply_hash_filter() {
-
-    // clear active state
-    $('.categories .active').removeClass('active');
-
-    // mark all posts invisible to start
-    set_posts_visible($('.posts-list').children('a'), false);
-
-    // if we have a hash filter
-    if (window.location.hash && window.location.hash.startsWith("#category:")) {
-
-      // mark posts that match the category visible
-      var page_category = window.location.hash.replace(/^#category:/, "");
-      var posts = $('.post-metadata').map(function(idx, script) {
-        var metadata = $.parseJSON($(script).html());
-        var post = null;
-        $.each(metadata.categories, function(idx, category) {
-          category = category.replace(/ /g,"_");
-          if ((page_category || '').toLowerCase() === "articles" || category === page_category) {
-            post = $(script).parent().get();
-            return false;
-          }
-        });
-        return post;
-      });
-      set_posts_visible(posts, true);
-
-      // mark the hash active
-      $('.categories li>a[href="' + window.location.hash + '"]').addClass('active');
-
-      // update the list_caption
-      var list_caption = $('.posts-list-caption');
-      var caption = (page_category || '').toLowerCase() === "articles"
-        ? list_caption.attr('data-caption')
-        : ('Category: ' + page_category.replace(/_/g," "));
-      list_caption.text(caption);
-
-    } else {
-
-      // no hash filter, make all posts visible (subject to max display)
-      set_posts_visible($('.posts-list').children(), true);
-
-      // reset list caption
-      var list_caption = $('.posts-list-caption');
-      list_caption.text(list_caption.attr('data-caption'));
-
-
-    }
-  }
-
-  // more articles
-  function apply_post_limits(apply) {
-    if (apply) {
-      $('.posts-container').addClass('posts-apply-limit');
-      $('.posts-more a').removeClass('hidden');
-    } else {
-      $('.posts-container').removeClass('posts-apply-limit');
-      $('.posts-more a').addClass('hidden');
-    }
-  }
-
-  // click handling for tags
-  $('.dt-tag').click(function(ev) {
-    window.location.hash = '#category:' + $(this).text().replace(/ /g, "_");
-    return false;
-  })
-
-  // hash filter handling
-  apply_hash_filter();
-  $(window).on('hashchange',function() {
-    apply_post_limits(true);
-    apply_hash_filter();
-  });
-
-  // more articles link
-  $('.posts-more a').click(function(e) {
-    e.preventDefault();
-    apply_post_limits(false);
-    apply_hash_filter();
-    return false;
-  });
-
-}
-
-</script>
-
-
-
-<div class="posts-container posts-apply-limit l-page">
-<div class="posts-list">
-<h1 class="posts-list-caption" data-caption="mizer blog">mizer blog</h1>
-<a href="posts/welcome/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Aug. 1, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">Gustav Delius</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Welcome to the mizer blog</h2>
-<div class="dt-tags"></div>
-<p>mizer is now 9 years old. mizer is becoming more social. Time to start a blog.</p>
-</div>
-</a>
-</div>
-<div class="posts-more">
-<a href="#">More articles &raquo;</a>
-</div>
-</div>
-<!--/radix_placeholder_article_listing-->
 
 <div class="d-title">
-<h1>mizer blog</h1>
+<h1>Publications and projects</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-
+<p><p>Listing publications and projects that involve mizer. Please help to update.</p></p>
 </div>
 
 
 <div class="d-article">
+<div class="d-contents d-contents-float">
+<nav class="l-text toc figcaption" id="TOC">
+<h3>Contents</h3>
+<ul>
+<li><a href="#publications-describing-mizer">Publications describing mizer</a></li>
+<li><a href="#publications-using-mizer">Publications using mizer</a></li>
+<li><a href="#projects-that-have-usedare-using-mizer">Projects that have used/are using mizer</a></li>
+</ul>
+</nav>
+</div>
+<h2 id="publications-describing-mizer">Publications describing mizer</h2>
+<ul>
+<li><p>F. Scott, J.L. Blanchard and K.H. Andersen: mizer: an R package for multispecies, trait-based and community size spectrum ecological modelling. Methods in Ecology and Evolution 5(10) 1121-1125 (2014). <em>Contains the “official” announcement and description of mizer</em></p></li>
+<li><p>K.H. Andersen, N.S. Jacobsen and K.D. Farnsworth (2016): <a href="https://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2015-0230#.XLGeHS97HOR">The theoretical foundations for size spectrum models of fish communities</a>. Canadian Journal of Fisheries and Aquatic Science 73(4): 575-588. <em>Describes the theoretical background of the three types of size spectrum models</em></p></li>
+<li><p>K.H. Andersen (2019): Fish Ecology, Evolution, and Exploitation - a New Theoretical Synthesis. <a href="https://press.princeton.edu/titles/13516.html">Princeton University Press</a>. <em>In depth theory</em></p></li>
+</ul>
+<h2 id="publications-using-mizer">Publications using mizer</h2>
+<ul>
+<li><p>Canales, T. M., Delius, G. W. &amp; Law, R. Regulation of fish stocks without stock–recruitment relationships: The case of small pelagic fish. Fish and Fisheries 21, 857–871 (2020).</p></li>
+<li><p>Wo, J. et al. Modeling the Dynamics of Multispecies Fisheries: A Case Study in the Coastal Water of North Yellow Sea, China. Front. Mar. Sci. 7, (2020).</p></li>
+<li><p>Lindmark, M. Temperature- and body size scaling. Doctoral Thesis No 2020:8, Faculty of Natural Resources and Agricultural Sciences, SLU. <a href="https://pub.epsilon.slu.se/16711/" class="uri">https://pub.epsilon.slu.se/16711/</a> (2020).</p></li>
+<li><p>Spence, M. A. et al. A general framework for combining ecosystem models. Fish and Fisheries 19, 1031–1042 (2018).</p></li>
+<li><p>Zhang C, Chen Y, Xu B, Xue Y, Ren Y. Evaluating fishing effects on the stability of fish communities using a size-spectrum model. Fisheries Research. 2018 Jan 1;197:123-30.</p></li>
+<li><p>Szuwalski CS, Burgess MG, Costello C, Gaines SD (2017) High fishery catches through trophic cascades in China. Proc Natl Acad Sci USA 114:717–721. <em>Application to the South-east China Sea</em></p></li>
+<li><p>N.S. Jacobsen, M. Burgess and K.H. Andersen (2017): Efficiency of fisheries is increasing at the ecosystem level. Fish and Fisheries 18(2) 199-211. <a href="doi:10.1111/faf.12171" class="uri">doi:10.1111/faf.12171</a>. <em>Appendix describes simple calibration procedure</em></p></li>
+<li><p>Zhang, C., Chen, Y., &amp; Ren, Y. (2016). An evaluation of implementing long-term MSY in ecosystem-based fisheries management: Incorporating trophic interaction, bycatch and uncertainty. Fisheries Research, 174, 179-189.</p></li>
+<li><p>Zhang C, Chen Y, Thompson K, Ren Y. Implementing a multispecies size-spectrum model in a data-poor ecosystem. Acta Oceanologica Sinica. 2016 Apr 1;35(4):63.</p></li>
+<li><p>Zhang C, Chen Y, Ren Y. The efficacy of fisheries closure in rebuilding depleted stocks: Lessons from size-spectrum modeling. Ecological Modelling. 2016 Jul 24;332:59-66.</p></li>
+<li><p>Spence M., Blackwell, P. &amp; Blanchard J.L. (2016) Parameter uncertainty of a dynamic multispecies size spectrum model. Canadian Journal of Fisheries and Aquatic Sciences. 10.1139/cjfas-2015-0022 (In press) <em>Bayesian parameter estimation and uncertainty</em></p></li>
+<li><p>Datta, S. &amp; Blanchard J.L. (2016) The effects of seasonal processes on size spectrum dynamics. Canadian Journal of Fisheries and Aquatic Sciences. 10.1139/cjfas-2015-0468</p></li>
+<li><p>Zhang, C., Chen, Y., &amp; Ren, Y. (2015). Assessing uncertainty of a multispecies size-spectrum model resulting from process and observation errors. ICES Journal of Marine Science: Journal du Conseil, 72(8), 2223-2233.</p></li>
+<li><p>Jennings, S. &amp; Collingridge, K. Predicting Consumer Biomass, Size-Structure, Production, Catch Potential, Responses to Fishing and Associated Uncertainties in the World’s Marine Ecosystems. (2015) PLoS ONE 10(7), e0133794.</p></li>
+<li><p>J.L. Blanchard, K.H. Andersen, F. Scott, N.T. Hinzen, G. Piet, S. Jennings (2014): Evaluating targets and trade-offs among fisheries and conservation objectives using a multispecies size spectrum model. J. Applied Ecology, 51: 612–622. <a href="doi:10.1111/1365-2664.12238" class="uri">doi:10.1111/1365-2664.12238</a>. <em>Application of Mizer on the North Sea</em></p></li>
+</ul>
+<h2 id="projects-that-have-usedare-using-mizer">Projects that have used/are using mizer</h2>
+<p>The MINOUW Project (<a href="http://minouw-project.eu/" class="uri">http://minouw-project.eu/</a>) European Commission Horizon 2020 Research and Innovation Programme under Grant Agreement No. 634495</p>
+<p>Rewiring marine food webs: predicting consequences of species range shifts. Australian Research Council Discovery Project DP170104240</p>
+<p>Mesopelagic Southern Ocean Prey and Predators (MESOPP), European Commission H2020 (www.mesopp.eu)</p>
+<p>Expert Working Group on Benchmarks for Ecosystem Assessment under EBFM. Lenfest Ocean Program</p>
+<p>Marine Ecosystems Research Programme (MERP) (<a href="https://marine-ecosystems.org.uk" class="uri">https://marine-ecosystems.org.uk</a>). UK Defra - Natural Environmental Research Council</p>
+<p>“Monitoring and Management of Deepwater Fisheries and Stocks” (Deepfishman) European Union Framework 7.</p>
+<p>“Developing fisheries management indicators and targets” (DEFINEIT) European Marifish Joint Research project.</p>
+<p>“Indicators for fisheries Management in Europe” (IMAGE) European Union Framework 6.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
