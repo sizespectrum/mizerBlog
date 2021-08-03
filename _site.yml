@@ -3,7 +3,7 @@ title: "mizer blog"
 description: |
   Blog for anything related to mizer size-spectrum models: new applications, 
   new features, technical details, plans and ideas. Contributions welcome.
-base_url: https://sizespectrum.org/mizerBlog/
+base_url: https://blog.mizer.sizespectrum.org
 repository_url: https://github.com/sizespectrum/MizerBlog/
 collections:
   posts:
@@ -16,8 +16,6 @@ exclude: "README.md"
 theme: mizer.css
 navbar:
   right:
-    - text: "Publications"
-      href: publications.html
     - text: "mizer home"
       href: https://sizespectrum.org/mizer/
       

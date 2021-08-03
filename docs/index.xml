@@ -2,8 +2,8 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
   <channel>
     <title>mizer blog</title>
-    <link>https://sizespectrum.org/mizerBlog/</link>
-    <atom:link href="https://sizespectrum.org/mizerBlog/index.xml" rel="self" type="application/rss+xml"/>
+    <link>https://blog.mizer.sizespectrum.org</link>
+    <atom:link href="https://blog.mizer.sizespectrum.org/index.xml" rel="self" type="application/rss+xml"/>
     <description>Blog for anything related to mizer size-spectrum models: new applications, 
 new features, technical details, plans and ideas. Contributions welcome.
 </description>
@@ -12,9 +12,9 @@ new features, technical details, plans and ideas. Contributions welcome.
     <item>
       <title>Welcome to the mizer blog</title>
       <dc:creator>Gustav Delius</dc:creator>
-      <link>https://sizespectrum.org/mizerBlog/posts/welcome</link>
+      <link>https://blog.mizer.sizespectrum.org/posts/welcome</link>
       <description>mizer is now 9 years old. mizer is becoming more social. Time to start a blog.</description>
-      <guid>https://sizespectrum.org/mizerBlog/posts/welcome</guid>
+      <guid>https://blog.mizer.sizespectrum.org/posts/welcome</guid>
       <pubDate>Sun, 01 Aug 2021 00:00:00 +0000</pubDate>
     </item>
   </channel>

@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" version="1.0">
   <url>
-    <loc>https://sizespectrum.org/mizerBlog/about.html</loc>
+    <loc>https://blog.mizer.sizespectrum.org/about.html</loc>
     <lastmod>2021-08-01T11:22:17+01:00</lastmod>
   </url>
   <url>
-    <loc>https://sizespectrum.org/mizerBlog/</loc>
+    <loc>https://blog.mizer.sizespectrum.org/</loc>
     <lastmod>2021-08-01T11:22:17+01:00</lastmod>
   </url>
   <url>
-    <loc>https://sizespectrum.org/mizerBlog/publications.html</loc>
-    <lastmod>2021-08-02T16:49:58+01:00</lastmod>
-  </url>
-  <url>
-    <loc>https://sizespectrum.org/mizerBlog/posts/welcome/</loc>
-    <lastmod>2021-08-01T21:33:56+01:00</lastmod>
+    <loc>https://blog.mizer.sizespectrum.org/posts/welcome/</loc>
+    <lastmod>2021-08-03T15:49:33+01:00</lastmod>
   </url>
 </urlset>
