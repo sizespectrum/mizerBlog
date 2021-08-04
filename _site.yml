@@ -5,6 +5,10 @@ description: |
   new features, technical details, plans and ideas. Contributions welcome.
 base_url: https://blog.mizer.sizespectrum.org
 repository_url: https://github.com/sizespectrum/MizerBlog/
+favicon: images/favicon-16x16.png
+creative_commons: CC BY
+twitter:
+  site: "@mizer_model"
 collections:
   posts:
     disqus: 
@@ -15,6 +19,7 @@ output_dir: "docs"
 exclude: "README.md"
 theme: mizer.css
 navbar:
+  source-url: true
   right:
     - text: "mizer home"
       href: https://sizespectrum.org/mizer/
