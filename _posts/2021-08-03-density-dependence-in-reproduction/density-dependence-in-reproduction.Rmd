@@ -1,0 +1,111 @@
+---
+title: "Density-dependence in reproduction"
+description: |
+  A short description of the post.
+author:
+  - name: Gustav Delius
+    url: {}
+date: 08-03-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r message=FALSE}
+library(mizer)
+packageVersion("mizer")
+```
+
+```{r}
+params <- NS_params
+plotSpectra(params)
+```
+
+```{r}
+sim <- project(NS_params, t_max = 20)
+plotBiomass(sim)
+```
+
+```{r}
+getReproductionLevel(NS_params)
+```
+
+```{r}
+library(ggplot2)
+plotBevertonHolt <- function(params, species) {
+  select <- species_params(params)$species == species
+  erepro <- species_params(params)$erepro[select]
+  w0 <- params@w[params@w_min_idx[select]]
+  E_R_ss <- getRDI(params)[select] / erepro * 2 * w0
+  R_dd_ss <- getRDD(params)[select]
+  R_max  <- species_params(params)$R_max[select]
+  E_R <- seq(0, 2 * E_R_ss, length.out = 50)
+  R_di = erepro * E_R / 2 / w0
+  R_dd <- R_di * R_max / (R_di + R_max)
+  df <- melt(data.frame(E_R, R_dd, R_di, R_max), id.vars = "E_R")
+  ggplot(df) +
+    geom_line(aes(x = E_R, y = value, linetype = variable)) +
+    geom_point(aes(x = E_R_ss, y = R_dd_ss), size = 3, color = "blue") +
+    ylim(NA, 1.1 * R_max) +
+    ylab("Reproduction rate [eggs/year]") +
+    xlab("Energy invested [g/year]")
+}
+
+plotBevertonHolt(params, "Gurnard")
+```
+
+```{r}
+plotBevertonHolt(params, "Cod")
+```
+
+```{r}
+params2 <- setBevertonHolt(params, reproduction_level = c(Cod = 0.5))
+plotBevertonHolt(params2, "Cod")
+```
+
+```{r}
+sim2 <- project(params2, t_max = 20)
+plotBiomass(sim2)
+```
+
+```{r}
+select <- species_params(params)$species == "Cod"
+species_params(params)[select, c("erepro", "R_max")]
+```
+
+```{r}
+species_params(params2)[select, c("erepro", "R_max")]
+```
+
+```{r}
+library(mizerExperimental)
+plotYieldVsF(params, "Cod")
+```
+
+```{r}
+plotYieldVsF(params2, "Cod")
+```
+
+```{r}
+params3 <- setBevertonHolt(params, reproduction_level = 0.5)
+```
+
+
+```{r}
+select <- species_params(params)$species == "Plaice"
+species_params(params3)[select, c("erepro", "R_max")]
+```
+
+```{r}
+params3 <- setBevertonHolt(params, erepro = c("Plaice" = 0.1))
+```
+
+```{r}
+species_params(params3)[select, c("erepro", "R_max")]
+```
+
