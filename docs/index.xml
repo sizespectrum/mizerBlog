@@ -13,7 +13,19 @@ new features, technical details, plans and ideas. Contributions welcome.
       <link>https://blog.mizer.sizespectrum.org</link>
     </image>
     <generator>Distill</generator>
-    <lastBuildDate>Sun, 01 Aug 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 03 Aug 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Density-dependence in reproduction</title>
+      <dc:creator>Gustav Delius</dc:creator>
+      <link>https://blog.mizer.sizespectrum.org/posts/2021-08-03-density-dependence-in-reproduction</link>
+      <description>The take-home message is that it is important to set the density
+dependence in your model appropriately and that with the help of the
+`setBevertonHolt()` function you can easily make changes to the density
+dependence without spoiling other aspects of your calibrated model.</description>
+      <guid>https://blog.mizer.sizespectrum.org/posts/2021-08-03-density-dependence-in-reproduction</guid>
+      <pubDate>Tue, 03 Aug 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://blog.mizer.sizespectrum.org/posts/2021-08-03-density-dependence-in-reproduction/density-dependence-in-reproduction_files/figure-html5/unnamed-chunk-13-1.png" medium="image" type="image/png" width="1248" height="768"/>
+    </item>
     <item>
       <title>Welcome to the mizer blog</title>
       <dc:creator>Gustav Delius</dc:creator>
