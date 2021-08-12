@@ -86,641 +86,41 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>mizer blog: About this blog</title>
+  <title>Change model parameters without using @</title>
 
-  <meta property="description" itemprop="description" content="Some additional details about the blog"/>
+  <meta property="description" itemprop="description" content="Mizer provides dedicated functions for changing model parameters. Using them&#10;protects you from pitfalls arising from manipulations with the `@` symbol."/>
 
-  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/"/>
-  <link rel="icon" type="image/png" href="images/favicon-16x16.png"/>
 
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2021-08-08"/>
+  <meta property="article:created" itemprop="dateCreated" content="2021-08-08"/>
+  <meta name="article:author" content="Gustav Delius"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="mizer blog: About this blog"/>
+  <meta property="og:title" content="Change model parameters without using @"/>
   <meta property="og:type" content="article"/>
-  <meta property="og:description" content="Some additional details about the blog"/>
+  <meta property="og:description" content="Mizer provides dedicated functions for changing model parameters. Using them&#10;protects you from pitfalls arising from manipulations with the `@` symbol."/>
   <meta property="og:locale" content="en_US"/>
-  <meta property="og:site_name" content="mizer blog"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="mizer blog: About this blog"/>
-  <meta property="twitter:description" content="Some additional details about the blog"/>
+  <meta property="twitter:title" content="Change model parameters without using @"/>
+  <meta property="twitter:description" content="Mizer provides dedicated functions for changing model parameters. Using them&#10;protects you from pitfalls arising from manipulations with the `@` symbol."/>
   <meta property="twitter:site" content="@mizer_model"/>
+  <meta property="twitter:creator" content="@gustavdelius"/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description"]}},"value":[{"type":"character","attributes":{},"value":["About this blog"]},{"type":"character","attributes":{},"value":["Some additional details about the blog"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","twitter","preview","output"]}},"value":[{"type":"character","attributes":{},"value":["Change model parameters without using @"]},{"type":"character","attributes":{},"value":["Mizer provides dedicated functions for changing model parameters. Using them\nprotects you from pitfalls arising from manipulations with the `@` symbol.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Gustav Delius"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":[]}},"value":[]}]}]},{"type":"character","attributes":{},"value":["08-08-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["site","creator"]}},"value":[{"type":"character","attributes":{},"value":["@mizer_model"]},{"type":"character","attributes":{},"value":["@gustavdelius"]}]},{"type":"character","attributes":{},"value":["change.jpg"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","toc"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["change.jpg","drawbacks-of-using_files/anchor-4.2.2/anchor.min.js","drawbacks-of-using_files/bowser-1.9.3/bowser.min.js","drawbacks-of-using_files/distill-2.2.21/template.v2.js","drawbacks-of-using_files/header-attrs-2.10/header-attrs.js","drawbacks-of-using_files/jquery-1.11.3/jquery.min.js","drawbacks-of-using_files/popper-2.6.0/popper.min.js","drawbacks-of-using_files/tippy-6.2.7/tippy-bundle.umd.min.js","drawbacks-of-using_files/tippy-6.2.7/tippy-light-border.css","drawbacks-of-using_files/tippy-6.2.7/tippy.css","drawbacks-of-using_files/tippy-6.2.7/tippy.umd.min.js","drawbacks-of-using_files/webcomponents-2.0.0/webcomponents.js"]}
+  </script>
   <!--radix_placeholder_navigation_in_header-->
-  <meta name="distill:offset" content=""/>
-
-  <script type="application/javascript">
-
-    window.headroom_prevent_pin = false;
-
-    window.document.addEventListener("DOMContentLoaded", function (event) {
-
-      // initialize headroom for banner
-      var header = $('header').get(0);
-      var headerHeight = header.offsetHeight;
-      var headroom = new Headroom(header, {
-        tolerance: 5,
-        onPin : function() {
-          if (window.headroom_prevent_pin) {
-            window.headroom_prevent_pin = false;
-            headroom.unpin();
-          }
-        }
-      });
-      headroom.init();
-      if(window.location.hash)
-        headroom.unpin();
-      $(header).addClass('headroom--transition');
-
-      // offset scroll location for banner on hash change
-      // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
-      window.addEventListener("hashchange", function(event) {
-        window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
-      });
-
-      // responsive menu
-      $('.distill-site-header').each(function(i, val) {
-        var topnav = $(this);
-        var toggle = topnav.find('.nav-toggle');
-        toggle.on('click', function() {
-          topnav.toggleClass('responsive');
-        });
-      });
-
-      // nav dropdowns
-      $('.nav-dropbtn').click(function(e) {
-        $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
-        $(this).parent().siblings('.nav-dropdown')
-           .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $("body").click(function(e){
-        $('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $(".nav-dropdown").click(function(e){
-        e.stopPropagation();
-      });
-    });
-  </script>
-
-  <style type="text/css">
-
-  /* Theme (user-documented overrideables for nav appearance) */
-
-  .distill-site-nav {
-    color: rgba(255, 255, 255, 0.8);
-    background-color: #0F2E3D;
-    font-size: 15px;
-    font-weight: 300;
-  }
-
-  .distill-site-nav a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .distill-site-nav a:hover {
-    color: white;
-  }
-
-  @media print {
-    .distill-site-nav {
-      display: none;
-    }
-  }
-
-  .distill-site-header {
-
-  }
-
-  .distill-site-footer {
-
-  }
-
-
-  /* Site Header */
-
-  .distill-site-header {
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 3;
-  }
-
-  .distill-site-header .nav-left {
-    display: inline-block;
-    margin-left: 8px;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header .nav-left {
-      margin-left: 0;
-    }
-  }
-
-
-  .distill-site-header .nav-right {
-    float: right;
-    margin-right: 8px;
-  }
-
-  .distill-site-header a,
-  .distill-site-header .title {
-    display: inline-block;
-    text-align: center;
-    padding: 14px 10px 14px 10px;
-  }
-
-  .distill-site-header .title {
-    font-size: 18px;
-    min-width: 150px;
-  }
-
-  .distill-site-header .logo {
-    padding: 0;
-  }
-
-  .distill-site-header .logo img {
-    display: none;
-    max-height: 20px;
-    width: auto;
-    margin-bottom: -4px;
-  }
-
-  .distill-site-header .nav-image img {
-    max-height: 18px;
-    width: auto;
-    display: inline-block;
-    margin-bottom: -3px;
-  }
-
-
-
-  @media screen and (min-width: 1000px) {
-    .distill-site-header .logo img {
-      display: inline-block;
-    }
-    .distill-site-header .nav-left {
-      margin-left: 20px;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 20px;
-    }
-    .distill-site-header .title {
-      padding-left: 12px;
-    }
-  }
-
-
-  .distill-site-header .nav-toggle {
-    display: none;
-  }
-
-  .nav-dropdown {
-    display: inline-block;
-    position: relative;
-  }
-
-  .nav-dropdown .nav-dropbtn {
-    border: none;
-    outline: none;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 16px 10px;
-    background-color: transparent;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    margin: 0;
-    margin-top: 1px;
-    z-index: 2;
-  }
-
-  .nav-dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    min-width: 200px;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 4px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
-    z-index: 1;
-    margin-top: 2px;
-    white-space: nowrap;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-
-  .nav-dropdown-content hr {
-    margin-top: 4px;
-    margin-bottom: 4px;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .nav-dropdown-active {
-    display: block;
-  }
-
-  .nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
-    color: black;
-    padding: 6px 24px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-  }
-
-  .nav-dropdown-content .nav-dropdown-header {
-    display: block;
-    padding: 5px 24px;
-    padding-bottom: 0;
-    text-transform: uppercase;
-    font-size: 14px;
-    color: #999999;
-    white-space: nowrap;
-  }
-
-  .nav-dropdown:hover .nav-dropbtn {
-    color: white;
-  }
-
-  .nav-dropdown-content a:hover {
-    background-color: #ddd;
-    color: black;
-  }
-
-  .nav-right .nav-dropdown-content {
-    margin-left: -45%;
-    right: 0;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header a, .distill-site-header .nav-dropdown  {display: none;}
-    .distill-site-header a.nav-toggle {
-      float: right;
-      display: block;
-    }
-    .distill-site-header .title {
-      margin-left: 0;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 0;
-    }
-    .distill-site-header {
-      overflow: hidden;
-    }
-    .nav-right .nav-dropdown-content {
-      margin-left: 0;
-    }
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header.responsive {position: relative; min-height: 500px; }
-    .distill-site-header.responsive a.nav-toggle {
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
-    .distill-site-header.responsive a,
-    .distill-site-header.responsive .nav-dropdown {
-      display: block;
-      text-align: left;
-    }
-    .distill-site-header.responsive .nav-left,
-    .distill-site-header.responsive .nav-right {
-      width: 100%;
-    }
-    .distill-site-header.responsive .nav-dropdown {float: none;}
-    .distill-site-header.responsive .nav-dropdown-content {position: relative;}
-    .distill-site-header.responsive .nav-dropdown .nav-dropbtn {
-      display: block;
-      width: 100%;
-      text-align: left;
-    }
-  }
-
-  /* Site Footer */
-
-  .distill-site-footer {
-    width: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
-    z-index: 3;
-    margin-top: 30px;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    text-align: center;
-  }
-
-  /* Headroom */
-
-  d-title {
-    padding-top: 6rem;
-  }
-
-  @media print {
-    d-title {
-      padding-top: 4rem;
-    }
-  }
-
-  .headroom {
-    z-index: 1000;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-  }
-
-  .headroom--transition {
-    transition: all .4s ease-in-out;
-  }
-
-  .headroom--unpinned {
-    top: -100px;
-  }
-
-  .headroom--pinned {
-    top: 0;
-  }
-
-  /* adjust viewport for navbar height */
-  /* helps vertically center bootstrap (non-distill) content */
-  .min-vh-100 {
-    min-height: calc(100vh - 100px) !important;
-  }
-
-  </style>
-
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-  <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
-  <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
-  <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
-  <script src="site_libs/autocomplete-0.37.1/autocomplete.min.js"></script>
-  <script src="site_libs/fuse-6.4.1/fuse.min.js"></script>
-
-  <script type="application/javascript">
-
-  function getMeta(metaName) {
-    var metas = document.getElementsByTagName('meta');
-    for (let i = 0; i < metas.length; i++) {
-      if (metas[i].getAttribute('name') === metaName) {
-        return metas[i].getAttribute('content');
-      }
-    }
-    return '';
-  }
-
-  function offsetURL(url) {
-    var offset = getMeta('distill:offset');
-    return offset ? offset + '/' + url : url;
-  }
-
-  function createFuseIndex() {
-
-    // create fuse index
-    var options = {
-      keys: [
-        { name: 'title', weight: 20 },
-        { name: 'categories', weight: 15 },
-        { name: 'description', weight: 10 },
-        { name: 'contents', weight: 5 },
-      ],
-      ignoreLocation: true,
-      threshold: 0
-    };
-    var fuse = new window.Fuse([], options);
-
-    // fetch the main search.json
-    return fetch(offsetURL('search.json'))
-      .then(function(response) {
-        if (response.status == 200) {
-          return response.json().then(function(json) {
-            // index main articles
-            json.articles.forEach(function(article) {
-              fuse.add(article);
-            });
-            // download collections and index their articles
-            return Promise.all(json.collections.map(function(collection) {
-              return fetch(offsetURL(collection)).then(function(response) {
-                if (response.status === 200) {
-                  return response.json().then(function(articles) {
-                    articles.forEach(function(article) {
-                      fuse.add(article);
-                    });
-                  })
-                } else {
-                  return Promise.reject(
-                    new Error('Unexpected status from search index request: ' +
-                              response.status)
-                  );
-                }
-              });
-            })).then(function() {
-              return fuse;
-            });
-          });
-
-        } else {
-          return Promise.reject(
-            new Error('Unexpected status from search index request: ' +
-                        response.status)
-          );
-        }
-      });
-  }
-
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-
-    // get search element (bail if we don't have one)
-    var searchEl = window.document.getElementById('distill-search');
-    if (!searchEl)
-      return;
-
-    createFuseIndex()
-      .then(function(fuse) {
-
-        // make search box visible
-        searchEl.classList.remove('hidden');
-
-        // initialize autocomplete
-        var options = {
-          autoselect: true,
-          hint: false,
-          minLength: 2,
-        };
-        window.autocomplete(searchEl, options, [{
-          source: function(query, callback) {
-            const searchOptions = {
-              isCaseSensitive: false,
-              shouldSort: true,
-              minMatchCharLength: 2,
-              limit: 10,
-            };
-            var results = fuse.search(query, searchOptions);
-            callback(results
-              .map(function(result) { return result.item; })
-            );
-          },
-          templates: {
-            suggestion: function(suggestion) {
-              var img = suggestion.preview && Object.keys(suggestion.preview).length > 0
-                ? `<img src="${offsetURL(suggestion.preview)}"</img>`
-                : '';
-              var html = `
-                <div class="search-item">
-                  <h3>${suggestion.title}</h3>
-                  <div class="search-item-description">
-                    ${suggestion.description || ''}
-                  </div>
-                  <div class="search-item-preview">
-                    ${img}
-                  </div>
-                </div>
-              `;
-              return html;
-            }
-          }
-        }]).on('autocomplete:selected', function(event, suggestion) {
-          window.location.href = offsetURL(suggestion.path);
-        });
-        // remove inline display style on autocompleter (we want to
-        // manage responsive display via css)
-        $('.algolia-autocomplete').css("display", "");
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-
-  });
-
-  </script>
-
-  <style type="text/css">
-
-  .nav-search {
-    font-size: x-small;
-  }
-
-  /* Algolioa Autocomplete */
-
-  .algolia-autocomplete {
-    display: inline-block;
-    margin-left: 10px;
-    vertical-align: sub;
-    background-color: white;
-    color: black;
-    padding: 6px;
-    padding-top: 8px;
-    padding-bottom: 0;
-    border-radius: 6px;
-    border: 1px #0F2E3D solid;
-    width: 180px;
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-nav .algolia-autocomplete {
-      display: none;
-      visibility: hidden;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete {
-      display: inline-block;
-      visibility: visible;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete .aa-dropdown-menu {
-      margin-left: 0;
-      width: 400px;
-      max-height: 400px;
-    }
-  }
-
-  .algolia-autocomplete .aa-input, .algolia-autocomplete .aa-hint {
-    width: 90%;
-    outline: none;
-    border: none;
-  }
-
-  .algolia-autocomplete .aa-hint {
-    color: #999;
-  }
-  .algolia-autocomplete .aa-dropdown-menu {
-    width: 550px;
-    max-height: 70vh;
-    overflow-x: visible;
-    overflow-y: scroll;
-    padding: 5px;
-    margin-top: 3px;
-    margin-left: -150px;
-    background-color: #fff;
-    border-radius: 5px;
-    border: 1px solid #999;
-    border-top: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
-    cursor: pointer;
-    padding: 5px 4px;
-    border-bottom: 1px solid #eee;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion:last-of-type {
-    border-bottom: none;
-    margin-bottom: 2px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item {
-    overflow: hidden;
-    font-size: 0.8em;
-    line-height: 1.4em;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item h3 {
-    font-size: 1rem;
-    margin-block-start: 0;
-    margin-block-end: 5px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-description {
-    display: inline-block;
-    overflow: hidden;
-    height: 2.8em;
-    width: 80%;
-    margin-right: 4%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview {
-    display: inline-block;
-    width: 15%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img {
-    height: 3em;
-    width: auto;
-    display: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img[src] {
-    display: initial;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
-    background-color: #eee;
-  }
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {
-    font-weight: bold;
-    font-style: normal;
-  }
-
-  </style>
-
-
   <!--/radix_placeholder_navigation_in_header-->
   <!--radix_placeholder_distill-->
 
@@ -2035,376 +1435,17 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   </script>
 
-  <style type="text/css">
-  /* base variables */
-
-  /* Edit the CSS properties in this file to create a custom
-     Distill theme. Only edit values in the right column
-     for each row; values shown are the CSS defaults.
-     To return any property to the default,
-     you may set its value to: unset
-     All rows must end with a semi-colon.                      */
-
-  /* Optional: embed custom fonts here with `@import`          */
-  /* This must remain at the top of this file.                 */
-
-
-
-  html {
-    /*-- Main font sizes --*/
-    --title-size:      50px;
-    --body-size:       1.06rem;
-    --code-size:       14px;
-    --aside-size:      12px;
-    --fig-cap-size:    13px;
-    /*-- Main font colors --*/
-    --title-color:     #000000;
-    --header-color:    rgba(0, 0, 0, 0.8);
-    --body-color:      rgba(0, 0, 0, 0.8);
-    --aside-color:     rgba(0, 0, 0, 0.6);
-    --fig-cap-color:   rgba(0, 0, 0, 0.6);
-    /*-- Specify custom fonts ~~~ must be imported above   --*/
-    --heading-font:    sans-serif;
-    --mono-font:       monospace;
-    --body-font:       sans-serif;
-    --navbar-font:     sans-serif;  /* websites + blogs only */
-  }
-
-  /*-- ARTICLE METADATA --*/
-  d-byline {
-    --heading-size:    0.6rem;
-    --heading-color:   rgba(0, 0, 0, 0.5);
-    --body-size:       0.8rem;
-    --body-color:      rgba(0, 0, 0, 0.8);
-  }
-
-  /*-- ARTICLE TABLE OF CONTENTS --*/
-  .d-contents {
-    --heading-size:    18px;
-    --contents-size:   13px;
-  }
-
-  /*-- ARTICLE APPENDIX --*/
-  d-appendix {
-    --heading-size:    15px;
-    --heading-color:   rgba(0, 0, 0, 0.65);
-    --text-size:       0.8em;
-    --text-color:      rgba(0, 0, 0, 0.5);
-  }
-
-  /*-- WEBSITE HEADER + FOOTER --*/
-  /* These properties only apply to Distill sites and blogs  */
-
-  .distill-site-header {
-    --title-size:       18px;
-    --text-color:       rgba(255, 255, 255, 0.8);
-    --text-size:        15px;
-    --hover-color:      white;
-    --bkgd-color:       #0F2E3D;
-  }
-
-  .distill-site-footer {
-    --text-color:       rgba(255, 255, 255, 0.8);
-    --text-size:        15px;
-    --hover-color:      white;
-    --bkgd-color:       #0F2E3D;
-  }
-
-  /*-- Additional custom styles --*/
-  /* Add any additional CSS rules below                      */
-  </style>
-  <style type="text/css">
-  /* base variables */
-
-  /* Edit the CSS properties in this file to create a custom
-     Distill theme. Only edit values in the right column
-     for each row; values shown are the CSS defaults.
-     To return any property to the default,
-     you may set its value to: unset
-     All rows must end with a semi-colon.                      */
-
-  /* Optional: embed custom fonts here with `@import`          */
-  /* This must remain at the top of this file.                 */
-
-
-
-  html {
-    /*-- Main font sizes --*/
-    --title-size:      50px;
-    --body-size:       1.06rem;
-    --code-size:       14px;
-    --aside-size:      12px;
-    --fig-cap-size:    13px;
-    /*-- Main font colors --*/
-    --title-color:     #317eac;
-    --header-color:    #317eac;
-    --body-color:      #555555;
-    --aside-color:     rgba(0, 0, 0, 0.6);
-    --fig-cap-color:   rgba(0, 0, 0, 0.6);
-    /*-- Specify custom fonts ~~~ must be imported above   --*/
-    --heading-font:    "Helvetica Neue",Helvetica,Arial,sans-serif;
-    --mono-font:       monospace;
-    --body-font:       "Helvetica Neue",Helvetica,Arial,sans-serif;
-    --navbar-font:     "Helvetica Neue",Helvetica,Arial,sans-serif;  /* websites + blogs only */
-  }
-
-  /*-- ARTICLE METADATA --*/
-  d-byline {
-    --heading-size:    0.6rem;
-    --heading-color:   rgba(0, 0, 0, 0.5);
-    --body-size:       0.8rem;
-    --body-color:      rgba(0, 0, 0, 0.8);
-    padding: 0 0;
-  }
-
-  d-title {
-    padding-bottom: 0.2rem;
-    background-color:  #ffffff;
-    color: #555555;
-  }
-
-  d-byline .byline h3 {
-      margin-block-start: 0;
-  }
-
-  /*-- ARTICLE TABLE OF CONTENTS --*/
-  .d-contents {
-    --heading-size:    18px;
-    --contents-size:   13px;
-  }
-
-  /*-- ARTICLE APPENDIX --*/
-  d-appendix {
-    --heading-size:    15px;
-    --heading-color:   rgba(0, 0, 0, 0.65);
-    --text-size:       0.8em;
-    --text-color:      rgba(0, 0, 0, 0.5);
-  }
-
-  /*-- WEBSITE HEADER + FOOTER --*/
-  /* These properties only apply to Distill sites and blogs  */
-
-  .distill-site-header {
-    --title-size:       18px;
-    --text-color:       #ffffff;
-    --text-size:        18px;
-    --hover-color:      white;
-    --bkgd-color:       #30bbed;
-  }
-
-  .distill-site-footer {
-    --text-color:       rgba(255, 255, 255, 0.8);
-    --text-size:        15px;
-    --hover-color:      white;
-    --bkgd-color:       #30bbed;
-  }
-
-  /*-- Additional custom styles --*/
-  /* Add any additional CSS rules below                      */
-  a .metadata {
-    color: #555555;
-  }
-  a .description {
-    color: #555555;
-  }
-  d-article a:hover, a:focus {
-    color: #157ab5;
-    text-decoration: underline;
-    border-bottom: none;
-  }
-
-  d-article a {
-    color: #2fa4e7;
-    text-decoration: none;
-    border-bottom: none;
-  }
-
-
-  d-article pre a  {
-    color: inherit;
-  }
-
-  .distill-site-nav a:hover {
-      color: white;
-      background-color: #178acc;
-  }
-
-  code {
-      padding: 2px 4px;
-      font-size: 90%;
-      color: #c7254e;
-      background-color: #f9f2f4;
-      border-radius: 4px;
-  }
-
-  h1.posts-list-caption {
-    content: url("images/mizer.png");
-    width: 66%;
-  }</style>
-  <style type="text/css">
-  /* base style */
-
-  /* FONT FAMILIES */
-
-  :root {
-    --heading-default: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
-    --mono-default: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-    --body-default: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
-  }
-
-  body,
-  .posts-list .post-preview p,
-  .posts-list .description p {
-    font-family: var(--body-font), var(--body-default);
-  }
-
-  h1, h2, h3, h4, h5, h6,
-  .posts-list .post-preview h2,
-  .posts-list .description h2 {
-    font-family: var(--heading-font), var(--heading-default);
-  }
-
-  d-article div.sourceCode code,
-  d-article pre code {
-    font-family: var(--mono-font), var(--mono-default);
-  }
-
-
-  /*-- TITLE --*/
-  d-title h1,
-  .posts-list > h1 {
-    color: var(--title-color, black);
-  }
-
-  d-title h1 {
-    font-size: var(--title-size, 50px);
-  }
-
-  /*-- HEADERS --*/
-  d-article h1,
-  d-article h2,
-  d-article h3,
-  d-article h4,
-  d-article h5,
-  d-article h6 {
-    color: var(--header-color, rgba(0, 0, 0, 0.8));
-  }
-
-  /*-- BODY --*/
-  d-article > p,  /* only text inside of <p> tags */
-  d-article > ul, /* lists */
-  d-article > ol {
-    color: var(--body-color, rgba(0, 0, 0, 0.8));
-    font-size: var(--body-size, 1.06rem);
-  }
-
-
-  /*-- CODE --*/
-  d-article div.sourceCode code,
-  d-article pre code {
-    font-size: var(--code-size, 14px);
-  }
-
-  /*-- ASIDE --*/
-  d-article aside {
-    font-size: var(--aside-size, 12px);
-    color: var(--aside-color, rgba(0, 0, 0, 0.6));
-  }
-
-  /*-- FIGURE CAPTIONS --*/
-  figure .caption,
-  figure figcaption,
-  .figure .caption {
-    font-size: var(--fig-cap-size, 13px);
-    color: var(--fig-cap-color, rgba(0, 0, 0, 0.6));
-  }
-
-  /*-- METADATA --*/
-  d-byline h3 {
-    font-size: var(--heading-size, 0.6rem);
-    color: var(--heading-color, rgba(0, 0, 0, 0.5));
-  }
-
-  d-byline {
-    font-size: var(--body-size, 0.8rem);
-    color: var(--body-color, rgba(0, 0, 0, 0.8));
-  }
-
-  d-byline a,
-  d-article d-byline a {
-    color: var(--body-color, rgba(0, 0, 0, 0.8));
-  }
-
-  /*-- TABLE OF CONTENTS --*/
-  .d-contents nav h3 {
-    font-size: var(--heading-size, 18px);
-  }
-
-  .d-contents nav a {
-    font-size: var(--contents-size, 13px);
-  }
-
-  /*-- APPENDIX --*/
-  d-appendix h3 {
-    font-size: var(--heading-size, 15px);
-    color: var(--heading-color, rgba(0, 0, 0, 0.65));
-  }
-
-  d-appendix {
-    font-size: var(--text-size, 0.8em);
-    color: var(--text-color, rgba(0, 0, 0, 0.5));
-  }
-
-  d-appendix d-footnote-list a.footnote-backlink {
-    color: var(--text-color, rgba(0, 0, 0, 0.5));
-  }
-
-  /*-- WEBSITE HEADER + FOOTER --*/
-  .distill-site-header .title {
-    font-size: var(--title-size, 18px);
-    font-family: var(--navbar-font), var(--heading-default);
-  }
-
-  .distill-site-header a,
-  .nav-dropdown .nav-dropbtn {
-    font-family: var(--navbar-font), var(--heading-default);
-  }
-
-  .nav-dropdown .nav-dropbtn {
-    color: var(--text-color, rgba(255, 255, 255, 0.8));
-    font-size: var(--text-size, 15px);
-  }
-
-  .distill-site-header a:hover,
-  .nav-dropdown:hover .nav-dropbtn {
-    color: var(--hover-color, white);
-  }
-
-  .distill-site-header {
-    font-size: var(--text-size, 15px);
-    color: var(--text-color, rgba(255, 255, 255, 0.8));
-    background-color: var(--bkgd-color, #0F2E3D);
-  }
-
-  .distill-site-footer {
-    font-size: var(--text-size, 15px);
-    color: var(--text-color, rgba(255, 255, 255, 0.8));
-    background-color: var(--bkgd-color, #0F2E3D);
-  }
-
-  .distill-site-footer a:hover {
-    color: var(--hover-color, white);
-  }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
-  <script src="site_libs/popper-2.6.0/popper.min.js"></script>
-  <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
-  <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
-  <script src="site_libs/tippy-6.2.7/tippy.umd.min.js"></script>
-  <script src="site_libs/anchor-4.2.2/anchor.min.js"></script>
-  <script src="site_libs/bowser-1.9.3/bowser.min.js"></script>
-  <script src="site_libs/webcomponents-2.0.0/webcomponents.js"></script>
-  <script src="site_libs/distill-2.2.21/template.v2.js"></script>
+  <script src="drawbacks-of-using_files/header-attrs-2.10/header-attrs.js"></script>
+  <script src="drawbacks-of-using_files/jquery-1.11.3/jquery.min.js"></script>
+  <script src="drawbacks-of-using_files/popper-2.6.0/popper.min.js"></script>
+  <link href="drawbacks-of-using_files/tippy-6.2.7/tippy.css" rel="stylesheet" />
+  <link href="drawbacks-of-using_files/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
+  <script src="drawbacks-of-using_files/tippy-6.2.7/tippy.umd.min.js"></script>
+  <script src="drawbacks-of-using_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="drawbacks-of-using_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="drawbacks-of-using_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="drawbacks-of-using_files/distill-2.2.21/template.v2.js"></script>
   <!--radix_placeholder_site_in_header-->
   <!--/radix_placeholder_site_in_header-->
 
@@ -2416,46 +1457,343 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"About this blog","description":"Some additional details about the blog","authors":[]}
+{"title":"Change model parameters without using @","description":"Mizer provides dedicated functions for changing model parameters. Using them\nprotects you from pitfalls arising from manipulations with the `@` symbol.","authors":[{"author":"Gustav Delius","authorURL":{},"affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-08-08T00:00:00.000+01:00","citationText":"Delius, 2021"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
 <!--radix_placeholder_navigation_before_body-->
-<header class="header header--fixed" role="banner">
-<nav class="distill-site-nav distill-site-header">
-<div class="nav-left">
-<a href="index.html" class="title">mizer blog</a>
-<input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
-</div>
-<div class="nav-right">
-<a href="https://sizespectrum.org/mizer/">mizer home</a>
-<a href="https://twitter.com/mizer_model">
-<i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
-</a>
-<a href="index.xml">
-<i class="fa fa-rss fa-lg" aria-hidden="true"></i>
-</a>
-<a href="https://github.com/sizespectrum/mizerBlog">
-<i class="fab fa-github fa-lg" aria-hidden="true"></i>
-</a>
-<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
-</div>
-</nav>
-</header>
 <!--/radix_placeholder_navigation_before_body-->
 <!--radix_placeholder_site_before_body-->
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>About this blog</h1>
+<h1>Change model parameters without using @</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>Some additional details about the blog</p></p>
+<p><p>Mizer provides dedicated functions for changing model parameters. Using them protects you from pitfalls arising from manipulations with the <code>@</code> symbol.</p></p>
 </div>
 
+<div class="d-byline">
+  Gustav Delius true 
+  
+<br/>08-08-2021
+</div>
 
 <div class="d-article">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="d-contents d-contents-float">
+<nav class="l-text toc figcaption" id="TOC">
+<h3>Contents</h3>
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#species-parameters">Species parameters</a></li>
+<li><a href="#gear-parameters">Gear parameters</a></li>
+<li><a href="#resource-parameters">Resource parameters</a></li>
+<li><a href="#rate-arrays">Rate arrays</a></li>
+<li><a href="#summary">Summary</a></li>
+</ul>
+</nav>
+</div>
+<h1 id="introduction">Introduction</h1>
+<p>Often, after creating a mizer model, you will want to make changes to the model parameters, either to improve the model or to investigate the effect of changes. For example you might want to study the community consequence of changes in the physiology due to warmer waters, or whatever your research question is.</p>
+<p>Mizer makes this very easy. However, it is important to use the right syntax. In particular, one should avoid the use of the <code>@</code> symbol, as I will explain in this blog post. So this post serves as a reminder of how one can make changes to a model after it has been created.</p>
+<figure>
+<img src="change.jpg" alt="change" /><figcaption aria-hidden="true">change</figcaption>
+</figure>
+<p>As you will know, all the parameters describing a mizer model are contained in an object of class MizerParams. You may either have created this object yourself, for example with the <code>newMultispeciesParams()</code> function, or received it from a colleague. Such an object has many slots holding the various pieces of information about the model.</p>
+<p>There are often two ways of accessing these slots. One involves the use of the <code>@</code> symbol, the other uses a dedicated mizer function. If you look at the mizer code, you will see a lot of <code>@</code> symbols. However I will discuss the potential pitfalls when using the <code>@</code> symbol and advocate for the use of dedicated functions that mizer provides for the purpose of changing model parameters.</p>
+<p>This blog post was written with mizer version 2.2.1.9001</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://sizespectrum.org/mizer/'>mizer</a></span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/packageDescription.html'>packageVersion</a></span><span class='op'>(</span><span class='st'>"mizer"</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>[1] &#39;2.2.1.9001&#39;</code></pre>
+</div>
+<p>Throughout this post we will use the <code>NS_params</code> MizerParams object that comes as an example with the mizer package.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>params</span> <span class='op'>&lt;-</span> <span class='va'>NS_params</span>
+</code></pre>
+</div>
+</div>
+<h1 id="species-parameters">Species parameters</h1>
+<p>Let’s start with the <code>species_params</code> data frame. This holds species-specific parameters that are used by mizer to calculate physiological rates according to specific assumptions about the size-dependence of these rates. (The details do not concern us here, but you can find all the information on the <a href="https://sizespectrum.org/mizer/reference/species_params.html">help page</a> of <code>species_params()</code>. These size-dependent rates are then stored as large arrays in the slots of the MizerParams object, to be efficiently used during model projections. But also the species parameters are stored, and can therefore be used to recalculate the rates when some species parameters change.</p>
+<p>You can get the species parameters out of a MizerParams object in two ways, both giving identical results:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># Using function</span>
+<span class='va'>sp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>
+<span class='co'># Using @</span>
+<span class='va'>spa</span> <span class='op'>&lt;-</span> <span class='va'>params</span><span class='op'>@</span><span class='va'>species_params</span>
+<span class='co'># These are identical</span>
+<span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span><span class='op'>(</span><span class='va'>sp</span>, <span class='va'>spa</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>[1] TRUE</code></pre>
+</div>
+<p>The fact that these are identical is not surprising if you look at the code for the <code>species_params()</code> function:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>species_params</span>
+</code></pre>
+</div>
+<pre><code>function(params) {
+    params@species_params
+}
+&lt;bytecode: 0x55ea4c495ba8&gt;
+&lt;environment: namespace:mizer&gt;</code></pre>
+</div>
+<p>The function actually only contains one statement, which accesses the <code>species_params</code> slot using the <code>@</code> notation.</p>
+<p>The difference between the two notations becomes apparent only when you want to make a change to the species parameters. Let’s assume we want to change the <code>h</code> parameter for the first species in our example model. It currently has the value</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>h</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>
+</code></pre>
+</div>
+<pre><code>[1] 18.20276</code></pre>
+</div>
+<p>As you know, this parameter <code>h</code> is used to calculate the maximum intake rate <span class="math inline">\(h(w)\)</span> as a power-law function of size: <span class="math inline">\(h(w) = h w^n\)</span>. So for example the maximum intake rate at the smallest size is</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html'>getMaxIntakeRate</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span>
+</code></pre>
+</div>
+<pre><code>[1] 0.1820276</code></pre>
+</div>
+<p>Now let’s increase the value of the <code>h</code> parameter using the <code>@</code> notation:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>params</span><span class='op'>@</span><span class='va'>species_params</span><span class='op'>$</span><span class='va'>h</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>20</span>
+</code></pre>
+</div>
+</div>
+<p>If we look at the maximum intake rate, we see that it has not changed:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html'>getMaxIntakeRate</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span>
+</code></pre>
+</div>
+<pre><code>[1] 0.1820276</code></pre>
+</div>
+<p>All we have done is change the value in the species parameter data frame, but this did not trigger a recalculation of the maximum intake rate. We should instead have used</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>h</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>20</span>
+</code></pre>
+</div>
+</div>
+<p>Take a look at the syntax, which is really a bit weird when compared to other programming languages. If you want to dig deeper into this, a good place to look is <a href="https://adv-r.hadley.nz/functions.html#replacement-functions" class="uri">https://adv-r.hadley.nz/functions.html#replacement-functions</a>.</p>
+<p>This way of changing <span class="math inline">\(h\)</span> does indeed change the maximum intake rate:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html'>getMaxIntakeRate</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span>
+</code></pre>
+</div>
+<pre><code>[1] 0.2</code></pre>
+</div>
+<p>The reason is clear if we look at the code:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>`species_params&lt;-`</span>
+</code></pre>
+</div>
+<pre><code>function(params, value) {
+    value &lt;- validSpeciesParams(value)
+    params@species_params &lt;- value
+    suppressMessages(setParams(params))
+}
+&lt;bytecode: 0x55ea4fdb2030&gt;
+&lt;environment: namespace:mizer&gt;</code></pre>
+</div>
+<p>So three things actually happen when you change a species parameter via the setter function:</p>
+<ol type="1">
+<li>Your new value is checked for validity</li>
+<li>Your new value is saved in the <code>species_params</code> slot</li>
+<li>The other slots in the MizerParams object are updated by calling <code>setParams()</code>.</li>
+</ol>
+<h1 id="gear-parameters">Gear parameters</h1>
+<p>Similar comments apply to the gear parameters. The gear parameters are used by mizer to set up the catchability and selectivity arrays. You can find more details on the <a href="https://sizespectrum.org/mizer/reference/setFishing.html#setting-fishing">help page for setting fishing</a>. You can get the current gear parameters in two equivalent ways:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># Using function</span>
+<span class='va'>gp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/gear_params.html'>gear_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>
+<span class='co'># Using @</span>
+<span class='va'>gpa</span> <span class='op'>&lt;-</span> <span class='va'>params</span><span class='op'>@</span><span class='va'>gear_params</span>
+<span class='co'># These are identical</span>
+<span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span><span class='op'>(</span><span class='va'>gp</span>, <span class='va'>gpa</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>[1] TRUE</code></pre>
+</div>
+<p>But if you want to actually change the selectivity or catchability by changing the gear parameters you need to use the functional form. Here is the current <code>gear_params</code> data frame in the example model:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/gear_params.html'>gear_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>         gear species   sel_func knife_edge_size catchability
+1  Industrial   Sprat knife_edge              13            1
+2  Industrial Sandeel knife_edge               4            1
+3  Industrial  N.pout knife_edge              23            1
+4     Pelagic Herring knife_edge              99            1
+5        Beam     Dab knife_edge              21            1
+6       Otter Whiting knife_edge              75            1
+7        Beam    Sole knife_edge              78            1
+8       Otter Gurnard knife_edge              39            1
+9        Beam  Plaice knife_edge             105            1
+10      Otter Haddock knife_edge             165            1
+11      Otter     Cod knife_edge            1606            1
+12      Otter  Saithe knife_edge            1076            1</code></pre>
+</div>
+<p>If, for example, we want to reduce the catchability of Sprat with the Industrial gear to 0.8 we would do</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/gear_params.html'>gear_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>catchability</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>0.8</span>
+</code></pre>
+</div>
+</div>
+<p>Note that changing gear parameters in the <code>species_params</code> data frame will <strong>not</strong> have the desired effect. You need to change them in the <code>gear_params</code> data frame.</p>
+<h1 id="resource-parameters">Resource parameters</h1>
+<p>Not surprisingly, the same applies to the resource parameters. These are used to set up the size-dependent carrying capacity and replenishment rate for the resource. You should access them with</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/resource_params.html'>resource_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>$kappa
+[1] 1e+11
+
+$lambda
+[1] 2.133333
+
+$r_pp
+[1] 10
+
+$n
+[1] 0.6666667
+
+$w_pp_cutoff
+[1] 9.820907</code></pre>
+</div>
+<p>and change them with, for example,</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/resource_params.html'>resource_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>r_pp</span> <span class='op'>&lt;-</span> <span class='fl'>4</span>
+</code></pre>
+</div>
+</div>
+<h1 id="rate-arrays">Rate arrays</h1>
+<p>When you call <code>newMultispeciesParams()</code>, then mizer uses the information in <code>species_params</code>, <code>gear_params</code> and <code>resource_params</code> to set up various arrays that will later make it much faster to run simulations of the model. If you are not happy with how mizer fills these arrays, you can also change them directly. And again you can do that either with <code>@</code> notation or without.</p>
+<p>Let’s take the example of the maximum intake rate <span class="math inline">\(h(w)\)</span> that we already discussed earlier. This is stored in the <code>intake_max</code> slot of the MizerParams object, as a two-dimensional array, with one row for each species and one column for each size bin. You can get at this way in the two equivalent ways:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span><span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html'>getMaxIntakeRate</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>, <span class='va'>params</span><span class='op'>@</span><span class='va'>intake_max</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>[1] TRUE</code></pre>
+</div>
+<p>You may wonder, why the function is called <code>getMaxIntakeRate()</code> rather than <code>intake_max()</code>, and I am wondering too. Naming things is difficult, and I now think that I made a bad choice when choosing those names. It gets worse when we now look at the syntax for changing <code>intake_max</code>.</p>
+<p>We can either do it with the <code>@</code> notation, for example</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>params</span><span class='op'>@</span><span class='va'>intake_max</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>*</span> <span class='va'>params</span><span class='op'>@</span><span class='va'>intake_max</span>
+</code></pre>
+</div>
+</div>
+<p>or we can do it without <code>@</code> notation</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html'>setMaxIntakeRate</a></span><span class='op'>(</span><span class='va'>params</span>, intake_max <span class='op'>=</span> <span class='fl'>2</span> <span class='op'>*</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html'>getMaxIntakeRate</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>This is ugly, and in future versions of mizer I think we will also allow</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>intake_max</span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>*</span> <span class='fu'>intake_max</span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>But for now we are stuck with the functions that are all listed on the [help page] for <code>setParams()</code>. Note that these functions do not modify the params object in place, but create a new MizerParams object, which we then have to assign to a variable.</p>
+<p>Again there are benefits in avoiding directly accessing the slot with <code>@</code>. These are:</p>
+<ol type="1">
+<li><p>The new value you assign is checked for validity. If you make a mistake in an assignment using <code>@</code> you will not get any warning and instead will run into mysterious and cryptic error messages later.</p></li>
+<li><p>The new value gets protected from automatically being overwritten when you make changes to other parameters.</p></li>
+</ol>
+<p>We illustrate the second point with a simple example. Let’s set one entry in the <code>metab</code> slot, which holds the size-dependent metabolic rates, to a particular value.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>params</span><span class='op'>@</span><span class='va'>metab</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>2</span>
+<span class='va'>params</span><span class='op'>@</span><span class='va'>metab</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span>
+</code></pre>
+</div>
+<pre><code>[1] 2</code></pre>
+</div>
+<p>Let us then make a totally unrelated change, say by changing the reproductive efficiency of the 5th species and look again at our entry in <code>metab</code>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>erepro</span><span class='op'>[</span><span class='fl'>5</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>0.1</span>
+<span class='va'>params</span><span class='op'>@</span><span class='va'>metab</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span>
+</code></pre>
+</div>
+<pre><code>[1] 0.02891793</code></pre>
+</div>
+<p>The reason for this is that the change in the species parameter has triggered a recalculation of the rate arrays from the species parameters, overwriting our manual change.</p>
+<p>Now let’s try the same with the proper way of changing the metabolic rate.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>metab</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMetabolicRate.html'>getMetabolicRate</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>
+<span class='va'>metab</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>2</span>
+<span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMetabolicRate.html'>setMetabolicRate</a></span><span class='op'>(</span><span class='va'>params</span>, metab <span class='op'>=</span> <span class='va'>metab</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Now this will not get overwritten when some other parameter changes.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>erepro</span><span class='op'>[</span><span class='fl'>5</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>0.1</span>
+<span class='va'>params</span><span class='op'>@</span><span class='va'>metab</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span>
+</code></pre>
+</div>
+<pre><code>[1] 2</code></pre>
+</div>
+<p>The way that was done internally is by attaching a comment to the <code>metab</code> slot.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/comment.html'>comment</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>@</span><span class='va'>metab</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>[1] &quot;set manually&quot;</code></pre>
+</div>
+<p>You could have chosen a more informative comment, for example</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>comment</span> <span class='op'>&lt;-</span> <span class='st'>"Just changed the [1, 1] entry for test purposes."</span>
+<span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMetabolicRate.html'>setMetabolicRate</a></span><span class='op'>(</span><span class='va'>params</span>, metab <span class='op'>=</span> <span class='va'>metab</span>,
+                           comment_metab <span class='op'>=</span> <span class='va'>comment</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>All that matters is that there is a comment. This also tells us how we can un-protect a slot so that it can be auto-computed from the species parameters again:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/comment.html'>comment</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>@</span><span class='va'>metab</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='cn'>NULL</span>
+</code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>erepro</span><span class='op'>[</span><span class='fl'>5</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>0.1</span>
+<span class='va'>params</span><span class='op'>@</span><span class='va'>metab</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span>
+</code></pre>
+</div>
+<pre><code>[1] 0.02891793</code></pre>
+</div>
+<h1 id="summary">Summary</h1>
+<p>We have seen how to change species parameters, gear parameters, resource parameters or other slots in a MizerParams object by using the appropriate functions. You can find a complete <a href="https://sizespectrum.org/mizer/reference/index.html#section-model-parameters">list of these functions</a> in the mizer reference pages. We discussed how this avoids the pitfalls that arise when accessing slots directly with the <code>@</code> notation. I hope this will be useful to you when you explore your own mizer model.</p>
+<p>This blog post was motivated by a question by <a href="https://www.researchgate.net/profile/Leslie-Garay-Narvaez">Leslie Garay-Narváez</a>. Please keep the questions coming.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
@@ -2463,16 +1801,20 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->
 <!--radix_placeholder_appendices-->
-<div class="appendix-bottom">
-<h3 id="updates-and-corrections">Corrections</h3>
-<p>If you see mistakes or want to suggest changes, please <a href="https://github.com/sizespectrum/MizerBlog/issues/new">create an issue</a> on the source repository.</p>
-<h3 id="reuse">Reuse</h3>
-<p>Text and figures are licensed under Creative Commons Attribution <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Source code is available at <a href="https://github.com/sizespectrum/MizerBlog/">https://github.com/sizespectrum/MizerBlog/</a>, unless otherwise noted. The figures that have been reused from other sources don't fall under this license and can be recognized by a note in their caption: "Figure from ...".</p>
-</div>
+<div class="appendix-bottom"></div>
 <!--/radix_placeholder_appendices-->
 <!--radix_placeholder_navigation_after_body-->
 <!--/radix_placeholder_navigation_after_body-->

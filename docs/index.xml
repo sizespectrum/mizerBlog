@@ -13,7 +13,17 @@ new features, technical details, plans and ideas. Contributions welcome.
       <link>https://blog.mizer.sizespectrum.org</link>
     </image>
     <generator>Distill</generator>
-    <lastBuildDate>Tue, 03 Aug 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 08 Aug 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Change model parameters without using @</title>
+      <dc:creator>Gustav Delius</dc:creator>
+      <link>https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using</link>
+      <description>Mizer provides dedicated functions for changing model parameters. Using them
+protects you from pitfalls arising from manipulations with the `@` symbol.</description>
+      <guid>https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using</guid>
+      <pubDate>Sun, 08 Aug 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/change.jpg" medium="image" type="image/jpeg"/>
+    </item>
     <item>
       <title>Density-dependence in reproduction</title>
       <dc:creator>Gustav Delius</dc:creator>
