@@ -1,14 +1,19 @@
 ---
-title: "Pittfalls when using @"
+title: "Change model parameters without using @"
 description: |
-  A short description of the post.
+  Mizer provides dedicated functions for changing model parameters. Using them
+  protects you from pitfalls arising from manipulations with the `@` symbol.
 author:
   - name: Gustav Delius
     url: {}
 date: 08-08-2021
+twitter:
+  site: "@mizer_model"
+  creator: "@gustavdelius"
 output:
   distill::distill_article:
     self_contained: false
+    toc: true
 ---
 
 
@@ -16,32 +21,60 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This blog post was written with mizer version 2.2.1
+# Introduction
 
-```{r}
+Often, after creating a mizer model, you will want to make changes to the model
+parameters, either to improve the model or to investigate the effect of changes.
+For example you might want to study the community consequence of changes in the
+physiology due to warmer waters, or whatever your research question is.
+
+Mizer makes this very easy. However, it is important to use the right syntax. In
+particular, one should avoid the use of the `@` symbol, as I will explain in
+this blog post. So this post serves as a reminder of how one can make changes to
+a model after it has been created.
+
+![change](change.jpg)
+
+As you will know, all the parameters describing a mizer model are contained in
+an object of class MizerParams. You may either have created this object
+yourself, for example with the `newMultispeciesParams()` function, or received
+it from a colleague. Such an object has many slots holding the various pieces of
+information about the model.
+
+There are often two ways of accessing these slots. One involves the use of the
+`@` symbol, the other uses a dedicated mizer function. If you look at the mizer
+code, you will see a lot of `@` symbols. However I will discuss the potential
+pitfalls when using the `@` symbol and advocate for the use of dedicated
+functions that mizer provides for the purpose of changing model parameters.
+
+This blog post was written with mizer version 2.2.1.9001
+
+```{r warning=FALSE}
 library(mizer)
 packageVersion("mizer")
 ```
 
-As you will know, all the parameters describing a mizer model are contained in
-an object of class MizerParams. Such an object has many slots holding the
-information about the model. There are often two ways of accessing these slots.
-One involves the use of the @ symbol, the other uses a dedicated function. I
-would advocate always using the dedicated function and to avoid the use of @ in
-your code. In this blog post I will explain why.
-
-Throughout we will use the `NS_params` example MizerParams object in our 
-examples.
+Throughout this post we will use the `NS_params` MizerParams object that comes
+as an example with the mizer package.
 
 ```{r}
-library(mizer)
 params <- NS_params
 ```
 
 
-## Species parameters
+# Species parameters
 
-Let's start with the `species_params` data frame. You can get it in two ways,
+Let's start with the `species_params` data frame. This holds species-specific
+parameters that are used by mizer to calculate physiological rates according
+to specific assumptions about the size-dependence of these rates. (The details
+do not concern us here, but you can find all the information on the 
+[help page](https://sizespectrum.org/mizer/reference/species_params.html) 
+of `species_params()`. These size-dependent rates are then stored as large
+arrays in the slots of the MizerParams object, to be efficiently used during
+model projections. But also the species parameters are stored, and can therefore
+be used to recalculate the rates when some species parameters change.
+
+You can get the species parameters out of a MizerParams object in two ways,
 both giving identical results:
 
 ```{r}
@@ -61,7 +94,7 @@ species_params
 ```
 
 The function actually only contains one statement, which accesses the
-`species_params` slot using the @ notation.
+`species_params` slot using the `@` notation.
 
 The difference between the two notations becomes apparent only when you want to
 make a change to the species parameters. Let's assume we want to change the `h`
@@ -79,7 +112,7 @@ maximum intake rate at the smallest size is
 getMaxIntakeRate(params)[1, 1]
 ```
 
-Now let's increase the value of the `h` parameter using the @ notation:
+Now let's increase the value of the `h` parameter using the `@` notation:
 
 ```{r}
 params@species_params$h[1] <- 20
@@ -99,13 +132,17 @@ instead have used
 species_params(params)$h[1] <- 20
 ```
 
-This does indeed change the maximum intake rate:
+Take a look at the syntax, which is really a bit weird when compared to other programming 
+languages. If you want to dig deeper into this, a good place to look is
+https://adv-r.hadley.nz/functions.html#replacement-functions.
+
+This way of changing $h$ does indeed change the maximum intake rate:
 
 ```{r}
 getMaxIntakeRate(params)[1, 1]
 ```
 
-This behaviour is clear if we look at the code:
+The reason is clear if we look at the code:
 
 ```{r}
 `species_params<-`
@@ -119,10 +156,14 @@ setter function:
 3. The other slots in the MizerParams object are updated by calling `setParams()`.
 
 
-## Gear parameters
 
-Similar comments apply to the gear parameters. You can get the current 
-gear parameters in two equivalent ways:
+# Gear parameters
+
+Similar comments apply to the gear parameters. The gear parameters are used by
+mizer to set up the catchability and selectivity arrays. You can find more
+details on the 
+[help page for setting fishing](https://sizespectrum.org/mizer/reference/setFishing.html#setting-fishing).
+You can get the current gear parameters in two equivalent ways:
 
 ```{r}
 # Using function
@@ -153,10 +194,11 @@ __not__ have the desired effect. You need to change them in the `gear_params`
 data frame.
 
 
-## Resource parameters
+# Resource parameters
 
-Not surprisingly, the same applies to the resource parameters. You should
-access them with
+Not surprisingly, the same applies to the resource parameters. These are used to
+set up the size-dependent carrying capacity and replenishment rate for the
+resource. You should access them with
 
 ```{r}
 resource_params(params)
@@ -169,58 +211,136 @@ resource_params(params)$r_pp <- 4
 ```
 
 
-When you look at the code defining the mizer functions, you will see lots of
-@ signs. Here is a very simple example: the function `getMaxIntakeRate()` that
-returns an array (species x size) containing the maximum rate at which the fish
-of different species at different sizes can take in food.
+# Rate arrays
+
+When you call `newMultispeciesParams()`, then mizer uses the information in
+`species_params`, `gear_params` and `resource_params` to set up various
+arrays that will later make it much faster to run simulations of the model.
+If you are not happy with how mizer fills these arrays, you can also
+change them directly. And again you can do that either with `@` notation or
+without.
+
+Let's take the example of the maximum intake rate $h(w)$ that we already
+discussed earlier. This is stored in the `intake_max` slot of the MizerParams
+object, as a two-dimensional array, with one row for each species and one column
+for each size bin. You can get at this way in the two equivalent ways:
 
 ```{r}
-getMaxIntakeRate
+identical(getMaxIntakeRate(params), params@intake_max)
 ```
 
-We see that the function is extremely simple, consisting of the single 
-statement
+You may wonder, why the function is called `getMaxIntakeRate()` rather than
+`intake_max()`, and I am wondering too. Naming things is difficult, and I now
+think that I made a bad choice when choosing those names. It gets worse when
+we now look at the syntax for changing `intake_max`. 
+
+We can either do it with
+the `@` notation, for example
+
+```{r}
+params@intake_max <- 2 * params@intake_max
+```
+
+or we can do it without `@` notation
+
+```{r}
+params <- setMaxIntakeRate(params, intake_max = 2 * getMaxIntakeRate(params))
+```
+
+This is ugly, and in future versions of mizer I think we will also allow
 
 ```{r eval=FALSE}
-params@intake_max
+intake_max(params) <- 2 * intake_max(params)
 ```
 
-This accesses a slot called `params@intake_max` of the MizerParams object
-`params`. No calculation has to be done to determine the rates, because these
-calculations are done when the MizerParams object is set up and then they are
-stored in that `params@intake_max` slot. That is important to allow mizer quick
-access to these rates when it runs simulations.
+But for now we are stuck with the functions that are all listed on the 
+[help page] for `setParams()`. Note that these functions do not modify the
+params object in place, but create a new MizerParams object, which we then
+have to assign to a variable. 
 
-So there are two ways for you to get at the array of maximum intake rates. You
-can either use the `getMaxIntakeRate()` function or you can access the
-`params@intake_max` slot, and these give identical results:
+Again there are benefits in avoiding directly accessing the slot with `@`.
+These are:
+
+1. The new value you assign is checked for validity. If you make a mistake in
+an assignment using `@` you will not get any warning and instead will run
+into mysterious and cryptic error messages later.
+
+2. The new value gets protected from automatically being overwritten when you
+make changes to other parameters.
+
+We illustrate the second point with a simple example. Let's set one entry in the
+`metab` slot, which holds the size-dependent metabolic rates, to a particular
+value.
 
 ```{r}
-identical(getMaxIntakeRate(NS_params), NS_params@intake_max)
+params@metab[1, 1] <- 2
+params@metab[1, 1]
 ```
 
-Similarly, there are two ways of changing the maximum intake rates. If
-for example we wanted to create a new model where everyone has double the 
-maximum intake rate, we could either do
+Let us then make a totally unrelated change, say by changing the reproductive
+efficiency of the 5th species and look again at our entry in `metab`.
 
 ```{r}
-params1 <- setMaxIntakeRate(NS_params, 
-                            intake_max = 2 * getMaxIntakeRate(NS_params))
+species_params(params)$erepro[5] <- 0.1
+params@metab[1, 1]
 ```
+The reason for this is that the change in the species parameter has triggered
+a recalculation of the rate arrays from the species parameters, overwriting
+our manual change.
 
-or
+Now let's try the same with the proper way of changing the metabolic rate.
 
 ```{r}
-params2 <- NS_params
-params2@intake_max <- 2 * NS_params@intake_max
+metab <- getMetabolicRate(params)
+metab[1, 1] <- 2
+params <- setMetabolicRate(params, metab = metab)
+```
+
+Now this will not get overwritten when some other parameter changes.
+
+```{r}
+species_params(params)$erepro[5] <- 0.1
+params@metab[1, 1]
+```
+
+The way that was done internally is by attaching a comment to the `metab`
+slot.
+
+```{r}
+comment(params@metab)
+```
+
+You could have chosen a more informative comment, for example
+
+```{r}
+comment <- "Just changed the [1, 1] entry for test purposes."
+params <- setMetabolicRate(params, metab = metab,
+                           comment_metab = comment)
+```
+
+All that matters is that there is a comment. This also tells us how we can
+un-protect a slot so that it can be auto-computed from the species parameters
+again:
+
+```{r}
+comment(params@metab) <- NULL
 ```
 
 ```{r}
-compareParams(params1, params2)
+species_params(params)$erepro[5] <- 0.1
+params@metab[1, 1]
 ```
 
+# Summary
 
-# Meaning of @ syntax
-```{r}
+We have seen how to change species parameters, gear parameters, resource
+parameters or other slots in a MizerParams object by using the appropriate
+functions. You can find a complete 
+[list of these functions](https://sizespectrum.org/mizer/reference/index.html#section-model-parameters) 
+in the mizer reference pages. We discussed how this avoids the pitfalls that
+arise when accessing slots directly with the `@` notation. I hope this will be
+useful to you when you explore your own mizer model.
 
-```
+This blog post was motivated by a question by 
+[Leslie Garay-Narváez](https://www.researchgate.net/profile/Leslie-Garay-Narvaez).
+Please keep the questions coming.
