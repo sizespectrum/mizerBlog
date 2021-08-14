@@ -7,7 +7,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
   <meta name="generator" content="distill" />
-  <link rel="alternate" type="application/rss+xml" href="https://blog.mizer.sizespectrum.org/index.xml" />
 
   <style type="text/css">
   /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
@@ -87,638 +86,43 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>mizer blog</title>
+  <title>Reproducible research with mizer, GitHub, RPubs and binder</title>
+
+  <meta property="description" itemprop="description" content="Share your code in 5 easy steps, so that others can easily reproduce your&#10;results and build on your work."/>
 
 
-  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/"/>
-  <link rel="icon" type="image/png" href="images/favicon-16x16.png"/>
-
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2021-08-14"/>
+  <meta property="article:created" itemprop="dateCreated" content="2021-08-14"/>
+  <meta name="article:author" content="Gustav Delius"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="mizer blog"/>
+  <meta property="og:title" content="Reproducible research with mizer, GitHub, RPubs and binder"/>
   <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Share your code in 5 easy steps, so that others can easily reproduce your&#10;results and build on your work."/>
   <meta property="og:locale" content="en_US"/>
-  <meta property="og:site_name" content="mizer blog"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="mizer blog"/>
+  <meta property="twitter:title" content="Reproducible research with mizer, GitHub, RPubs and binder"/>
+  <meta property="twitter:description" content="Share your code in 5 easy steps, so that others can easily reproduce your&#10;results and build on your work."/>
   <meta property="twitter:site" content="@mizer_model"/>
+  <meta property="twitter:creator" content="@gustavdelius"/>
 
   <!--/radix_placeholder_meta_tags-->
+  
+  <meta name="citation_reference" content="citation_title=Regulation of fish stocks without stock–recruitment relationships: The case of small pelagic fish;citation_publication_date=2020;citation_volume=21;citation_doi=10.1111/faf.12465;citation_issn=1467-2979;citation_author=T. Mariella Canales;citation_author=Gustav W. Delius;citation_author=Richard Law"/>
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","site","listing"]}},"value":[{"type":"character","attributes":{},"value":["mizer blog"]},{"type":"character","attributes":{},"value":["distill::distill_website"]},{"type":"character","attributes":{},"value":["posts"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","twitter","preview","bibliography","output"]}},"value":[{"type":"character","attributes":{},"value":["Reproducible research with mizer, GitHub, RPubs and binder"]},{"type":"character","attributes":{},"value":["Share your code in 5 easy steps, so that others can easily reproduce your\nresults and build on your work.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Gustav Delius"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":[]}},"value":[]}]}]},{"type":"character","attributes":{},"value":["08-14-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["site","creator"]}},"value":[{"type":"character","attributes":{},"value":["@mizer_model"]},{"type":"character","attributes":{},"value":["@gustavdelius"]}]},{"type":"character","attributes":{},"value":["rstudio.png"]},{"type":"character","attributes":{},"value":["biblio.bib"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","toc"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["biblio.bib","reproducible-research-with-mizer-and-binder_files/anchor-4.2.2/anchor.min.js","reproducible-research-with-mizer-and-binder_files/bowser-1.9.3/bowser.min.js","reproducible-research-with-mizer-and-binder_files/distill-2.2.21/template.v2.js","reproducible-research-with-mizer-and-binder_files/header-attrs-2.10/header-attrs.js","reproducible-research-with-mizer-and-binder_files/jquery-1.11.3/jquery.min.js","reproducible-research-with-mizer-and-binder_files/popper-2.6.0/popper.min.js","reproducible-research-with-mizer-and-binder_files/tippy-6.2.7/tippy-bundle.umd.min.js","reproducible-research-with-mizer-and-binder_files/tippy-6.2.7/tippy-light-border.css","reproducible-research-with-mizer-and-binder_files/tippy-6.2.7/tippy.css","reproducible-research-with-mizer-and-binder_files/tippy-6.2.7/tippy.umd.min.js","reproducible-research-with-mizer-and-binder_files/webcomponents-2.0.0/webcomponents.js","rstudio.png"]}
+  </script>
   <!--radix_placeholder_navigation_in_header-->
-  <meta name="distill:offset" content=""/>
-
-  <script type="application/javascript">
-
-    window.headroom_prevent_pin = false;
-
-    window.document.addEventListener("DOMContentLoaded", function (event) {
-
-      // initialize headroom for banner
-      var header = $('header').get(0);
-      var headerHeight = header.offsetHeight;
-      var headroom = new Headroom(header, {
-        tolerance: 5,
-        onPin : function() {
-          if (window.headroom_prevent_pin) {
-            window.headroom_prevent_pin = false;
-            headroom.unpin();
-          }
-        }
-      });
-      headroom.init();
-      if(window.location.hash)
-        headroom.unpin();
-      $(header).addClass('headroom--transition');
-
-      // offset scroll location for banner on hash change
-      // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
-      window.addEventListener("hashchange", function(event) {
-        window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
-      });
-
-      // responsive menu
-      $('.distill-site-header').each(function(i, val) {
-        var topnav = $(this);
-        var toggle = topnav.find('.nav-toggle');
-        toggle.on('click', function() {
-          topnav.toggleClass('responsive');
-        });
-      });
-
-      // nav dropdowns
-      $('.nav-dropbtn').click(function(e) {
-        $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
-        $(this).parent().siblings('.nav-dropdown')
-           .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $("body").click(function(e){
-        $('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $(".nav-dropdown").click(function(e){
-        e.stopPropagation();
-      });
-    });
-  </script>
-
-  <style type="text/css">
-
-  /* Theme (user-documented overrideables for nav appearance) */
-
-  .distill-site-nav {
-    color: rgba(255, 255, 255, 0.8);
-    background-color: #0F2E3D;
-    font-size: 15px;
-    font-weight: 300;
-  }
-
-  .distill-site-nav a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .distill-site-nav a:hover {
-    color: white;
-  }
-
-  @media print {
-    .distill-site-nav {
-      display: none;
-    }
-  }
-
-  .distill-site-header {
-
-  }
-
-  .distill-site-footer {
-
-  }
-
-
-  /* Site Header */
-
-  .distill-site-header {
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 3;
-  }
-
-  .distill-site-header .nav-left {
-    display: inline-block;
-    margin-left: 8px;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header .nav-left {
-      margin-left: 0;
-    }
-  }
-
-
-  .distill-site-header .nav-right {
-    float: right;
-    margin-right: 8px;
-  }
-
-  .distill-site-header a,
-  .distill-site-header .title {
-    display: inline-block;
-    text-align: center;
-    padding: 14px 10px 14px 10px;
-  }
-
-  .distill-site-header .title {
-    font-size: 18px;
-    min-width: 150px;
-  }
-
-  .distill-site-header .logo {
-    padding: 0;
-  }
-
-  .distill-site-header .logo img {
-    display: none;
-    max-height: 20px;
-    width: auto;
-    margin-bottom: -4px;
-  }
-
-  .distill-site-header .nav-image img {
-    max-height: 18px;
-    width: auto;
-    display: inline-block;
-    margin-bottom: -3px;
-  }
-
-
-
-  @media screen and (min-width: 1000px) {
-    .distill-site-header .logo img {
-      display: inline-block;
-    }
-    .distill-site-header .nav-left {
-      margin-left: 20px;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 20px;
-    }
-    .distill-site-header .title {
-      padding-left: 12px;
-    }
-  }
-
-
-  .distill-site-header .nav-toggle {
-    display: none;
-  }
-
-  .nav-dropdown {
-    display: inline-block;
-    position: relative;
-  }
-
-  .nav-dropdown .nav-dropbtn {
-    border: none;
-    outline: none;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 16px 10px;
-    background-color: transparent;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    margin: 0;
-    margin-top: 1px;
-    z-index: 2;
-  }
-
-  .nav-dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    min-width: 200px;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 4px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
-    z-index: 1;
-    margin-top: 2px;
-    white-space: nowrap;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-
-  .nav-dropdown-content hr {
-    margin-top: 4px;
-    margin-bottom: 4px;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .nav-dropdown-active {
-    display: block;
-  }
-
-  .nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
-    color: black;
-    padding: 6px 24px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-  }
-
-  .nav-dropdown-content .nav-dropdown-header {
-    display: block;
-    padding: 5px 24px;
-    padding-bottom: 0;
-    text-transform: uppercase;
-    font-size: 14px;
-    color: #999999;
-    white-space: nowrap;
-  }
-
-  .nav-dropdown:hover .nav-dropbtn {
-    color: white;
-  }
-
-  .nav-dropdown-content a:hover {
-    background-color: #ddd;
-    color: black;
-  }
-
-  .nav-right .nav-dropdown-content {
-    margin-left: -45%;
-    right: 0;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header a, .distill-site-header .nav-dropdown  {display: none;}
-    .distill-site-header a.nav-toggle {
-      float: right;
-      display: block;
-    }
-    .distill-site-header .title {
-      margin-left: 0;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 0;
-    }
-    .distill-site-header {
-      overflow: hidden;
-    }
-    .nav-right .nav-dropdown-content {
-      margin-left: 0;
-    }
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header.responsive {position: relative; min-height: 500px; }
-    .distill-site-header.responsive a.nav-toggle {
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
-    .distill-site-header.responsive a,
-    .distill-site-header.responsive .nav-dropdown {
-      display: block;
-      text-align: left;
-    }
-    .distill-site-header.responsive .nav-left,
-    .distill-site-header.responsive .nav-right {
-      width: 100%;
-    }
-    .distill-site-header.responsive .nav-dropdown {float: none;}
-    .distill-site-header.responsive .nav-dropdown-content {position: relative;}
-    .distill-site-header.responsive .nav-dropdown .nav-dropbtn {
-      display: block;
-      width: 100%;
-      text-align: left;
-    }
-  }
-
-  /* Site Footer */
-
-  .distill-site-footer {
-    width: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
-    z-index: 3;
-    margin-top: 30px;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    text-align: center;
-  }
-
-  /* Headroom */
-
-  d-title {
-    padding-top: 6rem;
-  }
-
-  @media print {
-    d-title {
-      padding-top: 4rem;
-    }
-  }
-
-  .headroom {
-    z-index: 1000;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-  }
-
-  .headroom--transition {
-    transition: all .4s ease-in-out;
-  }
-
-  .headroom--unpinned {
-    top: -100px;
-  }
-
-  .headroom--pinned {
-    top: 0;
-  }
-
-  /* adjust viewport for navbar height */
-  /* helps vertically center bootstrap (non-distill) content */
-  .min-vh-100 {
-    min-height: calc(100vh - 100px) !important;
-  }
-
-  </style>
-
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-  <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
-  <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
-  <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
-  <script src="site_libs/autocomplete-0.37.1/autocomplete.min.js"></script>
-  <script src="site_libs/fuse-6.4.1/fuse.min.js"></script>
-
-  <script type="application/javascript">
-
-  function getMeta(metaName) {
-    var metas = document.getElementsByTagName('meta');
-    for (let i = 0; i < metas.length; i++) {
-      if (metas[i].getAttribute('name') === metaName) {
-        return metas[i].getAttribute('content');
-      }
-    }
-    return '';
-  }
-
-  function offsetURL(url) {
-    var offset = getMeta('distill:offset');
-    return offset ? offset + '/' + url : url;
-  }
-
-  function createFuseIndex() {
-
-    // create fuse index
-    var options = {
-      keys: [
-        { name: 'title', weight: 20 },
-        { name: 'categories', weight: 15 },
-        { name: 'description', weight: 10 },
-        { name: 'contents', weight: 5 },
-      ],
-      ignoreLocation: true,
-      threshold: 0
-    };
-    var fuse = new window.Fuse([], options);
-
-    // fetch the main search.json
-    return fetch(offsetURL('search.json'))
-      .then(function(response) {
-        if (response.status == 200) {
-          return response.json().then(function(json) {
-            // index main articles
-            json.articles.forEach(function(article) {
-              fuse.add(article);
-            });
-            // download collections and index their articles
-            return Promise.all(json.collections.map(function(collection) {
-              return fetch(offsetURL(collection)).then(function(response) {
-                if (response.status === 200) {
-                  return response.json().then(function(articles) {
-                    articles.forEach(function(article) {
-                      fuse.add(article);
-                    });
-                  })
-                } else {
-                  return Promise.reject(
-                    new Error('Unexpected status from search index request: ' +
-                              response.status)
-                  );
-                }
-              });
-            })).then(function() {
-              return fuse;
-            });
-          });
-
-        } else {
-          return Promise.reject(
-            new Error('Unexpected status from search index request: ' +
-                        response.status)
-          );
-        }
-      });
-  }
-
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-
-    // get search element (bail if we don't have one)
-    var searchEl = window.document.getElementById('distill-search');
-    if (!searchEl)
-      return;
-
-    createFuseIndex()
-      .then(function(fuse) {
-
-        // make search box visible
-        searchEl.classList.remove('hidden');
-
-        // initialize autocomplete
-        var options = {
-          autoselect: true,
-          hint: false,
-          minLength: 2,
-        };
-        window.autocomplete(searchEl, options, [{
-          source: function(query, callback) {
-            const searchOptions = {
-              isCaseSensitive: false,
-              shouldSort: true,
-              minMatchCharLength: 2,
-              limit: 10,
-            };
-            var results = fuse.search(query, searchOptions);
-            callback(results
-              .map(function(result) { return result.item; })
-            );
-          },
-          templates: {
-            suggestion: function(suggestion) {
-              var img = suggestion.preview && Object.keys(suggestion.preview).length > 0
-                ? `<img src="${offsetURL(suggestion.preview)}"</img>`
-                : '';
-              var html = `
-                <div class="search-item">
-                  <h3>${suggestion.title}</h3>
-                  <div class="search-item-description">
-                    ${suggestion.description || ''}
-                  </div>
-                  <div class="search-item-preview">
-                    ${img}
-                  </div>
-                </div>
-              `;
-              return html;
-            }
-          }
-        }]).on('autocomplete:selected', function(event, suggestion) {
-          window.location.href = offsetURL(suggestion.path);
-        });
-        // remove inline display style on autocompleter (we want to
-        // manage responsive display via css)
-        $('.algolia-autocomplete').css("display", "");
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-
-  });
-
-  </script>
-
-  <style type="text/css">
-
-  .nav-search {
-    font-size: x-small;
-  }
-
-  /* Algolioa Autocomplete */
-
-  .algolia-autocomplete {
-    display: inline-block;
-    margin-left: 10px;
-    vertical-align: sub;
-    background-color: white;
-    color: black;
-    padding: 6px;
-    padding-top: 8px;
-    padding-bottom: 0;
-    border-radius: 6px;
-    border: 1px #0F2E3D solid;
-    width: 180px;
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-nav .algolia-autocomplete {
-      display: none;
-      visibility: hidden;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete {
-      display: inline-block;
-      visibility: visible;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete .aa-dropdown-menu {
-      margin-left: 0;
-      width: 400px;
-      max-height: 400px;
-    }
-  }
-
-  .algolia-autocomplete .aa-input, .algolia-autocomplete .aa-hint {
-    width: 90%;
-    outline: none;
-    border: none;
-  }
-
-  .algolia-autocomplete .aa-hint {
-    color: #999;
-  }
-  .algolia-autocomplete .aa-dropdown-menu {
-    width: 550px;
-    max-height: 70vh;
-    overflow-x: visible;
-    overflow-y: scroll;
-    padding: 5px;
-    margin-top: 3px;
-    margin-left: -150px;
-    background-color: #fff;
-    border-radius: 5px;
-    border: 1px solid #999;
-    border-top: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
-    cursor: pointer;
-    padding: 5px 4px;
-    border-bottom: 1px solid #eee;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion:last-of-type {
-    border-bottom: none;
-    margin-bottom: 2px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item {
-    overflow: hidden;
-    font-size: 0.8em;
-    line-height: 1.4em;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item h3 {
-    font-size: 1rem;
-    margin-block-start: 0;
-    margin-block-end: 5px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-description {
-    display: inline-block;
-    overflow: hidden;
-    height: 2.8em;
-    width: 80%;
-    margin-right: 4%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview {
-    display: inline-block;
-    width: 15%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img {
-    height: 3em;
-    width: auto;
-    display: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img[src] {
-    display: initial;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
-    background-color: #eee;
-  }
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {
-    font-weight: bold;
-    font-style: normal;
-  }
-
-  </style>
-
-
   <!--/radix_placeholder_navigation_in_header-->
   <!--radix_placeholder_distill-->
 
@@ -2033,641 +1437,141 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   </script>
 
-  <style type="text/css">
-  /* base variables */
-
-  /* Edit the CSS properties in this file to create a custom
-     Distill theme. Only edit values in the right column
-     for each row; values shown are the CSS defaults.
-     To return any property to the default,
-     you may set its value to: unset
-     All rows must end with a semi-colon.                      */
-
-  /* Optional: embed custom fonts here with `@import`          */
-  /* This must remain at the top of this file.                 */
-
-
-
-  html {
-    /*-- Main font sizes --*/
-    --title-size:      50px;
-    --body-size:       1.06rem;
-    --code-size:       14px;
-    --aside-size:      12px;
-    --fig-cap-size:    13px;
-    /*-- Main font colors --*/
-    --title-color:     #000000;
-    --header-color:    rgba(0, 0, 0, 0.8);
-    --body-color:      rgba(0, 0, 0, 0.8);
-    --aside-color:     rgba(0, 0, 0, 0.6);
-    --fig-cap-color:   rgba(0, 0, 0, 0.6);
-    /*-- Specify custom fonts ~~~ must be imported above   --*/
-    --heading-font:    sans-serif;
-    --mono-font:       monospace;
-    --body-font:       sans-serif;
-    --navbar-font:     sans-serif;  /* websites + blogs only */
-  }
-
-  /*-- ARTICLE METADATA --*/
-  d-byline {
-    --heading-size:    0.6rem;
-    --heading-color:   rgba(0, 0, 0, 0.5);
-    --body-size:       0.8rem;
-    --body-color:      rgba(0, 0, 0, 0.8);
-  }
-
-  /*-- ARTICLE TABLE OF CONTENTS --*/
-  .d-contents {
-    --heading-size:    18px;
-    --contents-size:   13px;
-  }
-
-  /*-- ARTICLE APPENDIX --*/
-  d-appendix {
-    --heading-size:    15px;
-    --heading-color:   rgba(0, 0, 0, 0.65);
-    --text-size:       0.8em;
-    --text-color:      rgba(0, 0, 0, 0.5);
-  }
-
-  /*-- WEBSITE HEADER + FOOTER --*/
-  /* These properties only apply to Distill sites and blogs  */
-
-  .distill-site-header {
-    --title-size:       18px;
-    --text-color:       rgba(255, 255, 255, 0.8);
-    --text-size:        15px;
-    --hover-color:      white;
-    --bkgd-color:       #0F2E3D;
-  }
-
-  .distill-site-footer {
-    --text-color:       rgba(255, 255, 255, 0.8);
-    --text-size:        15px;
-    --hover-color:      white;
-    --bkgd-color:       #0F2E3D;
-  }
-
-  /*-- Additional custom styles --*/
-  /* Add any additional CSS rules below                      */
-  </style>
-  <style type="text/css">
-  /* base variables */
-
-  /* Edit the CSS properties in this file to create a custom
-     Distill theme. Only edit values in the right column
-     for each row; values shown are the CSS defaults.
-     To return any property to the default,
-     you may set its value to: unset
-     All rows must end with a semi-colon.                      */
-
-  /* Optional: embed custom fonts here with `@import`          */
-  /* This must remain at the top of this file.                 */
-
-
-
-  html {
-    /*-- Main font sizes --*/
-    --title-size:      50px;
-    --body-size:       1.06rem;
-    --code-size:       14px;
-    --aside-size:      12px;
-    --fig-cap-size:    13px;
-    /*-- Main font colors --*/
-    --title-color:     #317eac;
-    --header-color:    #317eac;
-    --body-color:      #555555;
-    --aside-color:     rgba(0, 0, 0, 0.6);
-    --fig-cap-color:   rgba(0, 0, 0, 0.6);
-    /*-- Specify custom fonts ~~~ must be imported above   --*/
-    --heading-font:    "Helvetica Neue",Helvetica,Arial,sans-serif;
-    --mono-font:       monospace;
-    --body-font:       "Helvetica Neue",Helvetica,Arial,sans-serif;
-    --navbar-font:     "Helvetica Neue",Helvetica,Arial,sans-serif;  /* websites + blogs only */
-  }
-
-  /*-- ARTICLE METADATA --*/
-  d-byline {
-    --heading-size:    0.6rem;
-    --heading-color:   rgba(0, 0, 0, 0.5);
-    --body-size:       0.8rem;
-    --body-color:      rgba(0, 0, 0, 0.8);
-    padding: 0 0;
-  }
-
-  d-title {
-    padding-bottom: 0.2rem;
-    background-color:  #ffffff;
-    color: #555555;
-  }
-
-  d-byline .byline h3 {
-      margin-block-start: 0;
-  }
-
-  /*-- ARTICLE TABLE OF CONTENTS --*/
-  .d-contents {
-    --heading-size:    18px;
-    --contents-size:   13px;
-  }
-
-  /*-- ARTICLE APPENDIX --*/
-  d-appendix {
-    --heading-size:    15px;
-    --heading-color:   rgba(0, 0, 0, 0.65);
-    --text-size:       0.8em;
-    --text-color:      rgba(0, 0, 0, 0.5);
-  }
-
-  /*-- WEBSITE HEADER + FOOTER --*/
-  /* These properties only apply to Distill sites and blogs  */
-
-  .distill-site-header {
-    --title-size:       18px;
-    --text-color:       #ffffff;
-    --text-size:        18px;
-    --hover-color:      white;
-    --bkgd-color:       #30bbed;
-  }
-
-  .distill-site-footer {
-    --text-color:       rgba(255, 255, 255, 0.8);
-    --text-size:        15px;
-    --hover-color:      white;
-    --bkgd-color:       #30bbed;
-  }
-
-  /*-- Additional custom styles --*/
-  /* Add any additional CSS rules below                      */
-  a .metadata {
-    color: #555555;
-  }
-  a .description {
-    color: #555555;
-  }
-  d-article a:hover, a:focus {
-    color: #157ab5;
-    text-decoration: underline;
-    border-bottom: none;
-  }
-
-  d-article a {
-    color: #2fa4e7;
-    text-decoration: none;
-    border-bottom: none;
-  }
-
-
-  d-article pre a  {
-    color: inherit;
-  }
-
-  .distill-site-nav a:hover {
-      color: white;
-      background-color: #178acc;
-  }
-
-  code {
-      padding: 2px 4px;
-      font-size: 90%;
-      color: #c7254e;
-      background-color: #f9f2f4;
-      border-radius: 4px;
-  }
-
-  h1.posts-list-caption {
-    content: url("images/mizer.png");
-    width: 66%;
-  }</style>
-  <style type="text/css">
-  /* base style */
-
-  /* FONT FAMILIES */
-
-  :root {
-    --heading-default: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
-    --mono-default: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-    --body-default: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
-  }
-
-  body,
-  .posts-list .post-preview p,
-  .posts-list .description p {
-    font-family: var(--body-font), var(--body-default);
-  }
-
-  h1, h2, h3, h4, h5, h6,
-  .posts-list .post-preview h2,
-  .posts-list .description h2 {
-    font-family: var(--heading-font), var(--heading-default);
-  }
-
-  d-article div.sourceCode code,
-  d-article pre code {
-    font-family: var(--mono-font), var(--mono-default);
-  }
-
-
-  /*-- TITLE --*/
-  d-title h1,
-  .posts-list > h1 {
-    color: var(--title-color, black);
-  }
-
-  d-title h1 {
-    font-size: var(--title-size, 50px);
-  }
-
-  /*-- HEADERS --*/
-  d-article h1,
-  d-article h2,
-  d-article h3,
-  d-article h4,
-  d-article h5,
-  d-article h6 {
-    color: var(--header-color, rgba(0, 0, 0, 0.8));
-  }
-
-  /*-- BODY --*/
-  d-article > p,  /* only text inside of <p> tags */
-  d-article > ul, /* lists */
-  d-article > ol {
-    color: var(--body-color, rgba(0, 0, 0, 0.8));
-    font-size: var(--body-size, 1.06rem);
-  }
-
-
-  /*-- CODE --*/
-  d-article div.sourceCode code,
-  d-article pre code {
-    font-size: var(--code-size, 14px);
-  }
-
-  /*-- ASIDE --*/
-  d-article aside {
-    font-size: var(--aside-size, 12px);
-    color: var(--aside-color, rgba(0, 0, 0, 0.6));
-  }
-
-  /*-- FIGURE CAPTIONS --*/
-  figure .caption,
-  figure figcaption,
-  .figure .caption {
-    font-size: var(--fig-cap-size, 13px);
-    color: var(--fig-cap-color, rgba(0, 0, 0, 0.6));
-  }
-
-  /*-- METADATA --*/
-  d-byline h3 {
-    font-size: var(--heading-size, 0.6rem);
-    color: var(--heading-color, rgba(0, 0, 0, 0.5));
-  }
-
-  d-byline {
-    font-size: var(--body-size, 0.8rem);
-    color: var(--body-color, rgba(0, 0, 0, 0.8));
-  }
-
-  d-byline a,
-  d-article d-byline a {
-    color: var(--body-color, rgba(0, 0, 0, 0.8));
-  }
-
-  /*-- TABLE OF CONTENTS --*/
-  .d-contents nav h3 {
-    font-size: var(--heading-size, 18px);
-  }
-
-  .d-contents nav a {
-    font-size: var(--contents-size, 13px);
-  }
-
-  /*-- APPENDIX --*/
-  d-appendix h3 {
-    font-size: var(--heading-size, 15px);
-    color: var(--heading-color, rgba(0, 0, 0, 0.65));
-  }
-
-  d-appendix {
-    font-size: var(--text-size, 0.8em);
-    color: var(--text-color, rgba(0, 0, 0, 0.5));
-  }
-
-  d-appendix d-footnote-list a.footnote-backlink {
-    color: var(--text-color, rgba(0, 0, 0, 0.5));
-  }
-
-  /*-- WEBSITE HEADER + FOOTER --*/
-  .distill-site-header .title {
-    font-size: var(--title-size, 18px);
-    font-family: var(--navbar-font), var(--heading-default);
-  }
-
-  .distill-site-header a,
-  .nav-dropdown .nav-dropbtn {
-    font-family: var(--navbar-font), var(--heading-default);
-  }
-
-  .nav-dropdown .nav-dropbtn {
-    color: var(--text-color, rgba(255, 255, 255, 0.8));
-    font-size: var(--text-size, 15px);
-  }
-
-  .distill-site-header a:hover,
-  .nav-dropdown:hover .nav-dropbtn {
-    color: var(--hover-color, white);
-  }
-
-  .distill-site-header {
-    font-size: var(--text-size, 15px);
-    color: var(--text-color, rgba(255, 255, 255, 0.8));
-    background-color: var(--bkgd-color, #0F2E3D);
-  }
-
-  .distill-site-footer {
-    font-size: var(--text-size, 15px);
-    color: var(--text-color, rgba(255, 255, 255, 0.8));
-    background-color: var(--bkgd-color, #0F2E3D);
-  }
-
-  .distill-site-footer a:hover {
-    color: var(--hover-color, white);
-  }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
-  <script src="site_libs/popper-2.6.0/popper.min.js"></script>
-  <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
-  <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
-  <script src="site_libs/tippy-6.2.7/tippy.umd.min.js"></script>
-  <script src="site_libs/anchor-4.2.2/anchor.min.js"></script>
-  <script src="site_libs/bowser-1.9.3/bowser.min.js"></script>
-  <script src="site_libs/webcomponents-2.0.0/webcomponents.js"></script>
-  <script src="site_libs/distill-2.2.21/template.v2.js"></script>
+  <script src="reproducible-research-with-mizer-and-binder_files/header-attrs-2.10/header-attrs.js"></script>
+  <script src="reproducible-research-with-mizer-and-binder_files/jquery-1.11.3/jquery.min.js"></script>
+  <script src="reproducible-research-with-mizer-and-binder_files/popper-2.6.0/popper.min.js"></script>
+  <link href="reproducible-research-with-mizer-and-binder_files/tippy-6.2.7/tippy.css" rel="stylesheet" />
+  <link href="reproducible-research-with-mizer-and-binder_files/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
+  <script src="reproducible-research-with-mizer-and-binder_files/tippy-6.2.7/tippy.umd.min.js"></script>
+  <script src="reproducible-research-with-mizer-and-binder_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="reproducible-research-with-mizer-and-binder_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="reproducible-research-with-mizer-and-binder_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="reproducible-research-with-mizer-and-binder_files/distill-2.2.21/template.v2.js"></script>
   <!--radix_placeholder_site_in_header-->
   <!--/radix_placeholder_site_in_header-->
 
 
 </head>
 
-<body class="layout-listing">
+<body>
 
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"mizer blog","authors":[]}
+{"title":"Reproducible research with mizer, GitHub, RPubs and binder","description":"Share your code in 5 easy steps, so that others can easily reproduce your\nresults and build on your work.","authors":[{"author":"Gustav Delius","authorURL":{},"affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-08-14T00:00:00.000+01:00","citationText":"Delius, 2021"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
 <!--radix_placeholder_navigation_before_body-->
-<header class="header header--fixed" role="banner">
-<nav class="distill-site-nav distill-site-header">
-<div class="nav-left">
-<a href="index.html" class="title">mizer blog</a>
-<input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
-</div>
-<div class="nav-right">
-<a href="https://sizespectrum.org/mizer/">mizer home</a>
-<a href="https://twitter.com/mizer_model">
-<i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
-</a>
-<a href="index.xml">
-<i class="fa fa-rss fa-lg" aria-hidden="true"></i>
-</a>
-<a href="https://github.com/sizespectrum/mizerBlog">
-<i class="fab fa-github fa-lg" aria-hidden="true"></i>
-</a>
-<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
-</div>
-</nav>
-</header>
 <!--/radix_placeholder_navigation_before_body-->
 <!--radix_placeholder_site_before_body-->
 <!--/radix_placeholder_site_before_body-->
-<!--radix_placeholder_article_listing-->
-
-
-<script type="application/javascript">
-
-function init_posts_list() {
-
-  function load_image(img) {
-    var src = $(img).attr('data-src');
-    if (src) {
-      $(img).attr('src', src);
-      $(img).load(function() {
-        img.removeAttribute('data-src');
-      });
-    }
-  }
-
-  function set_posts_visible(posts, visible) {
-    if (visible) {
-
-      // show bottom border by default
-      $(posts).removeClass('post-preview-last');
-
-      // apply limits if need be
-      var max_posts = 25;
-      var apply_limits = $('.posts-container').hasClass('posts-apply-limit');
-      if (apply_limits && posts.length > max_posts) {
-        posts = $(posts).slice(0, max_posts);
-      } else {
-        $('.posts-more a').addClass('hidden');
-      }
-
-      // apply last style
-      $(posts.slice(-1)[0]).addClass('post-preview-last');
-
-      $(posts).removeClass('hidden');
-      $(posts).find('img[data-src]').each(function(i, img) {
-        load_image(img);
-      });
-    } else {
-      $(posts).addClass('hidden');
-    }
-  }
-
-  function apply_hash_filter() {
-
-    // clear active state
-    $('.categories .active').removeClass('active');
-
-    // mark all posts invisible to start
-    set_posts_visible($('.posts-list').children('a'), false);
-
-    // if we have a hash filter
-    if (window.location.hash && window.location.hash.startsWith("#category:")) {
-
-      // mark posts that match the category visible
-      var page_category = window.location.hash.replace(/^#category:/, "");
-      var posts = $('.post-metadata').map(function(idx, script) {
-        var metadata = $.parseJSON($(script).html());
-        var post = null;
-        $.each(metadata.categories, function(idx, category) {
-          category = category.replace(/ /g,"_");
-          if ((page_category || '').toLowerCase() === "articles" || category === page_category) {
-            post = $(script).parent().get();
-            return false;
-          }
-        });
-        return post;
-      });
-      set_posts_visible(posts, true);
-
-      // mark the hash active
-      $('.categories li>a[href="' + window.location.hash + '"]').addClass('active');
-
-      // update the list_caption
-      var list_caption = $('.posts-list-caption');
-      var caption = (page_category || '').toLowerCase() === "articles"
-        ? list_caption.attr('data-caption')
-        : ('Category: ' + page_category.replace(/_/g," "));
-      list_caption.text(caption);
-
-    } else {
-
-      // no hash filter, make all posts visible (subject to max display)
-      set_posts_visible($('.posts-list').children(), true);
-
-      // reset list caption
-      var list_caption = $('.posts-list-caption');
-      list_caption.text(list_caption.attr('data-caption'));
-
-
-    }
-  }
-
-  // more articles
-  function apply_post_limits(apply) {
-    if (apply) {
-      $('.posts-container').addClass('posts-apply-limit');
-      $('.posts-more a').removeClass('hidden');
-    } else {
-      $('.posts-container').removeClass('posts-apply-limit');
-      $('.posts-more a').addClass('hidden');
-    }
-  }
-
-  // click handling for tags
-  $('.dt-tag').click(function(ev) {
-    window.location.hash = '#category:' + $(this).text().replace(/ /g, "_");
-    return false;
-  })
-
-  // hash filter handling
-  apply_hash_filter();
-  $(window).on('hashchange',function() {
-    apply_post_limits(true);
-    apply_hash_filter();
-  });
-
-  // more articles link
-  $('.posts-more a').click(function(e) {
-    e.preventDefault();
-    apply_post_limits(false);
-    apply_hash_filter();
-    return false;
-  });
-
-}
-
-</script>
-
-
-
-<div class="posts-container posts-apply-limit l-page">
-<div class="posts-list">
-<h1 class="posts-list-caption" data-caption="mizer blog">mizer blog</h1>
-<a href="posts/2021-08-14-reproducible-research-with-mizer-and-binder/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Aug. 14, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">Gustav Delius</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2021-08-14-reproducible-research-with-mizer-and-binder/rstudio.png"/>
-</div>
-<div class="description">
-<h2>Reproducible research with mizer, GitHub, RPubs and binder</h2>
-<div class="dt-tags"></div>
-<p>Share your code in 5 easy steps, so that others can easily reproduce your
-results and build on your work.</p>
-</div>
-</a>
-<a href="posts/2021-08-08-change-model-parameters-without-using/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Aug. 8, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">Gustav Delius</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2021-08-08-change-model-parameters-without-using/change.jpg"/>
-</div>
-<div class="description">
-<h2>Change model parameters without using @</h2>
-<div class="dt-tags"></div>
-<p>Mizer provides dedicated functions for changing model parameters. Using them
-protects you from pitfalls arising from manipulations with the `@` symbol.</p>
-</div>
-</a>
-<a href="posts/2021-08-03-density-dependence-in-reproduction/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Aug. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">Gustav Delius</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2021-08-03-density-dependence-in-reproduction/density-dependence-in-reproduction_files/figure-html5/unnamed-chunk-13-1.png"/>
-</div>
-<div class="description">
-<h2>Density-dependence in reproduction</h2>
-<div class="dt-tags"></div>
-<p>The take-home message is that it is important to set the density
-dependence in your model appropriately and that with the help of the
-`setBevertonHolt()` function you can easily make changes to the density
-dependence without spoiling other aspects of your calibrated model.</p>
-</div>
-</a>
-<a href="posts/welcome/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Aug. 1, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">Gustav Delius</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Welcome to the mizer blog</h2>
-<div class="dt-tags"></div>
-<p>mizer is now 9 years old. mizer is becoming more social. Time to start a blog.</p>
-</div>
-</a>
-</div>
-<div class="posts-more">
-<a href="#">More articles &raquo;</a>
-</div>
-</div>
-<!--/radix_placeholder_article_listing-->
 
 <div class="d-title">
-<h1>mizer blog</h1>
+<h1>Reproducible research with mizer, GitHub, RPubs and binder</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-
+<p><p>Share your code in 5 easy steps, so that others can easily reproduce your results and build on your work.</p></p>
 </div>
 
+<div class="d-byline">
+  Gustav Delius true 
+  
+<br/>08-14-2021
+</div>
 
 <div class="d-article">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="d-contents d-contents-float">
+<nav class="l-text toc figcaption" id="TOC">
+<h3>Contents</h3>
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#put-your-code-into-an-r-notebook">Put your code into an R notebook</a></li>
+<li><a href="#put-your-notebook-on-github">Put your notebook on GitHub</a></li>
+<li><a href="#publish-your-r-notebook-on-rpubs">Publish your R notebook on RPubs</a></li>
+<li><a href="#make-it-executable-on-mybinder.org">Make it executable on mybinder.org</a></li>
+<li><a href="#let-the-world-know">Let the world know</a></li>
+</ul>
+</nav>
+</div>
+<h1 id="introduction">Introduction</h1>
+<p>There is much benefit in sharing the code that allows others to reproduce your research. Not only does it allow others to validate your results, it also allow them to build on what you have already done. This has benefits for them, but also for you because it increases engagement with your research and advances the entire field.</p>
+<p>The fact that you are using mizer rather than coding everything from scratch of course makes your research code much shorter and therefore much easier for others to understand and extend.</p>
+<p>In this blog post I will share my amazement at how easy it has become to share your code. There are five easy steps:</p>
+<ol type="1">
+<li><p>Put your code into an R notebook and add a bit of explanation.</p></li>
+<li><p>Make your R notebook together with any data files publicly available in a <a href="https://github.com">GitHub</a> repository.</p></li>
+<li><p>Publish your R notebook on <a href="https://rpubs.com/">RPubs</a> so people can quickly view it, nicely rendered.</p></li>
+<li><p>Launch it on <a href="https://mybinder.org/">mybinder.org</a> so that people can run your code in their browser without having to install anything.</p></li>
+<li><p>Let the world know.</p></li>
+</ol>
+<p>Steps 2, 3, 4 and 5 will only take a couple of minutes each, if one knows how to, so after reading this blog post there will be no excuse not to take those steps. Obviously step 1 can take as long as you like, depending on how nicely you like your code to be documented.</p>
+<p>I’ll talk about each step now. As an example I’ll use code for reproducing the results and figures of <span class="citation" data-cites="canales_regulation_2020">(<a href="#ref-canales_regulation_2020" role="doc-biblioref">Canales, Delius, and Law 2020</a>)</span></p>
+<h1 id="put-your-code-into-an-r-notebook">Put your code into an R notebook</h1>
+<p>You probably have a jumble of R script files with the code for setting up your model and running your analysis. Now that you are done, it makes sense to organise this code a bit. A nice way of doing that is to open a new R notebook (the second entry on the “New File” menu in RStudio) and pasting your code into R chunks (you create R chunks with Ctrl-Alt-I). Then in between the R chunks you can put explanations of what the code is for. The result will look something like <a href="https://github.com/sizespectrum/plankton-anchovy/blob/master/plankton-anchovy.Rmd">my example</a></p>
+<p>In the example I modified the header to include a table of contents and to limit the height of the figures:</p>
+<pre><code>---
+title: &quot;Regulation of fish stocks without ...&quot;
+output: 
+  html_notebook:
+    toc: true
+fig_height: 4
+---</code></pre>
+<p>You will want to load all the libraries you need in a setup chunk like</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>knitr</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/knitr/man/opts_chunk.html'>opts_chunk</a></span><span class='op'>$</span><span class='fu'>set</span><span class='op'>(</span>echo <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://sizespectrum.org/mizer/'>mizer</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://magrittr.tidyverse.org'>magrittr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://plotly-r.com'>plotly</a></span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>The first line ensures that your code in the R chunks will be included when the notebook is typeset.</p>
+<p>The explanatory text between the R chunks is using Markdown syntax. So for example you create section headers with <code>#</code>, headers of subsections with <code>##</code> and so on. You can include LaTeX equations with the usual syntax. So <code>\(x^2\)</code> produces the inline expression <span class="math inline">\(x^2\)</span> and <code>\[x^2\]</code> produces the displayed equation <span class="math display">\[x^2\]</span> For more information see the <a href="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">R Markdown Reference Guide</a> and the <a href="https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf">R Markdown Cheat Sheet</a>, both of which are accessible via ’Help -&gt; Cheat Sheets` in RStudio.</p>
+<p>If you have a rather large chunk of code, it may be a good idea to split it into smaller chunks, with more explanation in between. Just put your cursor at the place where you want to split the chunk and hit ‘Ctrl-Alt-I.’</p>
+<p>The advice is to not be too perfectionist. Just put in enough explanations so that you yourself will still be able to remember in a year’s time what you were doing. You can always add more explanations for others later if there are requests. The point is that just by having your code out there, people will be more encouraged to engage with you if they are interested.</p>
+<h1 id="put-your-notebook-on-github">Put your notebook on GitHub</h1>
+<p>I think it is fair to say that <a href="https://github.com/">GitHub</a> has become the most popular place to share research code. So if you do not have an account there yet, sign up for free. Then create a new repository there for sharing your notebook.</p>
+<p>If you have not used Git and GitHub before, it will really pay off in the long run for you to put in some time familiarising yourself with them and setting things up nicely. For a short introduction I recommend the <a href="https://r-pkgs.org/git.html">chapter on Git and GitHub</a> in the “R packages” book. Even though the book is about developing R packages, that chapter is not restricted to that use case. For a longer introduction, I recommend <a href="https://happygitwithr.com/">Happy Git and GitHub for the useR</a>.</p>
+<p>But if now you are in a hurry, you can also cheat and simply upload your R notebook and your data files using the “Add file” button on your new GitHub repository.</p>
+<h1 id="publish-your-r-notebook-on-rpubs">Publish your R notebook on RPubs</h1>
+<p>Now that your notebook is on GitHub, it is accessible to others, but GitHub does not display the typeset version of the notebook. For that you can use <a href="https://rpubs.com/">RPubs</a>, which is a free hosting site for R notebooks.</p>
+<p>RStudio makes publishing on RPubs very easy: When you click on “Preview,” RStudio will open a new window with the preview of your rendered notebook, and on that window at the top right there is a “Publish” button. Click that button and then make sure to choose “RPubs” (rather than RStudio Connect). You’ll be guided through the process.</p>
+<p>Doing that with my example notebook leads to <a href="https://rpubs.com/gustav/plankton-anchovy">this</a>. Note the “Code” button at the top right of the notebook on RPubs. It allows people to conveniently download your code.</p>
+<h1 id="make-it-executable-on-mybinder.org">Make it executable on mybinder.org</h1>
+<p>Now this step I think is amazing. It allows people to play with your code without having to install anything. Take a look at what this looks like for <a href="https://mybinder.org/v2/gh/sizespectrum/plankton-anchovy/HEAD?urlpath=rstudio">my example</a>. Be a bit patient — after a few seconds you will see RStudio open in your browser. Click on “plankton-anchovy.nb.html” in the File pane and select “Open in Editor.” You will now be able to execute the code chunks as well as modify them at will. In fact, you can do anything that you can do in your local RStudio.</p>
+<figure>
+<img src="rstudio.png" alt="Screenshot" /><figcaption aria-hidden="true">Screenshot</figcaption>
+</figure>
+<p>You have to only do three things to make this magic possible:</p>
+<ol type="1">
+<li>Add a file to you repository called “install.R” which contains only an <code>install.packages()</code> command for installing all the packages that your notebook needs. <a href="https://github.com/sizespectrum/plankton-anchovy/blob/master/install.R">See my example</a>. You will want to include at least</li>
+</ol>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/install.packages.html'>install.packages</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"mizer"</span>, <span class='st'>"knitr"</span>, <span class='st'>"rmarkdown"</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>but extend the list with any other packages that you load with <code>library()</code> in your notebook. You can create this file straight on GitHub via the “Add file” button or you can do it locally and then push to GitHub.</p>
+<ol start="2" type="1">
+<li><p>Add a file to your repository called “runtime.txt” with yesterday’s date in the format <code>r-yyyy-mm-dd</code>. <a href="https://github.com/sizespectrum/plankton-anchovy/blob/master/runtime.txt">See this example</a> This will have the effect of setting up the environment with the current version of all packages. That means that if the packages change in the future, this will not break your notebook. The reason I recommend using yesterday’s date rather than today’s is that this feature uses the <a href="https://mran.microsoft.com/timemachine">MRAN</a> snap shots and the snapshot for today may not yet be available.</p></li>
+<li><p>Create the URL for your binder. It will have the form <code>https://mybinder.org/v2/gh/your-github-username/your-repository-name/HEAD?urlpath=rstudio</code> where you need to replace <code>your-github-username/your-repository-name</code> with your GitHub user name and repository name. For my example the URL is (<a href="https://mybinder.org/v2/gh/sizespectrum/plankton-anchovy/HEAD?urlpath=rstudio" class="uri">https://mybinder.org/v2/gh/sizespectrum/plankton-anchovy/HEAD?urlpath=rstudio</a>).</p></li>
+</ol>
+<p>The first time you visit your binder URL, mybinder will take a long time to create a Docker image. When it is done, you will see an RStudio session running in your browser, with the files from your GitHub repository available in the Files pane. When people visit the URL after you they will not have to wait so long because mybinder.org will be able to use the Docker image to start the server more quickly.</p>
+<p>Each time you make a change to your GitHub repository, mybinder will rebuild the Docker image the next time someone visits the URL. To save the first visitor from a long wait, you may want to visit the URL yourself each time you push a change to your GitHub repository.</p>
+<h1 id="let-the-world-know">Let the world know</h1>
+<p>You will probably want to put the URLs to your notebook on RPubs and to your binder into the README.md file of your GitHub repository. You will want to put the link to your GitHub repository into your published paper.</p>
+<p>And then you will want to let your social networks know. If you twitter about it, include <code>@mizer_model</code> in your post. Also, consider writing a summary of your work for this blog.</p>
+<p>Last but not least, please email <a href="mailto:mizer@sizespectrum.org" class="email">mizer@sizespectrum.org</a>. We’ll include your publication in the <a href="https://sizespectrum.org/mizer/dev/articles/publications.html">list of publications using mizer</a>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-canales_regulation_2020" class="csl-entry" role="doc-biblioentry">
+Canales, T. Mariella, Gustav W. Delius, and Richard Law. 2020. <span>“Regulation of Fish Stocks Without Stock–Recruitment Relationships: <span>The</span> Case of Small Pelagic Fish.”</span> <em>Fish and Fisheries</em> 21 (5): 857–71. <a href="https://doi.org/10.1111/faf.12465">https://doi.org/10.1111/faf.12465</a>.
+</div>
+</div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
@@ -2675,15 +1579,22 @@ dependence without spoiling other aspects of your calibrated model.</p>
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->
 <!--radix_placeholder_appendices-->
 <div class="appendix-bottom">
-<h3 id="updates-and-corrections">Corrections</h3>
-<p>If you see mistakes or want to suggest changes, please <a href="https://github.com/sizespectrum/MizerBlog/issues/new">create an issue</a> on the source repository.</p>
-<h3 id="reuse">Reuse</h3>
-<p>Text and figures are licensed under Creative Commons Attribution <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Source code is available at <a href="https://github.com/sizespectrum/MizerBlog/">https://github.com/sizespectrum/MizerBlog/</a>, unless otherwise noted. The figures that have been reused from other sources don't fall under this license and can be recognized by a note in their caption: "Figure from ...".</p>
+<h3 id="references">References</h3>
+<div id="references-listing"></div>
 </div>
 <!--/radix_placeholder_appendices-->
 <!--radix_placeholder_navigation_after_body-->

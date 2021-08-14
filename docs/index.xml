@@ -13,7 +13,17 @@ new features, technical details, plans and ideas. Contributions welcome.
       <link>https://blog.mizer.sizespectrum.org</link>
     </image>
     <generator>Distill</generator>
-    <lastBuildDate>Sun, 08 Aug 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 14 Aug 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Reproducible research with mizer, GitHub, RPubs and binder</title>
+      <dc:creator>Gustav Delius</dc:creator>
+      <link>https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder</link>
+      <description>Share your code in 5 easy steps, so that others can easily reproduce your
+results and build on your work.</description>
+      <guid>https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder</guid>
+      <pubDate>Sat, 14 Aug 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/rstudio.png" medium="image" type="image/png" width="1277" height="859"/>
+    </item>
     <item>
       <title>Change model parameters without using @</title>
       <dc:creator>Gustav Delius</dc:creator>
