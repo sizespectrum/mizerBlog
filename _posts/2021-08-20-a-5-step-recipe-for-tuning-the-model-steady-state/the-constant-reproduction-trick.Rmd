@@ -32,17 +32,16 @@ model. The stages are:
 1. Collect information about the important species in your ecosystem and how
 they are fished. This includes physiological parameters for the species as
 they might be found on fishbase, but also information about how abundant the
-species are and how they are fished. 
+species are and how they are being fished. 
 
 2. Create a mizer model that in its steady state  reproduces the time-averaged
-observed state of our fish community. Of course your real system never is in a
+observed state of your fish community. Of course your real system never is in a
 perfect steady state. It is continuously changing. There is much fluctuation
 from year to year. We will however assume that if we average observations over a
 number of years we obtain something that is close to the steady state. Without
 some such assumption it would be impossible for us to get started.
 
-3. Once we have obtained a model whose steady state agrees with average
-observations, you should tune the model parameters further to also
+3. Tune the model parameters further to also
 reproduce time-series observations that capture some of the system's sensitivity
 to perturbations, like changes in fishing pressure. 
 
