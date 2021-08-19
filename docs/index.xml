@@ -13,7 +13,19 @@ new features, technical details, plans and ideas. Contributions welcome.
       <link>https://blog.mizer.sizespectrum.org</link>
     </image>
     <generator>Distill</generator>
-    <lastBuildDate>Sat, 14 Aug 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 20 Aug 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>A 5-step recipe for tuning the model steady state</title>
+      <dc:creator>Gustav Delius</dc:creator>
+      <link>https://blog.mizer.sizespectrum.org/posts/2021-08-20-a-5-step-recipe-for-tuning-the-model-steady-state</link>
+      <description>Getting a steady state for your mizer model that agrees with observations
+is in principle a hard chicken and egg problem. I present the trick that
+makes it surprisingly easy, with a 5-step recipe. I'll save tips on what
+to do when the recipe fails for later blog posts.</description>
+      <guid>https://blog.mizer.sizespectrum.org/posts/2021-08-20-a-5-step-recipe-for-tuning-the-model-steady-state</guid>
+      <pubDate>Fri, 20 Aug 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://blog.mizer.sizespectrum.org/posts/2021-08-20-a-5-step-recipe-for-tuning-the-model-steady-state/the-constant-reproduction-trick_files/figure-html5/unnamed-chunk-9-1.png" medium="image" type="image/png" width="1248" height="768"/>
+    </item>
     <item>
       <title>Reproducible research with mizer, GitHub, RPubs and binder</title>
       <dc:creator>Gustav Delius</dc:creator>
