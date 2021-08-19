@@ -1,0 +1,195 @@
+---
+title: "Use scaffolding to create a model"
+description: |
+  A short description of the post.
+author:
+  - name: Gustav Delius
+    url: {}
+date: 08-18-2021
+twitter:
+  site: "@mizer_model"
+  creator: "@gustavdelius"
+output:
+  distill::distill_article:
+    self_contained: false
+    toc: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+remotes::install_github("sizespectrum/mizerExperimental")
+library(mizerExperimental)
+```
+
+```{r}
+packageVersion("mizer")
+packageVersion("mizerExperimental")
+```
+
+For biomass, yield and fishing mortality we use an average over the years
+1990 to 2010 in the 
+[North Sea model that is shipped with mizer](https://sizespectrum.org/mizer/dev/articles/a_multispecies_model_of_the_north_sea.html).
+
+```{r}
+species_params <- NS_species_params
+species_params$R_max <- NULL
+species_params$a <- c(0.007, 0.001, 0.009, 0.002, 0.010, 0.006, 0.008, 0.004,
+                         0.007, 0.005, 0.005, 0.007)
+species_params$b <- c(3.014, 3.320, 2.941, 3.429, 2.986, 3.080, 3.019, 3.198,
+                         3.101, 3.160, 3.173, 3.075)
+
+years <- getTimes(NS_sim) >= 1990 & getTimes(NS_sim) <= 2010
+# Average biomass above 10 g
+species_params$biomass_cutoff <- 10
+bm_hist <- getBiomass(NS_sim, min_w = 10)[years, ]
+bm <- colSums(bm_hist) / 21
+species_params$biomass_observed <- bm
+
+# Average yield
+yield_hist <- getYield(NS_sim)[years, ]
+yield <- colSums(yield_hist) / 21
+species_params$yield_observed <- yield
+```
+
+
+```{r}
+# Average fishing mortality
+f_location <- system.file("extdata", "NS_f_history.csv", package = "mizer")
+f_history <- as(read.csv(f_location, row.names = 1), "matrix")[years, ]
+f <- colSums(f_history) / 12
+
+gear_params <- 
+    data.frame(species = NS_species_params$species,
+               gear = NS_species_params$species,
+               sel_func = "sigmoid_length",
+               l25 =  c(7.6, 9.8, 8.7, 10.1, 11.5, 19.8, 16.4, 19.8, 11.5,
+                        19.1, 13.2, 35.3),
+               l50 = c(8.1, 11.8, 12.2, 20.8, 17.0, 29.0, 25.8, 29.0, 17.0,
+                       24.3, 22.9, 43.6),
+               catchability = f)
+
+effort <- rep(1, nrow(species_params))
+names(effort) <- species_params$species
+
+params_background <- newTraitParams(
+    no_sp = 16,         # Number of species
+    min_w_inf = 30,     # Asymptotic size of smallest species
+    max_w_inf = 40000,  # Asymptotic size of largest species
+    min_w = 10^-3,      # Egg size
+    min_w_mat = 0.1,    # Maturity size of smallest species
+    min_w_pp = 10^-12,  # Size of smallest resource
+    w_pp_cutoff = 10,   # Size of largest resource
+    ext_mort_prop = 0.2,# Proportion of mortality that is not due to predation
+    h = 50,                  
+    r_pp = 100,
+    resource_scaling = TRUE) |> 
+    steady() |> 
+    markBackground()
+
+plotSpectra(params_background, power = 2, total = TRUE)
+```
+
+
+```{r}
+gear_params(params_background) <- data.frame()
+```
+
+
+```{r}
+params <- addSpecies(params_background,
+                     species_params = species_params,
+                     gear_params = gear_params,
+                     initial_effort = effort,
+                     interaction = inter) |> 
+    steady()
+plotlySpectra(params, power = 2, total = TRUE)
+```
+
+
+
+```{r}
+plotBiomassVsSpecies(params)
+```
+
+```{r}
+params <- calibrateBiomass(params) 
+plotBiomassVsSpecies(params)
+```
+
+```{r}
+params <- matchBiomasses(params) 
+plotBiomassVsSpecies(params)
+```
+
+```{r warning=FALSE}
+params <- steady(params)
+plotBiomassVsSpecies(params)
+```
+
+```{r warning=FALSE}
+params <- scaleDownBackground(params, factor = 2) |> steady()
+plotSpectra(params, power = 2)
+```
+
+
+
+```{r warning=FALSE}
+plotBiomassVsSpecies(params)
+```
+
+
+```{r warning=FALSE}
+params <- scaleDownBackground(params, factor = 2) |> steady()
+plotSpectra(params, power = 2)
+```
+
+
+```{r warning=FALSE}
+plotBiomassVsSpecies(params)
+```
+
+```{r warning=FALSE}
+params <- scaleDownBackground(params, factor = 2) |> steady()
+plotSpectra(params, power = 2)
+```
+
+```{r}
+params <- adjustBackgroundSpecies(params)
+plotSpectra(params, power = 2)
+```
+```{r}
+params <- steady(params)
+plotSpectra(params, power = 2)
+```
+```{r}
+params <- removeBackgroundSpecies(params) |> steady()
+plotSpectra(params, power = 2)
+```
+```{r}
+params <- scaleAbundance(params, factor = c(Sandeel = 1/10, Plaice = 1/4)) |> steady()
+plotSpectra(params, power = 2)
+```
+```{r}
+params <- calibrateBiomass(params) |> matchBiomasses() |> steady()
+plotBiomassVsSpecies(params)
+```
+```{r}
+plotGrowthCurves(params, species_panel = TRUE)
+```
+```{r}
+plotFeedingLevel(params, include_critical = TRUE)
+```
+
+```{r}
+plotSpectra(params, power = 2)
+```
+
+
+
+
