@@ -20,23 +20,47 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Introduction
 
+Some of the functions to implement the scaffolding approach are still in active
+development in the mizerExperimental package. We will always want to make sure
+we are loading the latest version of the package with
 
 ```{r}
 remotes::install_github("sizespectrum/mizerExperimental")
 library(mizerExperimental)
 ```
 
-```{r}
-packageVersion("mizer")
-packageVersion("mizerExperimental")
-```
+This blog post was compiled with mizer version  `r packageVersion("mizer")`
+and mizerExperimental version `r packageVersion("mizerExperimental")`
 
-For biomass, yield and fishing mortality we use an average over the years
-1990 to 2010 in the 
-[North Sea model that is shipped with mizer](https://sizespectrum.org/mizer/dev/articles/a_multispecies_model_of_the_north_sea.html).
 
-```{r}
+# What we want to do
+
+As a first step, we want to build a model whose equilibrium (steady state)
+solution reproduces the average observed state of our fish community.
+
+Of course our real system never is in a perfect steady state. It is continuously
+changing. There is much fluctuation from year to year. We will however assume
+that if we average observations over a number of years we obtain something that
+is close to the steady state. Without some such assumption it would be
+impossible for us to get started.
+
+Once we have obtained a model whose steady state agrees with average observations, we
+will in a second step tune the model parameters further to also reproduce
+time-series observations that capture some of the system's sensitivity to
+perturbations, like changes in fishing pressure. But this blog post is only
+about the first step.
+
+## Concrete example we will use
+
+So, to make this concrete, we will consider a model for the North Sea involving
+12 species. This is based on the example species parameters `NS_species_params`
+that comes with mizer. Here is the species parameter data frame that we will be
+using:
+
+```{r, code_folding=TRUE, layout="l-body-outset"}
+# Here is how I obtained the example species_params:
 species_params <- NS_species_params
 species_params$R_max <- NULL
 species_params$a <- c(0.007, 0.001, 0.009, 0.002, 0.010, 0.006, 0.008, 0.004,
@@ -45,28 +69,41 @@ species_params$b <- c(3.014, 3.320, 2.941, 3.429, 2.986, 3.080, 3.019, 3.198,
                          3.101, 3.160, 3.173, 3.075)
 
 years <- getTimes(NS_sim) >= 1990 & getTimes(NS_sim) <= 2010
-# Average biomass above 10 g
-species_params$biomass_cutoff <- 10
-bm_hist <- getBiomass(NS_sim, min_w = 10)[years, ]
-bm <- colSums(bm_hist) / 21
-species_params$biomass_observed <- bm
+# Average biomass above w_mat/20
+bm_hist <- getBiomass(NS_sim, min_w = species_params$w_mat / 20)[years, ]
+species_params$biomass_observed <-  colSums(bm_hist) / 21
 
-# Average yield
-yield_hist <- getYield(NS_sim)[years, ]
-yield <- colSums(yield_hist) / 21
-species_params$yield_observed <- yield
+library(knitr)
+kable(species_params, row.names = FALSE)
 ```
 
+For each species we are specifying its name and some parameters
+characteristic of the species: its asymptotic size `w_inf` and maturity size
+`w_mat`, the parameters `beta` and `sigma` for its feeding kernel (we are using
+the default lognormal kernel for all species), the von Bertalanffy growth
+parameter `k_vb` and the parameters `a` and `b` in the allometric length-weight
+relationship $w = a l^b$. 
 
-```{r}
+In addition, we also specify information that is specific to our ecosystem,
+namely the average abundance of each species, in the `biomass_observed` column.
+This is measured in grams. Because for the purpose of this blog post it is not
+important, we did not bother to look up real biomass estimates but instead we
+simply used the average over the years 1990 to 2010 in the simulated data in the
+`NS_sim` object included in the mizer package. You are invited to re-run the
+analysis with proper data.
+
+The observed system is being fished. We need to give mizer information about
+how it is being fished. We do this via the gear_params data frame.
+
+```{r, code_folding=TRUE, layout="l-body-outset"}
 # Average fishing mortality
 f_location <- system.file("extdata", "NS_f_history.csv", package = "mizer")
 f_history <- as(read.csv(f_location, row.names = 1), "matrix")[years, ]
 f <- colSums(f_history) / 12
 
 gear_params <- 
-    data.frame(species = NS_species_params$species,
-               gear = NS_species_params$species,
+    data.frame(gear = "All",
+               species = NS_species_params$species,
                sel_func = "sigmoid_length",
                l25 =  c(7.6, 9.8, 8.7, 10.1, 11.5, 19.8, 16.4, 19.8, 11.5,
                         19.1, 13.2, 35.3),
@@ -74,9 +111,138 @@ gear_params <-
                        24.3, 22.9, 43.6),
                catchability = f)
 
-effort <- rep(1, nrow(species_params))
-names(effort) <- species_params$species
+kable(gear_params, row.names = FALSE)
+```
 
+We are setting up a single gear that we call "All" because it selects all
+species. For each species we set up the selectivity curve of the gear as a
+sigmoid curve with given `l25` and `l50` parameters. Finally we set the
+catchability of each species to the observed average fishing mortality over the
+years 1990 to 2010. We will then set the fishing effort to 1, because in mizer
+the fishing mortality is the product of effort, catchability and selectivity.
+
+Our task now is to create a mizer model that describes species with the above
+characteristics and that has a steady state with the observed biomasses under
+the given fishing pressure.
+
+# Why it is hard
+
+We have a chicken and egg problem. The equilibrium size distributions of the
+fish are determined by their size-dependent growth and death rates. These rates
+in turn are determined by the size distribution of their prey and their
+predators. So we can't determine the size distributions before we have
+determined the rates and we can't determine the rates before we have determined
+the size distributions.
+
+Because every species is a both prey and predator of fish of various species and
+sizes during their life, this is a highly coupled non-linear problem. If for
+example we use 200 size bins and 12 species, plus a resource spectrum, then we
+would have far over 2000 coupled nonlinear equations to solve simultaneously.
+That is not practical.
+
+Rather than solving the equilibrium equations, another way to find a steady
+state is to simply evolve the time dynamics until the system settles down to a
+steady state. The problem with this approach is that the coexistence steady
+state of a size spectrum model, where all the species are present, has a very
+small region of attraction, so unless one starts with an initial state that is
+already very close to that coexistence steady state one will end up with
+extinctions.
+
+The reason is a feedback loop: as the spawning stock
+biomass of a species grows, also its reproduction rate grows, leading to further
+growth of the spawning stock biomass and so on. Similarly as the spawning stock
+of another species declines, so does its reproduction rate, leading to further
+decline. In spite of moderating non-linear effects in the model, the general
+outcome is extinctions.
+
+We can see the phenomenon in our North Sea example. If we simply run the
+dynamics, starting with the intial state set up by `newMultispeciesParams()`,
+first sprat goes extinct and herring follows soon after. Just click the play
+button on the animation below.
+
+```{r}
+params <- newMultispeciesParams(species_params = species_params,
+                                gear_params = gear_params,
+                                interaction = inter,
+                                initial_effort = 1)
+sim <- project(params, t_max = 12)
+animateSpectra(sim)
+```
+
+
+One solution to the problem involves stabilising the steady state by putting a
+large external density dependence on the reproductive rate by imposing a
+sufficiently low maximum reproduction rate `R_max` on each species. The
+challenge in this approach is to find the correct `R_max`. However this approach
+was successfully used in the original paper on the mizer model.
+
+We developed a different solution to this problem in collaboration with Richard
+Southwell during the MINOUW project, funded by the EU Horizon 2020 programme. It
+is this method, which I will call the scaffolding method, that I want to present
+in this blog post.
+
+# The scaffolding method
+
+There are two key ingredients to the method:
+
+1. Keep reproduction steady while running the dynamics to steady state.
+
+2. Put the species into a known background community (the scaffold) and
+slowly remove the scaffold as the model is being tuned.
+
+## 1. Keep reproduction steady
+
+The coexistence steady state of the full size-spectrum dynamics is only very
+weakly stable (if at all) due to the feedback loop between spawning stock
+and reproduction.
+
+So the trick is to cut this loop, by decoupling the reproductive rate from the
+spawning stock biomass while running the dynamics. The size spectrum model with
+constant reproduction turns out to be very stable and quickly approach a steady
+state, due to the smoothing effect of the feeding kernel. Once the steady state
+is found, we can simply adjust the reproductive efficiency of each species so
+that the steady state spawning stock produces the chosen reproduction rate. With
+that choice of the reproductive efficiency the steady state of the restricted
+dynamics is also the steady state of the full size spectrum model.
+
+There is however still a problem: before we can run the dynamics, we have to
+determine an important parameter: the coefficient of the 'search volume' or
+'attack rate', which affects both the growth and death rates. It needs to be
+chosen so that, when experiencing the steady state prey distribution, each
+species grows at a rate that is in agreement with observations. However if we
+don't yet know the steady state, we can not choose the correct value. If we get
+it wrong, then some species might be in trouble, because the individuals of that
+species might either stop growing before reaching maturity if we have chosen
+their search volume to small, or might be all eaten before reaching maturity if
+we have chosen the search volume of their predators too high. In that case
+there is no way we can achieve the required reproduction rate in steady state
+because there is no spawning stock at all. 
+
+```{r}
+params <- newMultispeciesParams(species_params = species_params,
+                                gear_params = gear_params,
+                                initial_effort = 1)
+# Keep reproduction constant at the initial level
+params@species_params$constant_reproduction <- getRDD(params)
+params <- setReproduction(params, RDD = "constantRDD")
+# Run the dynamics with this constant reproduction
+sim <- projectToSteady(params, return_sim = TRUE)
+animateSpectra(sim)
+```
+
+
+We solve this problem with 
+scaffolding.
+
+## 2. Use a scaffold
+
+
+
+# Putting up the scaffolding
+
+
+
+```{r}
 params_background <- newTraitParams(
     no_sp = 16,         # Number of species
     min_w_inf = 30,     # Asymptotic size of smallest species
@@ -98,16 +264,14 @@ plotSpectra(params_background, power = 2, total = TRUE)
 
 ```{r}
 gear_params(params_background) <- data.frame()
-```
 
-
-```{r}
 params <- addSpecies(params_background,
                      species_params = species_params,
                      gear_params = gear_params,
-                     initial_effort = effort,
+                     initial_effort = c(sigmoid_gear = 1),
                      interaction = inter) |> 
     steady()
+
 plotlySpectra(params, power = 2, total = TRUE)
 ```
 
@@ -121,6 +285,10 @@ plotBiomassVsSpecies(params)
 params <- calibrateBiomass(params) 
 plotBiomassVsSpecies(params)
 ```
+
+
+
+# Building the model
 
 ```{r}
 params <- matchBiomasses(params) 
@@ -191,5 +359,8 @@ plotSpectra(params, power = 2)
 ```
 
 
+# Doing it with shiny
 
 
+
+# What's next?
