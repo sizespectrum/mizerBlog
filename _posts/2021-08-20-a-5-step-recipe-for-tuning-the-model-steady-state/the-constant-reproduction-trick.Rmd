@@ -172,7 +172,7 @@ declines, so does its reproduction rate, leading to further decline. In spite of
 moderating non-linear effects in the model, the general outcome is extinctions.
 
 We can see the phenomenon in our North Sea example. If we simply run the
-dynamics, starting with the intial state set up by `newMultispeciesParams()`,
+dynamics, starting with the initial state set up by `newMultispeciesParams()`,
 first Sprat goes extinct, and Herring follows soon after. Just click the play
 button on the animation below.
 
@@ -354,7 +354,7 @@ with `newMultispeciesParams()`.
 4. Use `matchBiomass()` to move the size spectra of the species up or down
 to match the observed biomasses. This will spoil the steady state.
 
-5. Go back to step to to again find the steady state. Iterate steps 2, 3 and 4
+5. Go back to step 2 to again find the steady state. Iterate steps 2, 3 and 4
 as often as you like to get the steady-state biomasses to agree as precisely
 with your observations as you like.
 
