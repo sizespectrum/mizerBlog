@@ -179,7 +179,6 @@ button on the animation below.
 ```{r}
 params <- newMultispeciesParams(species_params = species_params,
                                 gear_params = gear_params,
-                                interaction = inter,
                                 initial_effort = 1)
 sim <- project(params, t_max = 12)
 animateSpectra(sim, power = 2)
@@ -310,7 +309,7 @@ plotBiomassVsSpecies(params)
 So here is the picture of the steady state that matches the observed biomasses:
 
 ```{r}
-plotSpectra(params, power = 2)
+plotlySpectra(params, power = 2)
 ```
 
 Actually, even the growth rates in the steady state match the von Bertalanffy
