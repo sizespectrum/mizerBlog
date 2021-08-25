@@ -68,7 +68,7 @@ Therefore we will always want to make sure we are loading the latest version of
 the package with
 
 ```{r}
-remotes::install_github("sizespectrum/mizerExperimental")
+remotes::install_github("SamikDatta/mizerExperimental", ref = )
 library(mizerExperimental)
 ```
 
@@ -238,7 +238,7 @@ plotBiomass(sim)
 But how do these biomasses compare to our observed biomasses?
 
 ```{r}
-plotBiomassVsSpecies(params)
+plotBiomassObservedVsModel(params)
 ```
 They don't agree at all, but that is no surprise. It would actually have been 
 quite a coincidence if they did agree, because the `newMultispeciesParams()`
@@ -251,7 +251,7 @@ with the total observed biomass.
 
 ```{r, preview=TRUE}
 params <- calibrateBiomass(params) 
-plotBiomassVsSpecies(params)
+plotBiomassObservedVsModel(params)
 ```
 So now the total biomass is correct, but for some species the biomass in the
 model is too high, for others it is too low. 
@@ -275,7 +275,7 @@ In fact, it has raised and lowered the spectra by exactly the factor needed
 to get the model biomasses to match the observed biomasses.
 
 ```{r}
-plotBiomassVsSpecies(params)
+plotBiomassObservedVsModel(params)
 ```
 
 Of course this is not the end of the story, because just rescaling the size
@@ -286,7 +286,7 @@ steady state.
 
 ```{r}
 params <- steady(params)
-plotBiomassVsSpecies(params)
+plotBiomassObservedVsModel(params)
 ```
 
 This has now spoiled the agreement between observed and model biomasses. But
@@ -294,7 +294,7 @@ we can simply calibrate and match again and run to steady state again.
 
 ```{r}
 params <- params |> calibrateBiomass() |> matchBiomasses() |> steady()
-plotBiomassVsSpecies(params)
+plotBiomassObservedVsModel(params)
 ```
 
 The discrepancies are now quite small. We could iterate to get them even
@@ -303,7 +303,7 @@ smaller:
 ```{r}
 params <- params |> calibrateBiomass() |> matchBiomasses() |> steady() |>
     calibrateBiomass() |> matchBiomasses() |> steady()
-plotBiomassVsSpecies(params)
+plotBiomassObservedVsModel(params)
 ```
 
 So here is the picture of the steady state that matches the observed biomasses:
