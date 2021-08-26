@@ -68,7 +68,7 @@ Therefore we will always want to make sure we are loading the latest version of
 the package with
 
 ```{r}
-remotes::install_github("SamikDatta/mizerExperimental", ref = )
+remotes::install_github("mizerExperimental")
 library(mizerExperimental)
 ```
 
@@ -88,8 +88,10 @@ species_params$b <- c(3.014, 3.320, 2.941, 3.429, 2.986, 3.080, 3.019, 3.198,
 
 years <- getTimes(NS_sim) >= 1990 & getTimes(NS_sim) <= 2010
 # Average biomass above w_mat/20
-bm_hist <- getBiomass(NS_sim, min_w = species_params$w_mat / 20)[years, ]
+cutoff <- species_params$w_mat / 20
+bm_hist <- getBiomass(NS_sim, min_w = cutoff)[years, ]
 species_params$biomass_observed <-  colSums(bm_hist) / 21
+species_params$biomass_cutoff <- cutoff
 
 library(knitr)
 kable(species_params, row.names = FALSE)
