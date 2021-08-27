@@ -68,7 +68,8 @@ Therefore we will always want to make sure we are loading the latest version of
 the package with
 
 ```{r message=FALSE}
-remotes::install_github("SamikDatta/mizerExperimental", ref = )
+
+remotes::install_github("mizerExperimental")
 library(mizerExperimental)
 ```
 
