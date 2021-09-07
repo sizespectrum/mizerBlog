@@ -13,7 +13,19 @@ new features, technical details, plans and ideas. Contributions welcome.
       <link>https://blog.mizer.sizespectrum.org</link>
     </image>
     <generator>Distill</generator>
-    <lastBuildDate>Fri, 20 Aug 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 07 Sep 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Tuning growth curves with a shiny gadget</title>
+      <dc:creator>Gustav Delius</dc:creator>
+      <link>https://blog.mizer.sizespectrum.org/posts/2021-09-07-tuning-growth-curves-with-a-shiny-gadget</link>
+      <description>I present to you a new shiny gadget that makes tuning a model to 
+reproduce the desired growth curves feel like child's play. And
+this is only a first glimpse of the future of interactively tuning 
+mizer models.</description>
+      <guid>https://blog.mizer.sizespectrum.org/posts/2021-09-07-tuning-growth-curves-with-a-shiny-gadget</guid>
+      <pubDate>Tue, 07 Sep 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://blog.mizer.sizespectrum.org/posts/2021-09-07-tuning-growth-curves-with-a-shiny-gadget/screenshot1.png" medium="image" type="image/png" width="1337" height="910"/>
+    </item>
     <item>
       <title>A 5-step recipe for tuning the model steady state</title>
       <dc:creator>Gustav Delius</dc:creator>
