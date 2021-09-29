@@ -11,9 +11,6 @@ twitter:
   site: "@mizer_model"
 collections:
   posts:
-    disqus: 
-      shortname: mizer
-      hidden: false
     share: [twitter]
 output_dir: "docs"
 exclude: "README.md"
