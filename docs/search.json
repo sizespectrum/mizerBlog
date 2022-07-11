@@ -5,15 +5,15 @@
       "title": "About this blog",
       "description": "Some additional details about the blog",
       "author": [],
-      "contents": "\n\n\n\n",
-      "last_modified": "2021-09-07T17:52:12+02:00"
+      "contents": "\r\n\r\n\r\n\r\n",
+      "last_modified": "2022-07-11T15:25:34+01:00"
     },
     {
       "path": "index.html",
       "title": "mizer blog",
       "author": [],
-      "contents": "\n\n\n\n",
-      "last_modified": "2021-09-07T17:52:13+02:00"
+      "contents": "\r\n\r\n\r\n\r\n",
+      "last_modified": "2022-07-11T15:25:36+01:00"
     }
   ],
   "collections": ["posts/posts.json"]

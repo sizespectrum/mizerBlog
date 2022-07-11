@@ -50,16 +50,17 @@ pre.numberSource code > span > a:first-child::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {   }
+  { color: #00769e; background-color: #f1f3f5; }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
+code span { color: #00769e; } /* Normal */
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { color: #20794d; } /* Attribute */
+code span.at { color: #657422; } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
-code span.cf { color: #007ba5; } /* ControlFlow */
+code span.cf { color: #00769e; } /* ControlFlow */
 code span.ch { color: #20794d; } /* Char */
 code span.cn { color: #8f5902; } /* Constant */
 code span.co { color: #5e5e5e; } /* Comment */
@@ -73,11 +74,11 @@ code span.fl { color: #ad0000; } /* Float */
 code span.fu { color: #4758ab; } /* Function */
 code span.im { } /* Import */
 code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #007ba5; } /* Keyword */
+code span.kw { color: #00769e; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #007ba5; } /* Other */
+code span.ot { color: #00769e; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #20794d; } /* SpecialChar */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
 code span.st { color: #20794d; } /* String */
 code span.va { color: #111111; } /* Variable */
@@ -85,61 +86,60 @@ code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
+
   <!--radix_placeholder_meta_tags-->
-<title>mizer blog: Reproducible research with mizer, GitHub, RPubs and binder</title>
+<title>mizer blog: Temperature-dependent rates in mizer</title>
 
-<meta property="description" itemprop="description" content="Share your code in 5 easy steps, so that others can easily reproduce your&#10;results and build on your work."/>
+<meta property="description" itemprop="description" content="Temperature is an important driver of ecosystem change.  Now you can include it in mizer."/>
 
-<link rel="canonical" href="https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/"/>
+<link rel="canonical" href="https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer/"/>
 <link rel="license" href="https://creativecommons.org/licenses/by/4.0/"/>
 <link rel="icon" type="image/png" href="../../images/favicon-16x16.png"/>
 
 <!--  https://schema.org/Article -->
-<meta property="article:published" itemprop="datePublished" content="2021-08-14"/>
-<meta property="article:created" itemprop="dateCreated" content="2021-08-14"/>
-<meta name="article:author" content="Gustav Delius"/>
+<meta property="article:published" itemprop="datePublished" content="2022-07-11"/>
+<meta property="article:created" itemprop="dateCreated" content="2022-07-11"/>
+<meta name="article:author" content="Phoebe Woodworth-Jefcoats"/>
 
 <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-<meta property="og:title" content="mizer blog: Reproducible research with mizer, GitHub, RPubs and binder"/>
+<meta property="og:title" content="mizer blog: Temperature-dependent rates in mizer"/>
 <meta property="og:type" content="article"/>
-<meta property="og:description" content="Share your code in 5 easy steps, so that others can easily reproduce your&#10;results and build on your work."/>
-<meta property="og:url" content="https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/"/>
-<meta property="og:image" content="https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/rstudio.png"/>
-<meta property="og:image:width" content="1277"/>
-<meta property="og:image:height" content="859"/>
+<meta property="og:description" content="Temperature is an important driver of ecosystem change.  Now you can include it in mizer."/>
+<meta property="og:url" content="https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer/"/>
+<meta property="og:image" content="https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer/thermizer_files/figure-html5/unnamed-chunk-8-1.png"/>
+<meta property="og:image:width" content="1248"/>
+<meta property="og:image:height" content="768"/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:site_name" content="mizer blog"/>
 
 <!--  https://dev.twitter.com/cards/types/summary -->
 <meta property="twitter:card" content="summary_large_image"/>
-<meta property="twitter:title" content="mizer blog: Reproducible research with mizer, GitHub, RPubs and binder"/>
-<meta property="twitter:description" content="Share your code in 5 easy steps, so that others can easily reproduce your&#10;results and build on your work."/>
-<meta property="twitter:url" content="https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/"/>
-<meta property="twitter:image" content="https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/rstudio.png"/>
-<meta property="twitter:image:width" content="1277"/>
-<meta property="twitter:image:height" content="859"/>
+<meta property="twitter:title" content="mizer blog: Temperature-dependent rates in mizer"/>
+<meta property="twitter:description" content="Temperature is an important driver of ecosystem change.  Now you can include it in mizer."/>
+<meta property="twitter:url" content="https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer/"/>
+<meta property="twitter:image" content="https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer/thermizer_files/figure-html5/unnamed-chunk-8-1.png"/>
+<meta property="twitter:image:width" content="1248"/>
+<meta property="twitter:image:height" content="768"/>
 <meta property="twitter:site" content="@mizer_model"/>
-<meta property="twitter:creator" content="@gustavdelius"/>
 
 <!--  https://scholar.google.com/intl/en/scholar/inclusion.html#indexing -->
-<meta name="citation_title" content="mizer blog: Reproducible research with mizer, GitHub, RPubs and binder"/>
-<meta name="citation_fulltext_html_url" content="https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/"/>
+<meta name="citation_title" content="mizer blog: Temperature-dependent rates in mizer"/>
+<meta name="citation_fulltext_html_url" content="https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer/"/>
 <meta name="citation_fulltext_world_readable" content=""/>
-<meta name="citation_online_date" content="2021/08/14"/>
-<meta name="citation_publication_date" content="2021/08/14"/>
-<meta name="citation_author" content="Gustav Delius"/>
+<meta name="citation_online_date" content="2022/07/11"/>
+<meta name="citation_publication_date" content="2022/07/11"/>
+<meta name="citation_author" content="Phoebe Woodworth-Jefcoats"/>
+<meta name="citation_author_institution" content="NOAA"/>
 <!--/radix_placeholder_meta_tags-->
-  
-  <meta name="citation_reference" content="citation_title=Regulation of fish stocks without stock–recruitment relationships: The case of small pelagic fish;citation_publication_date=2020;citation_volume=21;citation_doi=10.1111/faf.12465;citation_issn=1467-2979;citation_author=T. Mariella Canales;citation_author=Gustav W. Delius;citation_author=Richard Law"/>
   <!--radix_placeholder_rmarkdown_metadata-->
 
 <script type="text/json" id="radix-rmarkdown-metadata">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["creative_commons","title","description","author","date","twitter","preview","bibliography","output","citation_url","canonical_url"]}},"value":[{"type":"character","attributes":{},"value":["CC BY"]},{"type":"character","attributes":{},"value":["Reproducible research with mizer, GitHub, RPubs and binder"]},{"type":"character","attributes":{},"value":["Share your code in 5 easy steps, so that others can easily reproduce your\nresults and build on your work."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Gustav Delius"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":[]}},"value":[]}]}]},{"type":"character","attributes":{},"value":["08-14-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["site","creator"]}},"value":[{"type":"character","attributes":{},"value":["@mizer_model"]},{"type":"character","attributes":{},"value":["@gustavdelius"]}]},{"type":"character","attributes":{},"value":["rstudio.png"]},{"type":"character","attributes":{},"value":["biblio.bib"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","toc"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]}]}]},{"type":"character","attributes":{},"value":["https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/"]},{"type":"character","attributes":{},"value":["https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/"]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["creative_commons","title","description","author","date","output","citation_url","canonical_url"]}},"value":[{"type":"character","attributes":{},"value":["CC BY"]},{"type":"character","attributes":{},"value":["Temperature-dependent rates in mizer"]},{"type":"character","attributes":{},"value":["Temperature is an important driver of ecosystem change.  Now you can include it in mizer."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url","affiliation"]}},"value":[{"type":"character","attributes":{},"value":["Phoebe Woodworth-Jefcoats"]},{"type":"character","attributes":{},"value":["https://www.fisheries.noaa.gov/contact/phoebe-woodworth-jefcoats"]},{"type":"character","attributes":{},"value":["NOAA"]}]}]},{"type":"character","attributes":{},"value":["2022-07-11"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","toc"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]}]}]},{"type":"character","attributes":{},"value":["https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer/"]},{"type":"character","attributes":{},"value":["https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer/"]}]}
 </script>
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["biblio.bib","reproducible-research-with-mizer-and-binder_files/anchor-4.2.2/anchor.min.js","reproducible-research-with-mizer-and-binder_files/bowser-1.9.3/bowser.min.js","reproducible-research-with-mizer-and-binder_files/distill-2.2.21/template.v2.js","reproducible-research-with-mizer-and-binder_files/header-attrs-2.10/header-attrs.js","reproducible-research-with-mizer-and-binder_files/jquery-1.11.3/jquery.min.js","reproducible-research-with-mizer-and-binder_files/popper-2.6.0/popper.min.js","reproducible-research-with-mizer-and-binder_files/tippy-6.2.7/tippy-bundle.umd.min.js","reproducible-research-with-mizer-and-binder_files/tippy-6.2.7/tippy-light-border.css","reproducible-research-with-mizer-and-binder_files/tippy-6.2.7/tippy.css","reproducible-research-with-mizer-and-binder_files/tippy-6.2.7/tippy.umd.min.js","reproducible-research-with-mizer-and-binder_files/webcomponents-2.0.0/webcomponents.js","rstudio.png"]}
+  {"type":"character","attributes":{},"value":["thermizer_files/figure-html5/unnamed-chunk-8-1.png"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2455,8 +2455,8 @@ d-appendix d-footnote-list a.footnote-backlink {
   color: var(--hover-color, white);
 }</style>
 <!--/radix_placeholder_distill-->
-  <script src="../../site_libs/header-attrs-2.10/header-attrs.js"></script>
-  <script src="../../site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <script src="../../site_libs/header-attrs-2.14/header-attrs.js"></script>
+  <script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <script src="../../site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="../../site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="../../site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2476,7 +2476,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Reproducible research with mizer, GitHub, RPubs and binder","description":"Share your code in 5 easy steps, so that others can easily reproduce your\nresults and build on your work.","authors":[{"author":"Gustav Delius","authorURL":{},"affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-08-14T00:00:00.000+01:00","citationText":"Delius, 2021"}
+{"title":"Temperature-dependent rates in mizer","description":"Temperature is an important driver of ecosystem change.  Now you can include it in mizer.","authors":[{"author":"Phoebe Woodworth-Jefcoats","authorURL":"https://www.fisheries.noaa.gov/contact/phoebe-woodworth-jefcoats","affiliation":"NOAA","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-07-11T00:00:00.000+01:00","citationText":"Woodworth-Jefcoats, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2507,16 +2507,19 @@ d-appendix d-footnote-list a.footnote-backlink {
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>Reproducible research with mizer, GitHub, RPubs and binder</h1>
+<h1>Temperature-dependent rates in mizer</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>Share your code in 5 easy steps, so that others can easily reproduce your results and build on your work.</p></p>
+<p><p>Temperature is an important driver of ecosystem change. Now you
+can include it in mizer.</p></p>
 </div>
 
 <div class="d-byline">
-  Gustav Delius true 
+  Phoebe Woodworth-Jefcoats <a
+href="https://www.fisheries.noaa.gov/contact/phoebe-woodworth-jefcoats"
+class="uri">https://www.fisheries.noaa.gov/contact/phoebe-woodworth-jefcoats</a> (NOAA)
   
-<br/>08-14-2021
+<br/>2022-07-11
 </div>
 
 <div class="d-article">
@@ -2524,103 +2527,357 @@ d-appendix d-footnote-list a.footnote-backlink {
 <nav class="l-text toc figcaption" id="TOC">
 <h3>Contents</h3>
 <ul>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#put-your-code-into-an-r-notebook">Put your code into an R notebook</a></li>
-<li><a href="#put-your-notebook-on-github">Put your notebook on GitHub</a></li>
-<li><a href="#publish-your-r-notebook-on-rpubs">Publish your R notebook on RPubs</a></li>
-<li><a href="#make-it-executable-on-mybinder.org">Make it executable on mybinder.org</a></li>
-<li><a href="#let-the-world-know">Let the world know</a></li>
+<li><a href="#introduction">Introduction</a>
+<ul>
+<li><a href="#aerobic-scope">Aerobic scope</a></li>
+<li><a href="#metabolic-rate">Metabolic rate</a></li>
+</ul></li>
+<li><a href="#model-input">Model input</a></li>
+<li><a href="#a-simple-simulation">A simple simulation</a></li>
+<li><a href="#adapting-this-for-a-data-based-simulation">Adapting this
+for a data-based simulation</a></li>
+<li><a href="#in-the-works">In the works</a></li>
+<li><a href="#acknowledgements">Acknowledgements</a></li>
+<li><a href="#references">References</a></li>
 </ul>
 </nav>
 </div>
-<h1 id="introduction">Introduction</h1>
-<p>There is much benefit in sharing the code that allows others to reproduce your research. Not only does it allow others to validate your results, it also allow them to build on what you have already done. This has benefits for them, but also for you because it increases engagement with your research and advances the entire field.</p>
-<p>The fact that you are using mizer rather than coding everything from scratch of course makes your research code much shorter and therefore much easier for others to understand and extend.</p>
-<p>In this blog post I will share my amazement at how easy it has become to share your code. There are five easy steps:</p>
-<ol type="1">
-<li><p>Put your code into an R notebook and add a bit of explanation.</p></li>
-<li><p>Make your R notebook together with any data files publicly available in a <a href="https://github.com">GitHub</a> repository.</p></li>
-<li><p>Publish your R notebook on <a href="https://rpubs.com/">RPubs</a> so people can quickly view it, nicely rendered.</p></li>
-<li><p>Launch it on <a href="https://mybinder.org/">mybinder.org</a> so that people can run your code in their browser without having to install anything.</p></li>
-<li><p>Let the world know.</p></li>
-</ol>
-<p>Steps 2, 3, 4 and 5 will only take a couple of minutes each, if one knows how to, so after reading this blog post there will be no excuse not to take those steps. Obviously step 1 can take as long as you like, depending on how nicely you like your code to be documented.</p>
-<p>I’ll talk about each step now. As an example I’ll use code for reproducing the results and figures of <span class="citation" data-cites="canales_regulation_2020">(<a href="#ref-canales_regulation_2020" role="doc-biblioref">Canales, Delius, and Law 2020</a>)</span></p>
-<h1 id="put-your-code-into-an-r-notebook">Put your code into an R notebook</h1>
-<p>You probably have a jumble of R script files with the code for setting up your model and running your analysis. Now that you are done, it makes sense to organise this code a bit. A nice way of doing that is to open a new R notebook (the second entry on the “New File” menu in RStudio) and pasting your code into R chunks (you create R chunks with Ctrl-Alt-I). Then in between the R chunks you can put explanations of what the code is for. The result will look something like <a href="https://github.com/sizespectrum/plankton-anchovy/blob/master/plankton-anchovy.Rmd">my example</a></p>
-<p>In the example I modified the header to include a table of contents and to limit the height of the figures:</p>
-<pre><code>---
-title: &quot;Regulation of fish stocks without ...&quot;
-output: 
-  html_notebook:
-    toc: true
-fig_height: 4
----</code></pre>
-<p>You will want to load all the libraries you need in a setup chunk like</p>
+<h2 id="introduction">Introduction</h2>
+<p>therMizer models the effects of temperature on individuals’ aerobic
+scope and metabolic rate using an approach that requires minimal
+parameterization. This allows you to easily incorporate dynamic
+temperature-dependent rates into mizer, enabling simulations to include
+an important climate-related driver.</p>
+<h3 id="aerobic-scope">Aerobic scope</h3>
+<p>The relationship between aerobic scope and temperature is a somewhat
+left-skewed distribution with a thermal optimum and upper and lower
+thermal tolerance limits. <a
+href="https://doi.org/10.1111/j.1095-8649.2010.02783.x">Pörtner and Peck
+(2010)</a> provide an overview of this relationship and <a
+href="https://doi.org/10.3354/meps10123">Pörtner (2012)</a> discusses
+open questions related to temperature and physiology. The exact nature
+of the relationship between aerobic scope and temperature varies by
+species and requires a fair bit of physiological research to establish.
+Therefore, it is generally necessary to approximate this relationship,
+which is what therMizer does. A generic polynomial rate equation is used
+to approximate the effect of temperature on aerobic scope, <em>s</em>:
+<span class="math display">\[
+\begin{align}
+s = T(T_{max} - T)(T - T_{min}) &amp;&amp; \text{(1)}
+\end{align}
+\]</span> where <em>T</em> is the temperature to which a fish is exposed
+and <span class="math inline">\(T_{max}\)</span> and <span
+class="math inline">\(T_{min}\)</span> are the species’ upper and lower
+thermal tolerance limits, respectively (<a
+href="https://doi.org/10.1016/j.aquabot.2005.09.004">van der Heide et
+al. 2010</a>). All temperatures in eq. (1) are in degrees Celsius. The
+result of this expression varies considerably given a species’ thermal
+tolerance limits. Therefore, it is necessary to scale this value across
+all modeled species so that it equals a value ranging from 0 – 1. This
+is done by dividing by the maximum value over each species’ thermal
+range (<a
+href="https://www.frontiersin.org/articles/10.3389/fmars.2019.00383/full">Woodworth-Jefcoats
+et al. 2019</a>). therMizer will take care of this scaling for you.</p>
+<p>The scaled value is then used as a multiplier for encounter rate and
+predation rate in mizer. The scaling is applied to encounter rate as
+proxy for foraging movement. The resulting temperature effect is such
+that when species are at their thermal optima they realize peak aerobic
+performance and encounter the maximum amount of prey possible. This
+ability diminishes to either side of the optimum and reaches zero
+outside species’ thermal tolerance limits. The scaling is applied to
+predation rate to ensure encountered prey are predated upon.</p>
+<h3 id="metabolic-rate">Metabolic rate</h3>
+<p>The relationship between metabolic rate and temperature is
+exponential and positive (see, for example, <a
+href="https://doi.org/10.1890/03-9000">Brown et al. 2004</a>). To
+simulate this, therMizer uses a Boltzmann factor or Arrhenius relation:
+<span class="math display">\[
+\begin{align}
+r = e^{25.22-\frac{E}{kT}} &amp;&amp; \text{(2)}
+\end{align}
+\]</span> where <em>r</em> is the effect of temperature on metabolic
+rate, <em>E</em> is activation energy (0.63 eV), <em>k</em> is
+Boltzmann’s constant (<span class="math inline">\(8.62 \times
+10^{-5}\)</span> eV K<span class="math inline">\(^{-1}\)</span>), and
+<em>T</em> is temperature in Kelvin (<a
+href="https://doi.org/10.1890/03-9000">Brown et al. 2004</a>, <a
+href="https://doi.org/10.1098/rspb.2008.0192">Jennings et al. 2008</a>).
+The result of this expression varies depending upon the temperature to
+which species are exposed, which is in turn a factor of species’ thermal
+tolerance limits. Therefore, it is necessary to scale this value across
+all species so that it equals a value ranging from 0 – 1. This is done
+by subtracting the minimum value over each species’ thermal range and
+then dividing the result by the range (<a
+href="https://www.frontiersin.org/articles/10.3389/fmars.2019.00383/full">Woodworth-Jefcoats
+et al. 2019</a>). therMizer will take care of this scaling (and
+converting from degrees C to Kelvin) for you when you.</p>
+<p>The scaled value is then used as a multiplier for standard metabolism
+in therMizer. This has the effect of metabolism being the least
+expensive when species are at the low end of their thermal tolerance and
+the most expensive at the upper limits of their thermal tolerance.</p>
+<p>Finally, therMizer sets the rate scalings to 0 outside species’
+thermal range, simulating the assumption that species would move out of
+waters that are either too warm or too cool.</p>
+<h2 id="model-input">Model input</h2>
+<p>The only additional input you’ll need to provide, beyond what’s
+needed to run mizer, are three temperature values for each species.
+<code>temp_min</code> and <code>temp_max</code> represent the lower and
+upper bounds of a species’ thermal tolerance limits. You can find this
+information in the literature or in databases such as <a
+href="https://github.com/ropensci/rfishbase">rfishbase</a> (<a
+href="https://doi.org/10.1111/j.1095-8649.2012.03464.x">Boettiger et
+al. 2012</a>). You also need to provide <code>ocean_temp</code>, the
+temperature to which species are exposed. This can be static or dynamic,
+and informed from either empirical or modeled data.</p>
+<p>That’s it. That’s all you need.</p>
+<h2 id="a-simple-simulation">A simple simulation</h2>
+<p>Let’s do a simple simulation with two fictional fish species. We’ll
+need to invent some parameters for them:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>knitr</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/knitr/man/opts_chunk.html'>opts_chunk</a></span><span class='op'>$</span><span class='fu'>set</span><span class='op'>(</span>echo <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://sizespectrum.org/mizer/'>mizer</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://magrittr.tidyverse.org'>magrittr</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://plotly-r.com'>plotly</a></span><span class='op'>)</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://sizespectrum.org/mizer/'>mizer</a></span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>species_params</span> <span class='op'>&lt;-</span> </span>
+<span>    <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>species <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"speciesA"</span>, <span class='st'>"speciesB"</span><span class='op'>)</span>, </span>
+<span>               w_inf <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>500</span>, <span class='fl'>5000</span><span class='op'>)</span>, </span>
+<span>               k_vb <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.8</span>, <span class='fl'>0.3</span><span class='op'>)</span>, </span>
+<span>               w_min <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.001</span>, <span class='fl'>0.001</span><span class='op'>)</span>, </span>
+<span>               beta <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1000</span>,<span class='fl'>100</span><span class='op'>)</span>, </span>
+<span>               sigma <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='va'>species_params</span><span class='op'>$</span><span class='va'>interaction_resource</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>0.5</span><span class='op'>)</span></span>
+<span><span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/newMultispeciesParams.html'>newMultispeciesParams</a></span><span class='op'>(</span><span class='va'>species_params</span>, no_w <span class='op'>=</span> <span class='fl'>200</span>, kappa <span class='op'>=</span> <span class='fl'>0.0001</span><span class='op'>)</span> <span class='op'>|&gt;</span> </span>
+<span>    <span class='fu'><a href='https://sizespectrum.org/mizer/reference/steady.html'>steady</a></span><span class='op'>(</span>tol <span class='op'>=</span> <span class='fl'>0.001</span><span class='op'>)</span></span></code></pre>
 </div>
 </div>
-<p>The first line ensures that your code in the R chunks will be included when the notebook is typeset.</p>
-<p>The explanatory text between the R chunks is using Markdown syntax. So for example you create section headers with <code>#</code>, headers of subsections with <code>##</code> and so on. You can include LaTeX equations with the usual syntax. So <code>\(x^2\)</code> produces the inline expression <span class="math inline">\(x^2\)</span> and <code>\[x^2\]</code> produces the displayed equation <span class="math display">\[x^2\]</span> For more information see the <a href="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">R Markdown Reference Guide</a> and the <a href="https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf">R Markdown Cheat Sheet</a>, both of which are accessible via ’Help -&gt; Cheat Sheets` in RStudio.</p>
-<p>If you have a rather large chunk of code, it may be a good idea to split it into smaller chunks, with more explanation in between. Just put your cursor at the place where you want to split the chunk and hit ‘Ctrl-Alt-I.’</p>
-<p>The advice is to not be too perfectionist. Just put in enough explanations so that you yourself will still be able to remember in a year’s time what you were doing. You can always add more explanations for others later if there are requests. The point is that just by having your code out there, people will be more encouraged to engage with you if they are interested.</p>
-<h1 id="put-your-notebook-on-github">Put your notebook on GitHub</h1>
-<p>I think it is fair to say that <a href="https://github.com/">GitHub</a> has become the most popular place to share research code. So if you do not have an account there yet, sign up for free. Then create a new repository there for sharing your notebook.</p>
-<p>If you have not used Git and GitHub before, it will really pay off in the long run for you to put in some time familiarising yourself with them and setting things up nicely. For a short introduction I recommend the <a href="https://r-pkgs.org/git.html">chapter on Git and GitHub</a> in the “R packages” book. Even though the book is about developing R packages, that chapter is not restricted to that use case. For a longer introduction, I recommend <a href="https://happygitwithr.com/">Happy Git and GitHub for the useR</a>.</p>
-<p>But if now you are in a hurry, you can also cheat and simply upload your R notebook and your data files using the “Add file” button on your new GitHub repository.</p>
-<h1 id="publish-your-r-notebook-on-rpubs">Publish your R notebook on RPubs</h1>
-<p>Now that your notebook is on GitHub, it is accessible to others, but GitHub does not display the typeset version of the notebook. For that you can use <a href="https://rpubs.com/">RPubs</a>, which is a free hosting site for R notebooks.</p>
-<p>RStudio makes publishing on RPubs very easy: When you click on “Preview,” RStudio will open a new window with the preview of your rendered notebook, and on that window at the top right there is a “Publish” button. Click that button and then make sure to choose “RPubs” (rather than RStudio Connect). You’ll be guided through the process.</p>
-<p>Doing that with my example notebook leads to <a href="https://rpubs.com/gustav/plankton-anchovy">this</a>. Note the “Code” button at the top right of the notebook on RPubs. It allows people to conveniently download your code.</p>
-<h1 id="make-it-executable-on-mybinder.org">Make it executable on mybinder.org</h1>
-<p>Now this step I think is amazing. It allows people to play with your code without having to install anything. Take a look at what this looks like for <a href="https://mybinder.org/v2/gh/sizespectrum/plankton-anchovy/HEAD?urlpath=rstudio">my example</a>. Be a bit patient — after a few seconds you will see RStudio open in your browser. Click on “plankton-anchovy.nb.html” in the File pane and select “Open in Editor.” You will now be able to execute the code chunks as well as modify them at will. In fact, you can do anything that you can do in your local RStudio.</p>
-<figure>
-<img src="rstudio.png" alt="Screenshot" /><figcaption aria-hidden="true">Screenshot</figcaption>
-</figure>
-<p>You have to only do three things to make this magic possible:</p>
-<ol type="1">
-<li>Add a file to you repository called “install.R” which contains only an <code>install.packages()</code> command for installing all the packages that your notebook needs. <a href="https://github.com/sizespectrum/plankton-anchovy/blob/master/install.R">See my example</a>. You will want to include at least</li>
-</ol>
+<p>Add their hypothetical thermal tolerance limits:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/install.packages.html'>install.packages</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"mizer"</span>, <span class='st'>"knitr"</span>, <span class='st'>"rmarkdown"</span><span class='op'>)</span><span class='op'>)</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>15</span>, <span class='fl'>10</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>, <span class='fl'>20</span><span class='op'>)</span></span></code></pre>
 </div>
 </div>
-<p>but extend the list with any other packages that you load with <code>library()</code> in your notebook. You can create this file straight on GitHub via the “Add file” button or you can do it locally and then push to GitHub.</p>
-<ol start="2" type="1">
-<li><p>Add a file to your repository called “runtime.txt” with yesterday’s date in the format <code>r-yyyy-mm-dd</code>. <a href="https://github.com/sizespectrum/plankton-anchovy/blob/master/runtime.txt">See this example</a> This will have the effect of setting up the environment with the current version of all packages. That means that if the packages change in the future, this will not break your notebook. The reason I recommend using yesterday’s date rather than today’s is that this feature uses the <a href="https://mran.microsoft.com/timemachine">MRAN</a> snap shots and the snapshot for today may not yet be available.</p></li>
-<li><p>Create the URL for your binder. It will have the form <code>https://mybinder.org/v2/gh/your-github-username/your-repository-name/HEAD?urlpath=rstudio</code> where you need to replace <code>your-github-username/your-repository-name</code> with your GitHub user name and repository name. For my example the URL is (<a href="https://mybinder.org/v2/gh/sizespectrum/plankton-anchovy/HEAD?urlpath=rstudio" class="uri">https://mybinder.org/v2/gh/sizespectrum/plankton-anchovy/HEAD?urlpath=rstudio</a>).</p></li>
-</ol>
-<p>The first time you visit your binder URL, mybinder will take a long time to create a Docker image. When it is done, you will see an RStudio session running in your browser, with the files from your GitHub repository available in the Files pane. When people visit the URL after you they will not have to wait so long because mybinder.org will be able to use the Docker image to start the server more quickly.</p>
-<p>Each time you make a change to your GitHub repository, mybinder will rebuild the Docker image the next time someone visits the URL. To save the first visitor from a long wait, you may want to visit the URL yourself each time you push a change to your GitHub repository.</p>
-<h1 id="let-the-world-know">Let the world know</h1>
-<p>You will probably want to put the URLs to your notebook on RPubs and to your binder into the README.md file of your GitHub repository. You will want to put the link to your GitHub repository into your published paper.</p>
-<p>And then you will want to let your social networks know. If you twitter about it, include <code>@mizer_model</code> in your post. Also, consider writing a summary of your work for this blog.</p>
-<p>Last but not least, please email <a href="mailto:mizer@sizespectrum.org" class="email">mizer@sizespectrum.org</a>. We’ll include your publication in the <a href="https://sizespectrum.org/mizer/dev/articles/publications.html">list of publications using mizer</a>.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-canales_regulation_2020" class="csl-entry" role="doc-biblioentry">
-Canales, T. Mariella, Gustav W. Delius, and Richard Law. 2020. <span>“Regulation of Fish Stocks Without Stock–Recruitment Relationships: <span>The</span> Case of Small Pelagic Fish.”</span> <em>Fish and Fisheries</em> 21 (5): 857–71. <a href="https://doi.org/10.1111/faf.12465">https://doi.org/10.1111/faf.12465</a>.
+<p>And, finally, the temperatures to which each species is exposed. To
+make it interesting, we’ll have one species eventually encounter
+temperatures beyond its thermal tolerance limits.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Create temperature array and fill it</span></span>
+<span><span class='va'>times</span> <span class='op'>&lt;-</span> <span class='fl'>0</span><span class='op'>:</span><span class='fl'>500</span></span>
+<span><span class='va'>species</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>species</span></span>
+<span><span class='va'>ocean_temp_array</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span><span class='cn'>NA</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>times</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>species</span><span class='op'>)</span><span class='op'>)</span>, </span>
+<span>                          dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>time <span class='op'>=</span> <span class='va'>times</span>, sp <span class='op'>=</span> <span class='va'>species</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='va'>temp_inc</span> <span class='op'>&lt;-</span> <span class='fl'>0</span></span>
+<span><span class='kw'>for</span> <span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>501</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>  <span class='va'>ocean_temp_array</span><span class='op'>[</span><span class='va'>i</span>,<span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>17</span> <span class='op'>+</span> <span class='va'>temp_inc</span>, <span class='fl'>17</span> <span class='op'>+</span> <span class='va'>temp_inc</span><span class='op'>)</span></span>
+<span>  <span class='va'>temp_inc</span> <span class='op'>&lt;-</span> <span class='va'>temp_inc</span> <span class='op'>+</span> <span class='fl'>0.01</span></span>
+<span><span class='op'>}</span></span>
+<span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/setRateFunction.html'>other_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>ocean_temp</span> <span class='op'>&lt;-</span> <span class='va'>ocean_temp_array</span></span></code></pre>
 </div>
 </div>
+<p>Now that we’ve put in all the necessary temperature information, we
+can add the code that tells mizer how to use it. First, the parameters
+needed to do the scaling that’s mentioned above:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Create parameter for scaling encounter and mortality rates</span></span>
+<span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>encounterpred_scale</span> <span class='op'>&lt;-</span> </span>
+<span>    <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='kw'>for</span> <span class='op'>(</span><span class='va'>indv</span> <span class='kw'>in</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>    </span>
+<span>    <span class='co'># Create a vector of all temperatures each species might encounter</span></span>
+<span>    <span class='va'>temperature</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span>, </span>
+<span>                       <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span>, </span>
+<span>                       by <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span></span>
+<span>    </span>
+<span>    <span class='co'># Find the maximum value of the unscaled effect of temperature on encounter</span></span>
+<span>    <span class='co'># and predation rate for each species </span></span>
+<span>  <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>encounterpred_scale</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span> <span class='op'>&lt;-</span> </span>
+<span>      <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='op'>(</span><span class='va'>temperature</span><span class='op'>)</span> <span class='op'>*</span> </span>
+<span>              <span class='op'>(</span><span class='va'>temperature</span> <span class='op'>-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span><span class='op'>)</span> <span class='op'>*</span></span>
+<span>              <span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span> <span class='op'>-</span> <span class='va'>temperature</span><span class='op'>)</span></span>
+<span>          <span class='op'>)</span></span>
+<span><span class='op'>}</span></span>
+<span></span>
+<span><span class='co'># Determine the minimum, maximum, and range of value for the effect of </span></span>
+<span><span class='co'># temperature on metabolism</span></span>
+<span>    </span>
+<span><span class='va'>min_metab_value</span> <span class='op'>&lt;-</span> </span>
+<span>    <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='fl'>25.22</span> <span class='op'>-</span> <span class='op'>(</span><span class='fl'>0.63</span><span class='op'>/</span><span class='op'>(</span><span class='op'>(</span><span class='fl'>8.62e-5</span><span class='op'>)</span><span class='op'>*</span><span class='op'>(</span><span class='fl'>273</span> <span class='op'>+</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='va'>max_metab_value</span> <span class='op'>&lt;-</span> </span>
+<span>    <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='fl'>25.22</span> <span class='op'>-</span> <span class='op'>(</span><span class='fl'>0.63</span><span class='op'>/</span><span class='op'>(</span><span class='op'>(</span><span class='fl'>8.62e-5</span><span class='op'>)</span><span class='op'>*</span><span class='op'>(</span><span class='fl'>273</span> <span class='op'>+</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span>    </span>
+<span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>metab_min</span> <span class='op'>&lt;-</span> <span class='va'>min_metab_value</span></span>
+<span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>metab_range</span> <span class='op'>&lt;-</span> <span class='va'>max_metab_value</span> <span class='op'>-</span> <span class='va'>min_metab_value</span></span></code></pre>
+</div>
+</div>
+<p>Then, we can add code to scale encounter rate and predation rate
+based on the temperature at a given time step:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Calculate the temperature scaling factor for the encounter rate and </span></span>
+<span><span class='co'># predation rate</span></span>
+<span><span class='va'>scaled_temp_effect</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>t</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>    <span class='co'># Using t+1 to avoid calling ocean_temp[0,] at the first time step</span></span>
+<span>    <span class='va'>temp_at_t</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setRateFunction.html'>other_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>ocean_temp</span><span class='op'>[</span><span class='va'>t</span> <span class='op'>+</span> <span class='fl'>1</span>,<span class='op'>]</span></span>
+<span>    </span>
+<span>    <span class='co'># Calculate unscaled temperature effect using a generic polynomial rate equation</span></span>
+<span>    <span class='va'>unscaled_temp_effect</span> <span class='op'>&lt;-</span> </span>
+<span>        <span class='va'>temp_at_t</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>temp_at_t</span> <span class='op'>-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span><span class='op'>)</span> <span class='op'>*</span> </span>
+<span>        <span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span> <span class='op'>-</span> <span class='va'>temp_at_t</span><span class='op'>)</span></span>
+<span>    </span>
+<span>    <span class='co'># Scale using new parameter</span></span>
+<span>    <span class='va'>scaled_temp_effect</span> <span class='op'>&lt;-</span> </span>
+<span>        <span class='va'>unscaled_temp_effect</span> <span class='op'>/</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>encounterpred_scale</span></span>
+<span>    </span>
+<span>    <span class='co'># Set temperature effect to 0 if temperatures are outside thermal </span></span>
+<span>    <span class='co'># tolerance limits</span></span>
+<span>    <span class='va'>above_max</span> <span class='op'>&lt;-</span> <span class='va'>temp_at_t</span> <span class='op'>&gt;</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span></span>
+<span>    <span class='va'>below_min</span> <span class='op'>&lt;-</span> <span class='va'>temp_at_t</span> <span class='op'>&lt;</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span></span>
+<span>    <span class='va'>scaled_temp_effect</span><span class='op'>[</span><span class='va'>above_max</span> <span class='op'>|</span> <span class='va'>below_min</span><span class='op'>]</span> <span class='op'>=</span> <span class='fl'>0</span></span>
+<span>    </span>
+<span>    <span class='va'>scaled_temp_effect</span></span>
+<span><span class='op'>}</span></span>
+<span></span>
+<span></span>
+<span><span class='va'>therMizerEncounter</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>params</span>, <span class='va'>t</span>, <span class='va'>...</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>    </span>
+<span>      <span class='co'># Calculate maximum possible encounter rate</span></span>
+<span>      <span class='va'>max_encounter</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/mizerEncounter.html'>mizerEncounter</a></span><span class='op'>(</span><span class='va'>params</span>, <span class='va'>t</span>, <span class='va'>...</span><span class='op'>)</span></span>
+<span>      </span>
+<span>      <span class='co'># Apply temperature effect</span></span>
+<span>      <span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span><span class='va'>max_encounter</span> <span class='op'>*</span> <span class='fu'>scaled_temp_effect</span><span class='op'>(</span><span class='va'>t</span><span class='op'>)</span><span class='op'>)</span></span>
+<span>      </span>
+<span><span class='op'>}</span></span>
+<span></span>
+<span><span class='va'>therMizerPredRate</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>params</span>, <span class='va'>t</span>, <span class='va'>...</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>      <span class='co'># Calculate maximum possible encounter rate</span></span>
+<span>      <span class='va'>max_predrate</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/mizerPredRate.html'>mizerPredRate</a></span><span class='op'>(</span><span class='va'>params</span>, <span class='va'>t</span>, <span class='va'>...</span><span class='op'>)</span></span>
+<span>      </span>
+<span>      <span class='co'># Apply temperature effect</span></span>
+<span>      <span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span><span class='va'>max_predrate</span> <span class='op'>*</span> <span class='fu'>scaled_temp_effect</span><span class='op'>(</span><span class='va'>t</span><span class='op'>)</span><span class='op'>)</span></span>
+<span>      </span>
+<span><span class='op'>}</span></span></code></pre>
+</div>
+</div>
+<p>As well as metabolic rate:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>therMizerEReproAndGrowth</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>params</span>, <span class='va'>t</span>, <span class='va'>encounter</span>, <span class='va'>feeding_level</span>, <span class='va'>...</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>    </span>
+<span>    <span class='co'># Using t+1 to avoid calling ocean_temp[0,] at the first time step</span></span>
+<span>    <span class='va'>temp_at_t</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setRateFunction.html'>other_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>ocean_temp</span><span class='op'>[</span><span class='va'>t</span> <span class='op'>+</span> <span class='fl'>1</span>,<span class='op'>]</span></span>
+<span>  </span>
+<span>    <span class='co'># Arrhenius equation</span></span>
+<span>    <span class='va'>unscaled_temp_effect</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='fl'>25.22</span> <span class='op'>-</span> <span class='op'>(</span><span class='fl'>0.63</span><span class='op'>/</span><span class='op'>(</span><span class='op'>(</span><span class='fl'>8.62e-5</span><span class='op'>)</span><span class='op'>*</span><span class='op'>(</span><span class='fl'>273</span> <span class='op'>+</span> <span class='va'>temp_at_t</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span>    </span>
+<span>    <span class='co'># Arrhenius equation scaled to a value between 0 and 1</span></span>
+<span>    <span class='va'>temp_effect_metabolism</span> <span class='op'>&lt;-</span> </span>
+<span>        <span class='op'>(</span><span class='va'>unscaled_temp_effect</span> <span class='op'>-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>metab_min</span><span class='op'>)</span> <span class='op'>/</span></span>
+<span>        <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>metab_range</span></span>
+<span>    </span>
+<span>    <span class='co'># Set temperature effect to 0 if temperatures are outside thermal </span></span>
+<span>    <span class='co'># tolerance limits</span></span>
+<span>    <span class='va'>above_max</span> <span class='op'>&lt;-</span> <span class='va'>temp_at_t</span> <span class='op'>&gt;</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span></span>
+<span>    <span class='va'>below_min</span> <span class='op'>&lt;-</span> <span class='va'>temp_at_t</span> <span class='op'>&lt;</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span></span>
+<span>    <span class='va'>temp_effect_metabolism</span><span class='op'>[</span><span class='va'>above_max</span> <span class='op'>|</span> <span class='va'>below_min</span><span class='op'>]</span> <span class='op'>=</span> <span class='fl'>0</span></span>
+<span>  </span>
+<span>  <span class='co'># Apply scaled Arrhenius value to metabolism</span></span>
+<span>    <span class='fu'><a href='https://rdrr.io/r/base/sweep.html'>sweep</a></span><span class='op'>(</span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>-</span> <span class='va'>feeding_level</span><span class='op'>)</span> <span class='op'>*</span> <span class='va'>encounter</span>, <span class='fl'>1</span>,</span>
+<span>          <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>alpha</span>, <span class='st'>"*"</span>, check.margin <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>-</span> </span>
+<span>        <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMetabolicRate.html'>metab</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>*</span><span class='va'>temp_effect_metabolism</span>  </span>
+<span>      </span>
+<span><span class='op'>}</span></span></code></pre>
+</div>
+</div>
+<p>Finally, we need to replace mizer’s rate functions with our new
+temperature-dependent rate functions:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setRateFunction.html'>setRateFunction</a></span><span class='op'>(</span><span class='va'>params</span>, <span class='st'>"Encounter"</span>, <span class='st'>"therMizerEncounter"</span><span class='op'>)</span></span>
+<span><span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setRateFunction.html'>setRateFunction</a></span><span class='op'>(</span><span class='va'>params</span>, <span class='st'>"PredRate"</span>, <span class='st'>"therMizerPredRate"</span><span class='op'>)</span></span>
+<span><span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setRateFunction.html'>setRateFunction</a></span><span class='op'>(</span><span class='va'>params</span>, <span class='st'>"EReproAndGrowth"</span>, <span class='st'>"therMizerEReproAndGrowth"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Let’s see what a simulation looks like.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>sim</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/project.html'>project</a></span><span class='op'>(</span><span class='va'>params</span>, t_max <span class='op'>=</span> <span class='fl'>500</span>, effort <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span> </span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>sim</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="thermizer_files/figure-html5/unnamed-chunk-8-1.png" width="624" /></p>
+</div>
+<h2 id="adapting-this-for-a-data-based-simulation">Adapting this for a
+data-based simulation</h2>
+<p>You’re likely going to want to do simulations based on real species
+and real temperature observations or projections. This is
+straightforward to do. When you prepare your species parameters, add
+<code>temp_min</code> and <code>temp_max</code> columns for each
+species. You’ll also need to prepare an <code>ocean_temp</code> input
+with dimensions that match those of <code>time</code> and
+<code>species</code>.</p>
+<p>Once you’ve prepared your input, you can use the code above to create
+and use the <code>encounterpred_scale</code>, <code>metab_min</code>,
+and <code>metab_range</code> parameters and the
+<code>therMizerEncounter</code>, <code>therMizerPredRate</code>, and
+<code>therMizerEReproAndGrowth</code> rate functions.</p>
+<h2 id="in-the-works">In the works</h2>
+<p>Many fish undergo ontogentic migration, spending different life
+stages at different depths and therefore different thermal habitats. I’m
+working on adding to therMizer the capacity for different size classes
+to experience different temperatures.</p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>This blog post was compiled with mizer version 2.3.0.1 and R version
+4.2.1. Many thanks to Gustav Delius for guidance on mizer’s inner
+workings and writing better code.</p>
+<h2 id="references">References</h2>
+<p>Boettiger, C., Lang, D. T., and Wainwright, P. C. (2012). rfishbase:
+exploring, manipulating, and visualizaing FishBase from R. Journal of
+Fish Biology 81, 2030–2039. <a
+href="https://doi.org/10.1111/j.1095-8649.2012.03464.x"
+class="uri">https://doi.org/10.1111/j.1095-8649.2012.03464.x</a></p>
+<p>Brown JH, Gillooly JF, Allen AP, Savage VM, West GB. (2004) Toward a
+metabolic theory of ecology. Ecology, 85: 1771–1789. <a
+href="https://doi.org/10.1890/03-9000"
+class="uri">https://doi.org/10.1890/03-9000</a></p>
+<p>Jennings S, Mélin F, Blanchard JL, Forster RM, Dulvy NK, Wilson RW.
+(2008) Global scale predictions of community and ecosystem properties
+from simple ecological theory. Proceedings of the Royal Society B, 275:
+1375–1383. <a href="https://doi.org/10.1098/rspb.2008.0192"
+class="uri">https://doi.org/10.1098/rspb.2008.0192</a></p>
+<p>Pörtner HO. (2012) Integrating climate-related stressor effects on
+marine organisms: unifying principles linking molecule to
+ecosystem-level changes. Marine Ecology Progress Series, 470: 273–290.
+<a href="https://doi.org/10.3354/meps10123"
+class="uri">https://doi.org/10.3354/meps10123</a></p>
+<p>Pörtner HO, Peck MA. (2010) Climate change effects on fishes and
+fisheries: toward a cause-and-effect understanding. Journal of Fish
+Biology, 77: 1745–1779. <a
+href="https://doi.org/10.1111/j.1095-8649.2010.02783.x"
+class="uri">https://doi.org/10.1111/j.1095-8649.2010.02783.x</a></p>
+<p>van der Heide T, Roijackers RMM, van New EH, Peeters ETHM. (2006) A
+simple equation for describing the temperature dependent growth of
+free-floating macrophytes. Aquatic Botany, 84: 171–175. <a
+href="https://doi.org/10.1016/j.aquabot.2005.09.004"
+class="uri">https://doi.org/10.1016/j.aquabot.2005.09.004</a></p>
+<p>Woodworth-Jefcoats PA, Blanchard JL, Drazen JC. (2019) Relative
+Impacts of Simultaneous Stressors on a Pelagic Marine Ecosystem.
+Frontiers in Marine Science, 6:383. <a
+href="https://doi.org/10.3389/fmars.2019.00383"
+class="uri">https://doi.org/10.3389/fmars.2019.00383</a></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <div class="article-footer">
   <p class="social_footer">
     <span class="disqus-comments">
       <i class="fas fa-comments"></i>
       &nbsp;
-      <span class="disqus-comment-count" data-disqus-identifier="posts/2021-08-14-reproducible-research-with-mizer-and-binder/">Comment on this article</span>
+      <span class="disqus-comment-count" data-disqus-identifier="posts/2022-07-11-thermizer/">Comment on this article</span>
     </span>
     <span class="article-sharing">
       Share: &nbsp;
-      <a href="https://twitter.com/share?text=Reproducible%20research%20with%20mizer%2C%20GitHub%2C%20RPubs%20and%20binder&amp;url=https%3A%2F%2Fblog.mizer.sizespectrum.org%2Fposts%2F2021-08-14-reproducible-research-with-mizer-and-binder%2F" aria-label="share on twitter">
+      <a href="https://twitter.com/share?text=Temperature-dependent%20rates%20in%20mizer&amp;url=https%3A%2F%2Fblog.mizer.sizespectrum.org%2Fposts%2F2022-07-11-thermizer%2F" aria-label="share on twitter">
         <i class="fab fa-twitter" aria-hidden="true"></i>
       </a>
     </span>
@@ -2629,8 +2886,8 @@ Canales, T. Mariella, Gustav W. Delius, and Richard Law. 2020. <span>“Regulati
   <div id="disqus_thread"></div>
   <script type="text/javascript" cookie-consent="functionality">
 var disqus_config = function () {
-  this.page.url = 'https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/';
-  this.page.identifier = 'posts/2021-08-14-reproducible-research-with-mizer-and-binder/';
+  this.page.url = 'https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer/';
+  this.page.identifier = 'posts/2022-07-11-thermizer/';
 };
 (function() {
   var d = document, s = d.createElement('script');
@@ -2660,21 +2917,19 @@ var disqus_config = function () {
 <!--/radix_placeholder_site_after_body-->
 <!--radix_placeholder_appendices-->
 <div class="appendix-bottom">
-  <h3 id="references">References</h3>
-  <div id="references-listing"></div>
   <h3 id="updates-and-corrections">Corrections</h3>
   <p>If you see mistakes or want to suggest changes, please <a href="https://github.com/sizespectrum/MizerBlog/issues/new">create an issue</a> on the source repository.</p>
   <h3 id="reuse">Reuse</h3>
   <p>Text and figures are licensed under Creative Commons Attribution <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Source code is available at <a href="https://github.com/sizespectrum/MizerBlog/">https://github.com/sizespectrum/MizerBlog/</a>, unless otherwise noted. The figures that have been reused from other sources don't fall under this license and can be recognized by a note in their caption: "Figure from ...".</p>
   <h3 id="citation">Citation</h3>
   <p>For attribution, please cite this work as</p>
-  <pre class="citation-appendix short">Delius (2021, Aug. 14). mizer blog: Reproducible research with mizer, GitHub, RPubs and binder. Retrieved from https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/</pre>
+  <pre class="citation-appendix short">Woodworth-Jefcoats (2022, July 11). mizer blog: Temperature-dependent rates in mizer. Retrieved from https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer/</pre>
   <p>BibTeX citation</p>
-  <pre class="citation-appendix long">@misc{delius2021reproducible,
-  author = {Delius, Gustav},
-  title = {mizer blog: Reproducible research with mizer, GitHub, RPubs and binder},
-  url = {https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/},
-  year = {2021}
+  <pre class="citation-appendix long">@misc{woodworth-jefcoats2022temperature-dependent,
+  author = {Woodworth-Jefcoats, Phoebe},
+  title = {mizer blog: Temperature-dependent rates in mizer},
+  url = {https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer/},
+  year = {2022}
 }</pre>
 </div>
 <!--/radix_placeholder_appendices-->

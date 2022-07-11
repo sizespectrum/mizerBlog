@@ -13,7 +13,16 @@ new features, technical details, plans and ideas. Contributions welcome.
       <link>https://blog.mizer.sizespectrum.org</link>
     </image>
     <generator>Distill</generator>
-    <lastBuildDate>Tue, 07 Sep 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 10 Jul 2022 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Temperature-dependent rates in mizer</title>
+      <dc:creator>Phoebe Woodworth-Jefcoats</dc:creator>
+      <link>https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer</link>
+      <description>Temperature is an important driver of ecosystem change.  Now you can include it in mizer.</description>
+      <guid>https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer</guid>
+      <pubDate>Sun, 10 Jul 2022 00:00:00 +0000</pubDate>
+      <media:content url="https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer/thermizer_files/figure-html5/unnamed-chunk-8-1.png" medium="image" type="image/png" width="1248" height="768"/>
+    </item>
     <item>
       <title>Tuning growth curves with a shiny gadget</title>
       <dc:creator>Gustav Delius</dc:creator>

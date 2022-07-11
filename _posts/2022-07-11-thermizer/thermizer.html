@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <meta name="generator" content="distill" />
+
+  <style type="text/css">
+  /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
+  body {
+    visibility: hidden;
+  }
+  </style>
+
+ <!--radix_placeholder_import_source-->
+ <!--/radix_placeholder_import_source-->
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  { color: #00769e; background-color: #f1f3f5; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span { color: #00769e; } /* Normal */
+code span.al { color: #ad0000; } /* Alert */
+code span.an { color: #5e5e5e; } /* Annotation */
+code span.at { color: #657422; } /* Attribute */
+code span.bn { color: #ad0000; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #00769e; } /* ControlFlow */
+code span.ch { color: #20794d; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #5e5e5e; } /* Comment */
+code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+code span.dt { color: #ad0000; } /* DataType */
+code span.dv { color: #ad0000; } /* DecVal */
+code span.er { color: #ad0000; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #ad0000; } /* Float */
+code span.fu { color: #4758ab; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #5e5e5e; } /* Information */
+code span.kw { color: #00769e; } /* Keyword */
+code span.op { color: #5e5e5e; } /* Operator */
+code span.ot { color: #00769e; } /* Other */
+code span.pp { color: #ad0000; } /* Preprocessor */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
+code span.ss { color: #20794d; } /* SpecialString */
+code span.st { color: #20794d; } /* String */
+code span.va { color: #111111; } /* Variable */
+code span.vs { color: #20794d; } /* VerbatimString */
+code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+</style>
+
+
+  <!--radix_placeholder_meta_tags-->
+  <title>Temperature-dependent rates in mizer</title>
+
+  <meta property="description" itemprop="description" content="Temperature is an important driver of ecosystem change.  Now you can include it in mizer."/>
+
+
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2022-07-11"/>
+  <meta property="article:created" itemprop="dateCreated" content="2022-07-11"/>
+  <meta name="article:author" content="Phoebe Woodworth-Jefcoats"/>
+
+  <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
+  <meta property="og:title" content="Temperature-dependent rates in mizer"/>
+  <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Temperature is an important driver of ecosystem change.  Now you can include it in mizer."/>
+  <meta property="og:locale" content="en_US"/>
+
+  <!--  https://dev.twitter.com/cards/types/summary -->
+  <meta property="twitter:card" content="summary"/>
+  <meta property="twitter:title" content="Temperature-dependent rates in mizer"/>
+  <meta property="twitter:description" content="Temperature is an important driver of ecosystem change.  Now you can include it in mizer."/>
+
+  <!--/radix_placeholder_meta_tags-->
+  <!--radix_placeholder_rmarkdown_metadata-->
+
+  <script type="text/json" id="radix-rmarkdown-metadata">
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Temperature-dependent rates in mizer"]},{"type":"character","attributes":{},"value":["Temperature is an important driver of ecosystem change.  Now you can include it in mizer.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url","affiliation"]}},"value":[{"type":"character","attributes":{},"value":["Phoebe Woodworth-Jefcoats"]},{"type":"character","attributes":{},"value":["https://www.fisheries.noaa.gov/contact/phoebe-woodworth-jefcoats"]},{"type":"character","attributes":{},"value":["NOAA"]}]}]},{"type":"character","attributes":{},"value":["2022-07-11"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","toc"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]}]}]}]}
+  </script>
+  <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["thermizer_files/figure-html5/unnamed-chunk-8-1.png"]}
+  </script>
+  <!--radix_placeholder_navigation_in_header-->
+  <!--/radix_placeholder_navigation_in_header-->
+  <!--radix_placeholder_distill-->
+
+  <style type="text/css">
+
+  body {
+    background-color: white;
+  }
+
+  .pandoc-table {
+    width: 100%;
+  }
+
+  .pandoc-table>caption {
+    margin-bottom: 10px;
+  }
+
+  .pandoc-table th:not([align]) {
+    text-align: left;
+  }
+
+  .pagedtable-footer {
+    font-size: 15px;
+  }
+
+  d-byline .byline {
+    grid-template-columns: 2fr 2fr;
+  }
+
+  d-byline .byline h3 {
+    margin-block-start: 1.5em;
+  }
+
+  d-byline .byline .authors-affiliations h3 {
+    margin-block-start: 0.5em;
+  }
+
+  .authors-affiliations .orcid-id {
+    width: 16px;
+    height:16px;
+    margin-left: 4px;
+    margin-right: 4px;
+    vertical-align: middle;
+    padding-bottom: 2px;
+  }
+
+  d-title .dt-tags {
+    margin-top: 1em;
+    grid-column: text;
+  }
+
+  .dt-tags .dt-tag {
+    text-decoration: none;
+    display: inline-block;
+    color: rgba(0,0,0,0.6);
+    padding: 0em 0.4em;
+    margin-right: 0.5em;
+    margin-bottom: 0.4em;
+    font-size: 70%;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  d-article table.gt_table td,
+  d-article table.gt_table th {
+    border-bottom: none;
+  }
+
+  .html-widget {
+    margin-bottom: 2.0em;
+  }
+
+  .l-screen-inset {
+    padding-right: 16px;
+  }
+
+  .l-screen .caption {
+    margin-left: 10px;
+  }
+
+  .shaded {
+    background: rgb(247, 247, 247);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .shaded .html-widget {
+    margin-bottom: 0;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .shaded .shaded-content {
+    background: white;
+  }
+
+  .text-output {
+    margin-top: 0;
+    line-height: 1.5em;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  d-article {
+    padding-top: 2.5rem;
+    padding-bottom: 30px;
+  }
+
+  d-appendix {
+    padding-top: 30px;
+  }
+
+  d-article>p>img {
+    width: 100%;
+  }
+
+  d-article h2 {
+    margin: 1rem 0 1.5rem 0;
+  }
+
+  d-article h3 {
+    margin-top: 1.5rem;
+  }
+
+  d-article iframe {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 2.0em;
+    width: 100%;
+  }
+
+  /* Tweak code blocks */
+
+  d-article div.sourceCode code,
+  d-article pre code {
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  }
+
+  d-article pre,
+  d-article div.sourceCode,
+  d-article div.sourceCode pre {
+    overflow: auto;
+  }
+
+  d-article div.sourceCode {
+    background-color: white;
+  }
+
+  d-article div.sourceCode pre {
+    padding-left: 10px;
+    font-size: 12px;
+    border-left: 2px solid rgba(0,0,0,0.1);
+  }
+
+  d-article pre {
+    font-size: 12px;
+    color: black;
+    background: none;
+    margin-top: 0;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  d-article pre a {
+    border-bottom: none;
+  }
+
+  d-article pre a:hover {
+    border-bottom: none;
+    text-decoration: underline;
+  }
+
+  d-article details {
+    grid-column: text;
+    margin-bottom: 0.8em;
+  }
+
+  @media(min-width: 768px) {
+
+  d-article pre,
+  d-article div.sourceCode,
+  d-article div.sourceCode pre {
+    overflow: visible !important;
+  }
+
+  d-article div.sourceCode pre {
+    padding-left: 18px;
+    font-size: 14px;
+  }
+
+  d-article pre {
+    font-size: 14px;
+  }
+
+  }
+
+  figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+
+  /* CSS for d-contents */
+
+  .d-contents {
+    grid-column: text;
+    color: rgba(0,0,0,0.8);
+    font-size: 0.9em;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+    margin-bottom: 1em;
+    padding-left: 0.25em;
+    justify-self: start;
+  }
+
+  @media(min-width: 1000px) {
+    .d-contents.d-contents-float {
+      height: 0;
+      grid-column-start: 1;
+      grid-column-end: 4;
+      justify-self: center;
+      padding-right: 3em;
+      padding-left: 2em;
+    }
+  }
+
+  .d-contents nav h3 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 1em;
+  }
+
+  .d-contents li {
+    list-style-type: none
+  }
+
+  .d-contents nav > ul {
+    padding-left: 0;
+  }
+
+  .d-contents ul {
+    padding-left: 1em
+  }
+
+  .d-contents nav ul li {
+    margin-top: 0.6em;
+    margin-bottom: 0.2em;
+  }
+
+  .d-contents nav a {
+    font-size: 13px;
+    border-bottom: none;
+    text-decoration: none
+    color: rgba(0, 0, 0, 0.8);
+  }
+
+  .d-contents nav a:hover {
+    text-decoration: underline solid rgba(0, 0, 0, 0.6)
+  }
+
+  .d-contents nav > ul > li > a {
+    font-weight: 600;
+  }
+
+  .d-contents nav > ul > li > ul {
+    font-weight: inherit;
+  }
+
+  .d-contents nav > ul > li > ul > li {
+    margin-top: 0.2em;
+  }
+
+
+  .d-contents nav ul {
+    margin-top: 0;
+    margin-bottom: 0.25em;
+  }
+
+  .d-article-with-toc h2:nth-child(2) {
+    margin-top: 0;
+  }
+
+
+  /* Figure */
+
+  .figure {
+    position: relative;
+    margin-bottom: 2.5em;
+    margin-top: 1.5em;
+  }
+
+  .figure .caption {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 12px;
+    line-height: 1.5em;
+  }
+
+  .figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+
+  .figure .caption a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .figure .caption b,
+  .figure .caption strong, {
+    font-weight: 600;
+    color: rgba(0, 0, 0, 1.0);
+  }
+
+  /* Citations */
+
+  d-article .citation {
+    color: inherit;
+    cursor: inherit;
+  }
+
+  div.hanging-indent{
+    margin-left: 1em; text-indent: -1em;
+  }
+
+  /* Citation hover box */
+
+  .tippy-box[data-theme~=light-border] {
+    background-color: rgba(250, 250, 250, 0.95);
+  }
+
+  .tippy-content > p {
+    margin-bottom: 0;
+    padding: 2px;
+  }
+
+
+  /* Tweak 1000px media break to show more text */
+
+  @media(min-width: 1000px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 80px [middle-start] 50px [text-start kicker-end] 65px 65px 65px 65px 65px 65px 65px 65px [text-end gutter-start] 65px [middle-end] 65px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 16px;
+    }
+
+    .grid {
+      grid-column-gap: 16px;
+    }
+
+    d-article {
+      font-size: 1.06rem;
+      line-height: 1.7em;
+    }
+    figure .caption, .figure .caption, figure figcaption {
+      font-size: 13px;
+    }
+  }
+
+  @media(min-width: 1180px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 60px [middle-start] 60px [text-start kicker-end] 60px 60px 60px 60px 60px 60px 60px 60px [text-end gutter-start] 60px [middle-end] 60px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 32px;
+    }
+
+    .grid {
+      grid-column-gap: 32px;
+    }
+  }
+
+
+  /* Get the citation styles for the appendix (not auto-injected on render since
+     we do our own rendering of the citation appendix) */
+
+  d-appendix .citation-appendix,
+  .d-appendix .citation-appendix {
+    font-size: 11px;
+    line-height: 15px;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    padding-left: 18px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.02);
+    padding: 10px 18px;
+    border-radius: 3px;
+    color: rgba(150, 150, 150, 1);
+    overflow: hidden;
+    margin-top: -12px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  /* Include appendix styles here so they can be overridden */
+
+  d-appendix {
+    contain: layout style;
+    font-size: 0.8em;
+    line-height: 1.7em;
+    margin-top: 60px;
+    margin-bottom: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    color: rgba(0,0,0,0.5);
+    padding-top: 60px;
+    padding-bottom: 48px;
+  }
+
+  d-appendix h3 {
+    grid-column: page-start / text-start;
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 1em;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.65);
+  }
+
+  d-appendix h3 + * {
+    margin-top: 1em;
+  }
+
+  d-appendix ol {
+    padding: 0 0 0 15px;
+  }
+
+  @media (min-width: 768px) {
+    d-appendix ol {
+      padding: 0 0 0 30px;
+      margin-left: -30px;
+    }
+  }
+
+  d-appendix li {
+    margin-bottom: 1em;
+  }
+
+  d-appendix a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  d-appendix > * {
+    grid-column: text;
+  }
+
+  d-appendix > d-footnote-list,
+  d-appendix > d-citation-list,
+  d-appendix > distill-appendix {
+    grid-column: screen;
+  }
+
+  /* Include footnote styles here so they can be overridden */
+
+  d-footnote-list {
+    contain: layout style;
+  }
+
+  d-footnote-list > * {
+    grid-column: text;
+  }
+
+  d-footnote-list a.footnote-backlink {
+    color: rgba(0,0,0,0.3);
+    padding-left: 0.5em;
+  }
+
+
+
+  /* Anchor.js */
+
+  .anchorjs-link {
+    /*transition: all .25s linear; */
+    text-decoration: none;
+    border-bottom: none;
+  }
+  *:hover > .anchorjs-link {
+    margin-left: -1.125em !important;
+    text-decoration: none;
+    border-bottom: none;
+  }
+
+  /* Social footer */
+
+  .social_footer {
+    margin-top: 30px;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.67);
+  }
+
+  .disqus-comments {
+    margin-right: 30px;
+  }
+
+  .disqus-comment-count {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+  }
+
+  #disqus_thread {
+    margin-top: 30px;
+  }
+
+  .article-sharing a {
+    border-bottom: none;
+    margin-right: 8px;
+  }
+
+  .article-sharing a:hover {
+    border-bottom: none;
+  }
+
+  .sidebar-section.subscribe {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+
+  .subscribe p {
+    margin-bottom: 0.5em;
+  }
+
+
+  .article-footer .subscribe {
+    font-size: 15px;
+    margin-top: 45px;
+  }
+
+
+  .sidebar-section.custom {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+
+  .custom p {
+    margin-bottom: 0.5em;
+  }
+
+  /* Styles for listing layout (hide title) */
+  .layout-listing d-title, .layout-listing .d-title {
+    display: none;
+  }
+
+  /* Styles for posts lists (not auto-injected) */
+
+
+  .posts-with-sidebar {
+    padding-left: 45px;
+    padding-right: 45px;
+  }
+
+  .posts-list .description h2,
+  .posts-list .description p {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .posts-list .description h2 {
+    font-weight: 700;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .posts-list h2.post-tag {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding-bottom: 12px;
+  }
+  .posts-list {
+    margin-top: 60px;
+    margin-bottom: 24px;
+  }
+
+  .posts-list .post-preview {
+    text-decoration: none;
+    overflow: hidden;
+    display: block;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 24px 0;
+  }
+
+  .post-preview-last {
+    border-bottom: none !important;
+  }
+
+  .posts-list .posts-list-caption {
+    grid-column: screen;
+    font-weight: 400;
+  }
+
+  .posts-list .post-preview h2 {
+    margin: 0 0 6px 0;
+    line-height: 1.2em;
+    font-style: normal;
+    font-size: 24px;
+  }
+
+  .posts-list .post-preview p {
+    margin: 0 0 12px 0;
+    line-height: 1.4em;
+    font-size: 16px;
+  }
+
+  .posts-list .post-preview .thumbnail {
+    box-sizing: border-box;
+    margin-bottom: 24px;
+    position: relative;
+    max-width: 500px;
+  }
+  .posts-list .post-preview img {
+    width: 100%;
+    display: block;
+  }
+
+  .posts-list .metadata {
+    font-size: 12px;
+    line-height: 1.4em;
+    margin-bottom: 18px;
+  }
+
+  .posts-list .metadata > * {
+    display: inline-block;
+  }
+
+  .posts-list .metadata .publishedDate {
+    margin-right: 2em;
+  }
+
+  .posts-list .metadata .dt-authors {
+    display: block;
+    margin-top: 0.3em;
+    margin-right: 2em;
+  }
+
+  .posts-list .dt-tags {
+    display: block;
+    line-height: 1em;
+  }
+
+  .posts-list .dt-tags .dt-tag {
+    display: inline-block;
+    color: rgba(0,0,0,0.6);
+    padding: 0.3em 0.4em;
+    margin-right: 0.2em;
+    margin-bottom: 0.4em;
+    font-size: 60%;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .posts-list img {
+    opacity: 1;
+  }
+
+  .posts-list img[data-src] {
+    opacity: 0;
+  }
+
+  .posts-more {
+    clear: both;
+  }
+
+
+  .posts-sidebar {
+    font-size: 16px;
+  }
+
+  .posts-sidebar h3 {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  .sidebar-section {
+    margin-bottom: 30px;
+  }
+
+  .categories ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .categories li {
+    color: rgba(0, 0, 0, 0.8);
+    margin-bottom: 0;
+  }
+
+  .categories li>a {
+    border-bottom: none;
+  }
+
+  .categories li>a:hover {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  }
+
+  .categories .active {
+    font-weight: 600;
+  }
+
+  .categories .category-count {
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+
+  @media(min-width: 768px) {
+    .posts-list .post-preview h2 {
+      font-size: 26px;
+    }
+    .posts-list .post-preview .thumbnail {
+      float: right;
+      width: 30%;
+      margin-bottom: 0;
+    }
+    .posts-list .post-preview .description {
+      float: left;
+      width: 45%;
+    }
+    .posts-list .post-preview .metadata {
+      float: left;
+      width: 20%;
+      margin-top: 8px;
+    }
+    .posts-list .post-preview p {
+      margin: 0 0 12px 0;
+      line-height: 1.5em;
+      font-size: 16px;
+    }
+    .posts-with-sidebar .posts-list {
+      float: left;
+      width: 75%;
+    }
+    .posts-with-sidebar .posts-sidebar {
+      float: right;
+      width: 20%;
+      margin-top: 60px;
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+  }
+
+
+  /* Improve display for browsers without grid (IE/Edge <= 15) */
+
+  .downlevel {
+    line-height: 1.6em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+  }
+
+  .downlevel .d-title {
+    padding-top: 6rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .downlevel .d-title h1 {
+    font-size: 50px;
+    font-weight: 700;
+    line-height: 1.1em;
+    margin: 0 0 0.5rem;
+  }
+
+  .downlevel .d-title p {
+    font-weight: 300;
+    font-size: 1.2rem;
+    line-height: 1.55em;
+    margin-top: 0;
+  }
+
+  .downlevel .d-byline {
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    font-size: 0.8rem;
+    line-height: 1.8em;
+  }
+
+  .downlevel .section-separator {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .downlevel .d-article {
+    font-size: 1.06rem;
+    line-height: 1.7em;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+  }
+
+
+  .downlevel .d-appendix {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: none;
+    font-size: 0.8em;
+    line-height: 1.7em;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.5);
+    padding-top: 40px;
+    padding-bottom: 48px;
+  }
+
+  .downlevel .footnotes ol {
+    padding-left: 13px;
+  }
+
+  .downlevel .base-grid,
+  .downlevel .distill-header,
+  .downlevel .d-title,
+  .downlevel .d-abstract,
+  .downlevel .d-article,
+  .downlevel .d-appendix,
+  .downlevel .distill-appendix,
+  .downlevel .d-byline,
+  .downlevel .d-footnote-list,
+  .downlevel .d-citation-list,
+  .downlevel .distill-footer,
+  .downlevel .appendix-bottom,
+  .downlevel .posts-container {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  @media(min-width: 768px) {
+    .downlevel .base-grid,
+    .downlevel .distill-header,
+    .downlevel .d-title,
+    .downlevel .d-abstract,
+    .downlevel .d-article,
+    .downlevel .d-appendix,
+    .downlevel .distill-appendix,
+    .downlevel .d-byline,
+    .downlevel .d-footnote-list,
+    .downlevel .d-citation-list,
+    .downlevel .distill-footer,
+    .downlevel .appendix-bottom,
+    .downlevel .posts-container {
+    padding-left: 150px;
+    padding-right: 150px;
+    max-width: 900px;
+  }
+  }
+
+  .downlevel pre code {
+    display: block;
+    border-left: 2px solid rgba(0, 0, 0, .1);
+    padding: 0 0 0 20px;
+    font-size: 14px;
+  }
+
+  .downlevel code, .downlevel pre {
+    color: black;
+    background: none;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  .downlevel .posts-list .post-preview {
+    color: inherit;
+  }
+
+
+
+  </style>
+
+  <script type="application/javascript">
+
+  function is_downlevel_browser() {
+    if (bowser.isUnsupportedBrowser({ msie: "12", msedge: "16"},
+                                   window.navigator.userAgent)) {
+      return true;
+    } else {
+      return window.load_distill_framework === undefined;
+    }
+  }
+
+  // show body when load is complete
+  function on_load_complete() {
+
+    // add anchors
+    if (window.anchors) {
+      window.anchors.options.placement = 'left';
+      window.anchors.add('d-article > h2, d-article > h3, d-article > h4, d-article > h5');
+    }
+
+
+    // set body to visible
+    document.body.style.visibility = 'visible';
+
+    // force redraw for leaflet widgets
+    if (window.HTMLWidgets) {
+      var maps = window.HTMLWidgets.findAll(".leaflet");
+      $.each(maps, function(i, el) {
+        var map = this.getMap();
+        map.invalidateSize();
+        map.eachLayer(function(layer) {
+          if (layer instanceof L.TileLayer)
+            layer.redraw();
+        });
+      });
+    }
+
+    // trigger 'shown' so htmlwidgets resize
+    $('d-article').trigger('shown');
+  }
+
+  function init_distill() {
+
+    init_common();
+
+    // create front matter
+    var front_matter = $('<d-front-matter></d-front-matter>');
+    $('#distill-front-matter').wrap(front_matter);
+
+    // create d-title
+    $('.d-title').changeElementType('d-title');
+
+    // create d-byline
+    var byline = $('<d-byline></d-byline>');
+    $('.d-byline').replaceWith(byline);
+
+    // create d-article
+    var article = $('<d-article></d-article>');
+    $('.d-article').wrap(article).children().unwrap();
+
+    // move posts container into article
+    $('.posts-container').appendTo($('d-article'));
+
+    // create d-appendix
+    $('.d-appendix').changeElementType('d-appendix');
+
+    // flag indicating that we have appendix items
+    var appendix = $('.appendix-bottom').children('h3').length > 0;
+
+    // replace footnotes with <d-footnote>
+    $('.footnote-ref').each(function(i, val) {
+      appendix = true;
+      var href = $(this).attr('href');
+      var id = href.replace('#', '');
+      var fn = $('#' + id);
+      var fn_p = $('#' + id + '>p');
+      fn_p.find('.footnote-back').remove();
+      var text = fn_p.html();
+      var dtfn = $('<d-footnote></d-footnote>');
+      dtfn.html(text);
+      $(this).replaceWith(dtfn);
+    });
+    // remove footnotes
+    $('.footnotes').remove();
+
+    // move refs into #references-listing
+    $('#references-listing').replaceWith($('#refs'));
+
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      var id = $(this).attr('id');
+      $('.d-contents a[href="#' + id + '"]').parent().remove();
+      appendix = true;
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('d-appendix'));
+    });
+
+    // show d-appendix if we have appendix content
+    $("d-appendix").css('display', appendix ? 'grid' : 'none');
+
+    // localize layout chunks to just output
+    $('.layout-chunk').each(function(i, val) {
+
+      // capture layout
+      var layout = $(this).attr('data-layout');
+
+      // apply layout to markdown level block elements
+      var elements = $(this).children().not('details, div.sourceCode, pre, script');
+      elements.each(function(i, el) {
+        var layout_div = $('<div class="' + layout + '"></div>');
+        if (layout_div.hasClass('shaded')) {
+          var shaded_content = $('<div class="shaded-content"></div>');
+          $(this).wrap(shaded_content);
+          $(this).parent().wrap(layout_div);
+        } else {
+          $(this).wrap(layout_div);
+        }
+      });
+
+
+      // unwrap the layout-chunk div
+      $(this).children().unwrap();
+    });
+
+    // remove code block used to force  highlighting css
+    $('.distill-force-highlighting-css').parent().remove();
+
+    // remove empty line numbers inserted by pandoc when using a
+    // custom syntax highlighting theme
+    $('code.sourceCode a:empty').remove();
+
+    // load distill framework
+    load_distill_framework();
+
+    // wait for window.distillRunlevel == 4 to do post processing
+    function distill_post_process() {
+
+      if (!window.distillRunlevel || window.distillRunlevel < 4)
+        return;
+
+      // hide author/affiliations entirely if we have no authors
+      var front_matter = JSON.parse($("#distill-front-matter").html());
+      var have_authors = front_matter.authors && front_matter.authors.length > 0;
+      if (!have_authors)
+        $('d-byline').addClass('hidden');
+
+      // article with toc class
+      $('.d-contents').parent().addClass('d-article-with-toc');
+
+      // strip links that point to #
+      $('.authors-affiliations').find('a[href="#"]').removeAttr('href');
+
+      // add orcid ids
+      $('.authors-affiliations').find('.author').each(function(i, el) {
+        var orcid_id = front_matter.authors[i].orcidID;
+        if (orcid_id) {
+          var a = $('<a></a>');
+          a.attr('href', 'https://orcid.org/' + orcid_id);
+          var img = $('<img></img>');
+          img.addClass('orcid-id');
+          img.attr('alt', 'ORCID ID');
+          img.attr('src','data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg==');
+          a.append(img);
+          $(this).append(a);
+        }
+      });
+
+      // hide elements of author/affiliations grid that have no value
+      function hide_byline_column(caption) {
+        $('d-byline').find('h3:contains("' + caption + '")').parent().css('visibility', 'hidden');
+      }
+
+      // affiliations
+      var have_affiliations = false;
+      for (var i = 0; i<front_matter.authors.length; ++i) {
+        var author = front_matter.authors[i];
+        if (author.affiliation !== "&nbsp;") {
+          have_affiliations = true;
+          break;
+        }
+      }
+      if (!have_affiliations)
+        $('d-byline').find('h3:contains("Affiliations")').css('visibility', 'hidden');
+
+      // published date
+      if (!front_matter.publishedDate)
+        hide_byline_column("Published");
+
+      // document object identifier
+      var doi = $('d-byline').find('h3:contains("DOI")');
+      var doi_p = doi.next().empty();
+      if (!front_matter.doi) {
+        // if we have a citation and valid citationText then link to that
+        if ($('#citation').length > 0 && front_matter.citationText) {
+          doi.html('Citation');
+          $('<a href="#citation"></a>')
+            .text(front_matter.citationText)
+            .appendTo(doi_p);
+        } else {
+          hide_byline_column("DOI");
+        }
+      } else {
+        $('<a></a>')
+           .attr('href', "https://doi.org/" + front_matter.doi)
+           .html(front_matter.doi)
+           .appendTo(doi_p);
+      }
+
+       // change plural form of authors/affiliations
+      if (front_matter.authors.length === 1) {
+        var grid = $('.authors-affiliations');
+        grid.children('h3:contains("Authors")').text('Author');
+        grid.children('h3:contains("Affiliations")').text('Affiliation');
+      }
+
+      // remove d-appendix and d-footnote-list local styles
+      $('d-appendix > style:first-child').remove();
+      $('d-footnote-list > style:first-child').remove();
+
+      // move appendix-bottom entries to the bottom
+      $('.appendix-bottom').appendTo('d-appendix').children().unwrap();
+      $('.appendix-bottom').remove();
+
+      // hoverable references
+      $('span.citation[data-cites]').each(function() {
+        if ($(this).children()[0].nodeName == "D-FOOTNOTE") {
+          var fn = $(this).children()[0]
+          $(this).html(fn.shadowRoot.querySelector("sup"))
+          $(this).id = fn.id
+          fn.remove()
+        }
+        var refs = $(this).attr('data-cites').split(" ");
+        var refHtml = refs.map(function(ref) {
+          return "<p>" + $('#ref-' + ref).html() + "</p>";
+        }).join("\n");
+        window.tippy(this, {
+          allowHTML: true,
+          content: refHtml,
+          maxWidth: 500,
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start'
+        });
+      });
+
+      // fix footnotes in tables (#411)
+      // replacing broken distill.pub feature
+      $('table d-footnote').each(function() {
+        // we replace internal showAtNode methode which is triggered when hovering a footnote
+        this.hoverBox.showAtNode = function(node) {
+          // ported from https://github.com/distillpub/template/pull/105/files
+          calcOffset = function(elem) {
+              let x = elem.offsetLeft;
+              let y = elem.offsetTop;
+              // Traverse upwards until an `absolute` element is found or `elem`
+              // becomes null.
+              while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                  x += elem.offsetLeft;
+                  y += elem.offsetTop;
+              }
+
+              return { left: x, top: y };
+          }
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+          const bbox = node.getBoundingClientRect();
+          const offset = calcOffset(node);
+          this.show([offset.left + bbox.width, offset.top + bbox.height]);
+        }
+      })
+
+      // clear polling timer
+      clearInterval(tid);
+
+      // show body now that everything is ready
+      on_load_complete();
+    }
+
+    var tid = setInterval(distill_post_process, 50);
+    distill_post_process();
+
+  }
+
+  function init_downlevel() {
+
+    init_common();
+
+     // insert hr after d-title
+    $('.d-title').after($('<hr class="section-separator"/>'));
+
+    // check if we have authors
+    var front_matter = JSON.parse($("#distill-front-matter").html());
+    var have_authors = front_matter.authors && front_matter.authors.length > 0;
+
+    // manage byline/border
+    if (!have_authors)
+      $('.d-byline').remove();
+    $('.d-byline').after($('<hr class="section-separator"/>'));
+    $('.d-byline a').remove();
+
+    // remove toc
+    $('.d-contents').remove();
+
+    // move appendix elements
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('.d-appendix'));
+    });
+
+
+    // inject headers into references and footnotes
+    var refs_header = $('<h3></h3>');
+    refs_header.text('References');
+    $('#refs').prepend(refs_header);
+
+    var footnotes_header = $('<h3></h3');
+    footnotes_header.text('Footnotes');
+    $('.footnotes').children('hr').first().replaceWith(footnotes_header);
+
+    // move appendix-bottom entries to the bottom
+    $('.appendix-bottom').appendTo('.d-appendix').children().unwrap();
+    $('.appendix-bottom').remove();
+
+    // remove appendix if it's empty
+    if ($('.d-appendix').children().length === 0)
+      $('.d-appendix').remove();
+
+    // prepend separator above appendix
+    $('.d-appendix').before($('<hr class="section-separator" style="clear: both"/>'));
+
+    // trim code
+    $('pre>code').each(function(i, val) {
+      $(this).html($.trim($(this).html()));
+    });
+
+    // move posts-container right before article
+    $('.posts-container').insertBefore($('.d-article'));
+
+    $('body').addClass('downlevel');
+
+    on_load_complete();
+  }
+
+
+  function init_common() {
+
+    // jquery plugin to change element types
+    (function($) {
+      $.fn.changeElementType = function(newType) {
+        var attrs = {};
+
+        $.each(this[0].attributes, function(idx, attr) {
+          attrs[attr.nodeName] = attr.nodeValue;
+        });
+
+        this.replaceWith(function() {
+          return $("<" + newType + "/>", attrs).append($(this).contents());
+        });
+      };
+    })(jQuery);
+
+    // prevent underline for linked images
+    $('a > img').parent().css({'border-bottom' : 'none'});
+
+    // mark non-body figures created by knitr chunks as 100% width
+    $('.layout-chunk').each(function(i, val) {
+      var figures = $(this).find('img, .html-widget');
+      // ignore leaflet img layers (#106)
+      figures = figures.filter(':not(img[class*="leaflet"])')
+      if ($(this).attr('data-layout') !== "l-body") {
+        figures.css('width', '100%');
+      } else {
+        figures.css('max-width', '100%');
+        figures.filter("[width]").each(function(i, val) {
+          var fig = $(this);
+          fig.css('width', fig.attr('width') + 'px');
+        });
+
+      }
+    });
+
+    // auto-append index.html to post-preview links in file: protocol
+    // and in rstudio ide preview
+    $('.post-preview').each(function(i, val) {
+      if (window.location.protocol === "file:")
+        $(this).attr('href', $(this).attr('href') + "index.html");
+    });
+
+    // get rid of index.html references in header
+    if (window.location.protocol !== "file:") {
+      $('.distill-site-header a[href]').each(function(i,val) {
+        $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
+      });
+    }
+
+    // add class to pandoc style tables
+    $('tr.header').parent('thead').parent('table').addClass('pandoc-table');
+    $('.kable-table').children('table').addClass('pandoc-table');
+
+    // add figcaption style to table captions
+    $('caption').parent('table').addClass("figcaption");
+
+    // initialize posts list
+    if (window.init_posts_list)
+      window.init_posts_list();
+
+    // implmement disqus comment link
+    $('.disqus-comment-count').click(function() {
+      window.headroom_prevent_pin = true;
+      $('#disqus_thread').toggleClass('hidden');
+      if (!$('#disqus_thread').hasClass('hidden')) {
+        var offset = $(this).offset();
+        $(window).resize();
+        $('html, body').animate({
+          scrollTop: offset.top - 35
+        });
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (is_downlevel_browser())
+      init_downlevel();
+    else
+      window.addEventListener('WebComponentsReady', init_distill);
+  });
+
+  </script>
+
+  <!--/radix_placeholder_distill-->
+  <script src="thermizer_files/header-attrs-2.14/header-attrs.js"></script>
+  <script src="thermizer_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+  <script src="thermizer_files/popper-2.6.0/popper.min.js"></script>
+  <link href="thermizer_files/tippy-6.2.7/tippy.css" rel="stylesheet" />
+  <link href="thermizer_files/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
+  <script src="thermizer_files/tippy-6.2.7/tippy.umd.min.js"></script>
+  <script src="thermizer_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="thermizer_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="thermizer_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="thermizer_files/distill-2.2.21/template.v2.js"></script>
+  <!--radix_placeholder_site_in_header-->
+  <!--/radix_placeholder_site_in_header-->
+
+
+</head>
+
+<body>
+
+<!--radix_placeholder_front_matter-->
+
+<script id="distill-front-matter" type="text/json">
+{"title":"Temperature-dependent rates in mizer","description":"Temperature is an important driver of ecosystem change.  Now you can include it in mizer.","authors":[{"author":"Phoebe Woodworth-Jefcoats","authorURL":"https://www.fisheries.noaa.gov/contact/phoebe-woodworth-jefcoats","affiliation":"NOAA","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-07-11T00:00:00.000+01:00","citationText":"Woodworth-Jefcoats, 2022"}
+</script>
+
+<!--/radix_placeholder_front_matter-->
+<!--radix_placeholder_navigation_before_body-->
+<!--/radix_placeholder_navigation_before_body-->
+<!--radix_placeholder_site_before_body-->
+<!--/radix_placeholder_site_before_body-->
+
+<div class="d-title">
+<h1>Temperature-dependent rates in mizer</h1>
+<!--radix_placeholder_categories-->
+<!--/radix_placeholder_categories-->
+<p><p>Temperature is an important driver of ecosystem change. Now you
+can include it in mizer.</p></p>
+</div>
+
+<div class="d-byline">
+  Phoebe Woodworth-Jefcoats <a
+href="https://www.fisheries.noaa.gov/contact/phoebe-woodworth-jefcoats"
+class="uri">https://www.fisheries.noaa.gov/contact/phoebe-woodworth-jefcoats</a> (NOAA)
+  
+<br/>2022-07-11
+</div>
+
+<div class="d-article">
+<div class="d-contents d-contents-float">
+<nav class="l-text toc figcaption" id="TOC">
+<h3>Contents</h3>
+<ul>
+<li><a href="#introduction">Introduction</a>
+<ul>
+<li><a href="#aerobic-scope">Aerobic scope</a></li>
+<li><a href="#metabolic-rate">Metabolic rate</a></li>
+</ul></li>
+<li><a href="#model-input">Model input</a></li>
+<li><a href="#a-simple-simulation">A simple simulation</a></li>
+<li><a href="#adapting-this-for-a-data-based-simulation">Adapting this
+for a data-based simulation</a></li>
+<li><a href="#in-the-works">In the works</a></li>
+<li><a href="#acknowledgements">Acknowledgements</a></li>
+<li><a href="#references">References</a></li>
+</ul>
+</nav>
+</div>
+<h2 id="introduction">Introduction</h2>
+<p>therMizer models the effects of temperature on individuals’ aerobic
+scope and metabolic rate using an approach that requires minimal
+parameterization. This allows you to easily incorporate dynamic
+temperature-dependent rates into mizer, enabling simulations to include
+an important climate-related driver.</p>
+<h3 id="aerobic-scope">Aerobic scope</h3>
+<p>The relationship between aerobic scope and temperature is a somewhat
+left-skewed distribution with a thermal optimum and upper and lower
+thermal tolerance limits. <a
+href="https://doi.org/10.1111/j.1095-8649.2010.02783.x">Pörtner and Peck
+(2010)</a> provide an overview of this relationship and <a
+href="https://doi.org/10.3354/meps10123">Pörtner (2012)</a> discusses
+open questions related to temperature and physiology. The exact nature
+of the relationship between aerobic scope and temperature varies by
+species and requires a fair bit of physiological research to establish.
+Therefore, it is generally necessary to approximate this relationship,
+which is what therMizer does. A generic polynomial rate equation is used
+to approximate the effect of temperature on aerobic scope, <em>s</em>:
+<span class="math display">\[
+\begin{align}
+s = T(T_{max} - T)(T - T_{min}) &amp;&amp; \text{(1)}
+\end{align}
+\]</span> where <em>T</em> is the temperature to which a fish is exposed
+and <span class="math inline">\(T_{max}\)</span> and <span
+class="math inline">\(T_{min}\)</span> are the species’ upper and lower
+thermal tolerance limits, respectively (<a
+href="https://doi.org/10.1016/j.aquabot.2005.09.004">van der Heide et
+al. 2010</a>). All temperatures in eq. (1) are in degrees Celsius. The
+result of this expression varies considerably given a species’ thermal
+tolerance limits. Therefore, it is necessary to scale this value across
+all modeled species so that it equals a value ranging from 0 – 1. This
+is done by dividing by the maximum value over each species’ thermal
+range (<a
+href="https://www.frontiersin.org/articles/10.3389/fmars.2019.00383/full">Woodworth-Jefcoats
+et al. 2019</a>). therMizer will take care of this scaling for you.</p>
+<p>The scaled value is then used as a multiplier for encounter rate and
+predation rate in mizer. The scaling is applied to encounter rate as
+proxy for foraging movement. The resulting temperature effect is such
+that when species are at their thermal optima they realize peak aerobic
+performance and encounter the maximum amount of prey possible. This
+ability diminishes to either side of the optimum and reaches zero
+outside species’ thermal tolerance limits. The scaling is applied to
+predation rate to ensure encountered prey are predated upon.</p>
+<h3 id="metabolic-rate">Metabolic rate</h3>
+<p>The relationship between metabolic rate and temperature is
+exponential and positive (see, for example, <a
+href="https://doi.org/10.1890/03-9000">Brown et al. 2004</a>). To
+simulate this, therMizer uses a Boltzmann factor or Arrhenius relation:
+<span class="math display">\[
+\begin{align}
+r = e^{25.22-\frac{E}{kT}} &amp;&amp; \text{(2)}
+\end{align}
+\]</span> where <em>r</em> is the effect of temperature on metabolic
+rate, <em>E</em> is activation energy (0.63 eV), <em>k</em> is
+Boltzmann’s constant (<span class="math inline">\(8.62 \times
+10^{-5}\)</span> eV K<span class="math inline">\(^{-1}\)</span>), and
+<em>T</em> is temperature in Kelvin (<a
+href="https://doi.org/10.1890/03-9000">Brown et al. 2004</a>, <a
+href="https://doi.org/10.1098/rspb.2008.0192">Jennings et al. 2008</a>).
+The result of this expression varies depending upon the temperature to
+which species are exposed, which is in turn a factor of species’ thermal
+tolerance limits. Therefore, it is necessary to scale this value across
+all species so that it equals a value ranging from 0 – 1. This is done
+by subtracting the minimum value over each species’ thermal range and
+then dividing the result by the range (<a
+href="https://www.frontiersin.org/articles/10.3389/fmars.2019.00383/full">Woodworth-Jefcoats
+et al. 2019</a>). therMizer will take care of this scaling (and
+converting from degrees C to Kelvin) for you when you.</p>
+<p>The scaled value is then used as a multiplier for standard metabolism
+in therMizer. This has the effect of metabolism being the least
+expensive when species are at the low end of their thermal tolerance and
+the most expensive at the upper limits of their thermal tolerance.</p>
+<p>Finally, therMizer sets the rate scalings to 0 outside species’
+thermal range, simulating the assumption that species would move out of
+waters that are either too warm or too cool.</p>
+<h2 id="model-input">Model input</h2>
+<p>The only additional input you’ll need to provide, beyond what’s
+needed to run mizer, are three temperature values for each species.
+<code>temp_min</code> and <code>temp_max</code> represent the lower and
+upper bounds of a species’ thermal tolerance limits. You can find this
+information in the literature or in databases such as <a
+href="https://github.com/ropensci/rfishbase">rfishbase</a> (<a
+href="https://doi.org/10.1111/j.1095-8649.2012.03464.x">Boettiger et
+al. 2012</a>). You also need to provide <code>ocean_temp</code>, the
+temperature to which species are exposed. This can be static or dynamic,
+and informed from either empirical or modeled data.</p>
+<p>That’s it. That’s all you need.</p>
+<h2 id="a-simple-simulation">A simple simulation</h2>
+<p>Let’s do a simple simulation with two fictional fish species. We’ll
+need to invent some parameters for them:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://sizespectrum.org/mizer/'>mizer</a></span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>species_params</span> <span class='op'>&lt;-</span> </span>
+<span>    <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>species <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"speciesA"</span>, <span class='st'>"speciesB"</span><span class='op'>)</span>, </span>
+<span>               w_inf <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>500</span>, <span class='fl'>5000</span><span class='op'>)</span>, </span>
+<span>               k_vb <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.8</span>, <span class='fl'>0.3</span><span class='op'>)</span>, </span>
+<span>               w_min <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.001</span>, <span class='fl'>0.001</span><span class='op'>)</span>, </span>
+<span>               beta <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1000</span>,<span class='fl'>100</span><span class='op'>)</span>, </span>
+<span>               sigma <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='va'>species_params</span><span class='op'>$</span><span class='va'>interaction_resource</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>0.5</span><span class='op'>)</span></span>
+<span><span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/newMultispeciesParams.html'>newMultispeciesParams</a></span><span class='op'>(</span><span class='va'>species_params</span>, no_w <span class='op'>=</span> <span class='fl'>200</span>, kappa <span class='op'>=</span> <span class='fl'>0.0001</span><span class='op'>)</span> <span class='op'>|&gt;</span> </span>
+<span>    <span class='fu'><a href='https://sizespectrum.org/mizer/reference/steady.html'>steady</a></span><span class='op'>(</span>tol <span class='op'>=</span> <span class='fl'>0.001</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Add their hypothetical thermal tolerance limits:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>15</span>, <span class='fl'>10</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>, <span class='fl'>20</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>And, finally, the temperatures to which each species is exposed. To
+make it interesting, we’ll have one species eventually encounter
+temperatures beyond its thermal tolerance limits.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Create temperature array and fill it</span></span>
+<span><span class='va'>times</span> <span class='op'>&lt;-</span> <span class='fl'>0</span><span class='op'>:</span><span class='fl'>500</span></span>
+<span><span class='va'>species</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>species</span></span>
+<span><span class='va'>ocean_temp_array</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span><span class='cn'>NA</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>times</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>species</span><span class='op'>)</span><span class='op'>)</span>, </span>
+<span>                          dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>time <span class='op'>=</span> <span class='va'>times</span>, sp <span class='op'>=</span> <span class='va'>species</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='va'>temp_inc</span> <span class='op'>&lt;-</span> <span class='fl'>0</span></span>
+<span><span class='kw'>for</span> <span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>501</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>  <span class='va'>ocean_temp_array</span><span class='op'>[</span><span class='va'>i</span>,<span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>17</span> <span class='op'>+</span> <span class='va'>temp_inc</span>, <span class='fl'>17</span> <span class='op'>+</span> <span class='va'>temp_inc</span><span class='op'>)</span></span>
+<span>  <span class='va'>temp_inc</span> <span class='op'>&lt;-</span> <span class='va'>temp_inc</span> <span class='op'>+</span> <span class='fl'>0.01</span></span>
+<span><span class='op'>}</span></span>
+<span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/setRateFunction.html'>other_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>ocean_temp</span> <span class='op'>&lt;-</span> <span class='va'>ocean_temp_array</span></span></code></pre>
+</div>
+</div>
+<p>Now that we’ve put in all the necessary temperature information, we
+can add the code that tells mizer how to use it. First, the parameters
+needed to do the scaling that’s mentioned above:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Create parameter for scaling encounter and mortality rates</span></span>
+<span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>encounterpred_scale</span> <span class='op'>&lt;-</span> </span>
+<span>    <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='kw'>for</span> <span class='op'>(</span><span class='va'>indv</span> <span class='kw'>in</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>    </span>
+<span>    <span class='co'># Create a vector of all temperatures each species might encounter</span></span>
+<span>    <span class='va'>temperature</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span>, </span>
+<span>                       <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span>, </span>
+<span>                       by <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span></span>
+<span>    </span>
+<span>    <span class='co'># Find the maximum value of the unscaled effect of temperature on encounter</span></span>
+<span>    <span class='co'># and predation rate for each species </span></span>
+<span>  <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>encounterpred_scale</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span> <span class='op'>&lt;-</span> </span>
+<span>      <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='op'>(</span><span class='va'>temperature</span><span class='op'>)</span> <span class='op'>*</span> </span>
+<span>              <span class='op'>(</span><span class='va'>temperature</span> <span class='op'>-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span><span class='op'>)</span> <span class='op'>*</span></span>
+<span>              <span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span> <span class='op'>-</span> <span class='va'>temperature</span><span class='op'>)</span></span>
+<span>          <span class='op'>)</span></span>
+<span><span class='op'>}</span></span>
+<span></span>
+<span><span class='co'># Determine the minimum, maximum, and range of value for the effect of </span></span>
+<span><span class='co'># temperature on metabolism</span></span>
+<span>    </span>
+<span><span class='va'>min_metab_value</span> <span class='op'>&lt;-</span> </span>
+<span>    <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='fl'>25.22</span> <span class='op'>-</span> <span class='op'>(</span><span class='fl'>0.63</span><span class='op'>/</span><span class='op'>(</span><span class='op'>(</span><span class='fl'>8.62e-5</span><span class='op'>)</span><span class='op'>*</span><span class='op'>(</span><span class='fl'>273</span> <span class='op'>+</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='va'>max_metab_value</span> <span class='op'>&lt;-</span> </span>
+<span>    <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='fl'>25.22</span> <span class='op'>-</span> <span class='op'>(</span><span class='fl'>0.63</span><span class='op'>/</span><span class='op'>(</span><span class='op'>(</span><span class='fl'>8.62e-5</span><span class='op'>)</span><span class='op'>*</span><span class='op'>(</span><span class='fl'>273</span> <span class='op'>+</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span>    </span>
+<span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>metab_min</span> <span class='op'>&lt;-</span> <span class='va'>min_metab_value</span></span>
+<span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>metab_range</span> <span class='op'>&lt;-</span> <span class='va'>max_metab_value</span> <span class='op'>-</span> <span class='va'>min_metab_value</span></span></code></pre>
+</div>
+</div>
+<p>Then, we can add code to scale encounter rate and predation rate
+based on the temperature at a given time step:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Calculate the temperature scaling factor for the encounter rate and </span></span>
+<span><span class='co'># predation rate</span></span>
+<span><span class='va'>scaled_temp_effect</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>t</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>    <span class='co'># Using t+1 to avoid calling ocean_temp[0,] at the first time step</span></span>
+<span>    <span class='va'>temp_at_t</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setRateFunction.html'>other_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>ocean_temp</span><span class='op'>[</span><span class='va'>t</span> <span class='op'>+</span> <span class='fl'>1</span>,<span class='op'>]</span></span>
+<span>    </span>
+<span>    <span class='co'># Calculate unscaled temperature effect using a generic polynomial rate equation</span></span>
+<span>    <span class='va'>unscaled_temp_effect</span> <span class='op'>&lt;-</span> </span>
+<span>        <span class='va'>temp_at_t</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>temp_at_t</span> <span class='op'>-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span><span class='op'>)</span> <span class='op'>*</span> </span>
+<span>        <span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span> <span class='op'>-</span> <span class='va'>temp_at_t</span><span class='op'>)</span></span>
+<span>    </span>
+<span>    <span class='co'># Scale using new parameter</span></span>
+<span>    <span class='va'>scaled_temp_effect</span> <span class='op'>&lt;-</span> </span>
+<span>        <span class='va'>unscaled_temp_effect</span> <span class='op'>/</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>encounterpred_scale</span></span>
+<span>    </span>
+<span>    <span class='co'># Set temperature effect to 0 if temperatures are outside thermal </span></span>
+<span>    <span class='co'># tolerance limits</span></span>
+<span>    <span class='va'>above_max</span> <span class='op'>&lt;-</span> <span class='va'>temp_at_t</span> <span class='op'>&gt;</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span></span>
+<span>    <span class='va'>below_min</span> <span class='op'>&lt;-</span> <span class='va'>temp_at_t</span> <span class='op'>&lt;</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span></span>
+<span>    <span class='va'>scaled_temp_effect</span><span class='op'>[</span><span class='va'>above_max</span> <span class='op'>|</span> <span class='va'>below_min</span><span class='op'>]</span> <span class='op'>=</span> <span class='fl'>0</span></span>
+<span>    </span>
+<span>    <span class='va'>scaled_temp_effect</span></span>
+<span><span class='op'>}</span></span>
+<span></span>
+<span></span>
+<span><span class='va'>therMizerEncounter</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>params</span>, <span class='va'>t</span>, <span class='va'>...</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>    </span>
+<span>      <span class='co'># Calculate maximum possible encounter rate</span></span>
+<span>      <span class='va'>max_encounter</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/mizerEncounter.html'>mizerEncounter</a></span><span class='op'>(</span><span class='va'>params</span>, <span class='va'>t</span>, <span class='va'>...</span><span class='op'>)</span></span>
+<span>      </span>
+<span>      <span class='co'># Apply temperature effect</span></span>
+<span>      <span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span><span class='va'>max_encounter</span> <span class='op'>*</span> <span class='fu'>scaled_temp_effect</span><span class='op'>(</span><span class='va'>t</span><span class='op'>)</span><span class='op'>)</span></span>
+<span>      </span>
+<span><span class='op'>}</span></span>
+<span></span>
+<span><span class='va'>therMizerPredRate</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>params</span>, <span class='va'>t</span>, <span class='va'>...</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>      <span class='co'># Calculate maximum possible encounter rate</span></span>
+<span>      <span class='va'>max_predrate</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/mizerPredRate.html'>mizerPredRate</a></span><span class='op'>(</span><span class='va'>params</span>, <span class='va'>t</span>, <span class='va'>...</span><span class='op'>)</span></span>
+<span>      </span>
+<span>      <span class='co'># Apply temperature effect</span></span>
+<span>      <span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span><span class='va'>max_predrate</span> <span class='op'>*</span> <span class='fu'>scaled_temp_effect</span><span class='op'>(</span><span class='va'>t</span><span class='op'>)</span><span class='op'>)</span></span>
+<span>      </span>
+<span><span class='op'>}</span></span></code></pre>
+</div>
+</div>
+<p>As well as metabolic rate:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>therMizerEReproAndGrowth</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>params</span>, <span class='va'>t</span>, <span class='va'>encounter</span>, <span class='va'>feeding_level</span>, <span class='va'>...</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>    </span>
+<span>    <span class='co'># Using t+1 to avoid calling ocean_temp[0,] at the first time step</span></span>
+<span>    <span class='va'>temp_at_t</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setRateFunction.html'>other_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>ocean_temp</span><span class='op'>[</span><span class='va'>t</span> <span class='op'>+</span> <span class='fl'>1</span>,<span class='op'>]</span></span>
+<span>  </span>
+<span>    <span class='co'># Arrhenius equation</span></span>
+<span>    <span class='va'>unscaled_temp_effect</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='fl'>25.22</span> <span class='op'>-</span> <span class='op'>(</span><span class='fl'>0.63</span><span class='op'>/</span><span class='op'>(</span><span class='op'>(</span><span class='fl'>8.62e-5</span><span class='op'>)</span><span class='op'>*</span><span class='op'>(</span><span class='fl'>273</span> <span class='op'>+</span> <span class='va'>temp_at_t</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span>    </span>
+<span>    <span class='co'># Arrhenius equation scaled to a value between 0 and 1</span></span>
+<span>    <span class='va'>temp_effect_metabolism</span> <span class='op'>&lt;-</span> </span>
+<span>        <span class='op'>(</span><span class='va'>unscaled_temp_effect</span> <span class='op'>-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>metab_min</span><span class='op'>)</span> <span class='op'>/</span></span>
+<span>        <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>metab_range</span></span>
+<span>    </span>
+<span>    <span class='co'># Set temperature effect to 0 if temperatures are outside thermal </span></span>
+<span>    <span class='co'># tolerance limits</span></span>
+<span>    <span class='va'>above_max</span> <span class='op'>&lt;-</span> <span class='va'>temp_at_t</span> <span class='op'>&gt;</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span></span>
+<span>    <span class='va'>below_min</span> <span class='op'>&lt;-</span> <span class='va'>temp_at_t</span> <span class='op'>&lt;</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span></span>
+<span>    <span class='va'>temp_effect_metabolism</span><span class='op'>[</span><span class='va'>above_max</span> <span class='op'>|</span> <span class='va'>below_min</span><span class='op'>]</span> <span class='op'>=</span> <span class='fl'>0</span></span>
+<span>  </span>
+<span>  <span class='co'># Apply scaled Arrhenius value to metabolism</span></span>
+<span>    <span class='fu'><a href='https://rdrr.io/r/base/sweep.html'>sweep</a></span><span class='op'>(</span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>-</span> <span class='va'>feeding_level</span><span class='op'>)</span> <span class='op'>*</span> <span class='va'>encounter</span>, <span class='fl'>1</span>,</span>
+<span>          <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>alpha</span>, <span class='st'>"*"</span>, check.margin <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>-</span> </span>
+<span>        <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMetabolicRate.html'>metab</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>*</span><span class='va'>temp_effect_metabolism</span>  </span>
+<span>      </span>
+<span><span class='op'>}</span></span></code></pre>
+</div>
+</div>
+<p>Finally, we need to replace mizer’s rate functions with our new
+temperature-dependent rate functions:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setRateFunction.html'>setRateFunction</a></span><span class='op'>(</span><span class='va'>params</span>, <span class='st'>"Encounter"</span>, <span class='st'>"therMizerEncounter"</span><span class='op'>)</span></span>
+<span><span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setRateFunction.html'>setRateFunction</a></span><span class='op'>(</span><span class='va'>params</span>, <span class='st'>"PredRate"</span>, <span class='st'>"therMizerPredRate"</span><span class='op'>)</span></span>
+<span><span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setRateFunction.html'>setRateFunction</a></span><span class='op'>(</span><span class='va'>params</span>, <span class='st'>"EReproAndGrowth"</span>, <span class='st'>"therMizerEReproAndGrowth"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Let’s see what a simulation looks like.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>sim</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/project.html'>project</a></span><span class='op'>(</span><span class='va'>params</span>, t_max <span class='op'>=</span> <span class='fl'>500</span>, effort <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span> </span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>sim</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="thermizer_files/figure-html5/unnamed-chunk-8-1.png" width="624" /></p>
+</div>
+<h2 id="adapting-this-for-a-data-based-simulation">Adapting this for a
+data-based simulation</h2>
+<p>You’re likely going to want to do simulations based on real species
+and real temperature observations or projections. This is
+straightforward to do. When you prepare your species parameters, add
+<code>temp_min</code> and <code>temp_max</code> columns for each
+species. You’ll also need to prepare an <code>ocean_temp</code> input
+with dimensions that match those of <code>time</code> and
+<code>species</code>.</p>
+<p>Once you’ve prepared your input, you can use the code above to create
+and use the <code>encounterpred_scale</code>, <code>metab_min</code>,
+and <code>metab_range</code> parameters and the
+<code>therMizerEncounter</code>, <code>therMizerPredRate</code>, and
+<code>therMizerEReproAndGrowth</code> rate functions.</p>
+<h2 id="in-the-works">In the works</h2>
+<p>Many fish undergo ontogentic migration, spending different life
+stages at different depths and therefore different thermal habitats. I’m
+working on adding to therMizer the capacity for different size classes
+to experience different temperatures.</p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>This blog post was compiled with mizer version 2.3.0.1 and R version
+4.2.1. Many thanks to Gustav Delius for guidance on mizer’s inner
+workings and writing better code.</p>
+<h2 id="references">References</h2>
+<p>Boettiger, C., Lang, D. T., and Wainwright, P. C. (2012). rfishbase:
+exploring, manipulating, and visualizaing FishBase from R. Journal of
+Fish Biology 81, 2030–2039. <a
+href="https://doi.org/10.1111/j.1095-8649.2012.03464.x"
+class="uri">https://doi.org/10.1111/j.1095-8649.2012.03464.x</a></p>
+<p>Brown JH, Gillooly JF, Allen AP, Savage VM, West GB. (2004) Toward a
+metabolic theory of ecology. Ecology, 85: 1771–1789. <a
+href="https://doi.org/10.1890/03-9000"
+class="uri">https://doi.org/10.1890/03-9000</a></p>
+<p>Jennings S, Mélin F, Blanchard JL, Forster RM, Dulvy NK, Wilson RW.
+(2008) Global scale predictions of community and ecosystem properties
+from simple ecological theory. Proceedings of the Royal Society B, 275:
+1375–1383. <a href="https://doi.org/10.1098/rspb.2008.0192"
+class="uri">https://doi.org/10.1098/rspb.2008.0192</a></p>
+<p>Pörtner HO. (2012) Integrating climate-related stressor effects on
+marine organisms: unifying principles linking molecule to
+ecosystem-level changes. Marine Ecology Progress Series, 470: 273–290.
+<a href="https://doi.org/10.3354/meps10123"
+class="uri">https://doi.org/10.3354/meps10123</a></p>
+<p>Pörtner HO, Peck MA. (2010) Climate change effects on fishes and
+fisheries: toward a cause-and-effect understanding. Journal of Fish
+Biology, 77: 1745–1779. <a
+href="https://doi.org/10.1111/j.1095-8649.2010.02783.x"
+class="uri">https://doi.org/10.1111/j.1095-8649.2010.02783.x</a></p>
+<p>van der Heide T, Roijackers RMM, van New EH, Peeters ETHM. (2006) A
+simple equation for describing the temperature dependent growth of
+free-floating macrophytes. Aquatic Botany, 84: 171–175. <a
+href="https://doi.org/10.1016/j.aquabot.2005.09.004"
+class="uri">https://doi.org/10.1016/j.aquabot.2005.09.004</a></p>
+<p>Woodworth-Jefcoats PA, Blanchard JL, Drazen JC. (2019) Relative
+Impacts of Simultaneous Stressors on a Pelagic Marine Ecosystem.
+Frontiers in Marine Science, 6:383. <a
+href="https://doi.org/10.3389/fmars.2019.00383"
+class="uri">https://doi.org/10.3389/fmars.2019.00383</a></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<!--radix_placeholder_article_footer-->
+<!--/radix_placeholder_article_footer-->
+</div>
+
+<div class="d-appendix">
+</div>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!--radix_placeholder_site_after_body-->
+<!--/radix_placeholder_site_after_body-->
+<!--radix_placeholder_appendices-->
+<div class="appendix-bottom"></div>
+<!--/radix_placeholder_appendices-->
+<!--radix_placeholder_navigation_after_body-->
+<!--/radix_placeholder_navigation_after_body-->
+
+</body>
+
+</html>
