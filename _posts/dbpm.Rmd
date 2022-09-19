@@ -1,0 +1,302 @@
+---
+title: "dbpm"
+output: html_notebook
+---
+
+```{r}
+library(mizer)
+library(tidyverse)
+```
+
+## Setting up benthic and pelagic spectra
+
+The model does not disaggregate by species but instead only has one benthic
+community and one pelagic community. To set up such a community model with
+mizer we view each community as a "species", just with unusual parameters.
+
+### Species parameters
+
+We read off the species paramters from table S2. Some of the parameters are
+standard mizer parameters, others will be explained later.
+
+```{r}
+sp <- tibble(
+    species = c("pelagic", "benthic"),
+    w_min = c(1e-3, 10^-3.5),
+    w_inf = 1e6,
+    beta = 100,
+    sigma = 1,
+    gamma = c(640, 64) / sqrt(2 * pi) / sigma,
+    q = c(0.82, 0.75),
+    # Metabolism is modelled differently, so set the standard one to 0
+    ks = 0,
+    # Only pelagic organisms feed on primary resource
+    interaction_resource = c(1, 0),
+    # We have no predator-dependent assimilation efficiency
+    alpha = 1,
+    # Prey-dependent egestion ratio
+    E = c(0.3, 0.5),
+    # Prey-dependent conversion efficiency
+    K = c(0.3, 0.2),
+    # Prey-dependent allocation to reproduction
+    R = c(0.2, 0.1),
+    # Perfect reproductive efficiency
+    erepro = 2,
+    # Switch off satiation for now
+    h = Inf,
+    linecolour = c("black", "grey")
+)
+```
+
+### Create MizerParams object
+
+We create the MizerParams object by specifying these species parameters and
+the parameters for the primary resource from table S2.
+
+We choose the number of size classes to agree with the paper.
+
+```{r}
+params <- newMultispeciesParams(species_params = sp, no_w = 96,
+                                kappa = 0.006, lambda = 2, min_w_pp = 1e-12,
+                                w_pp_cutoff = 1e-3,
+                                resource_dynamics = "resource_constant")
+```
+
+### External mortality
+
+The model imposes external mortality made up of an allometrically decreasing
+mortality and a senescent mortality that increases with size:
+
+$$ D_{iO}(m) = 0.2 m^{-0.25} + 0.2 (m / m_s)^{0.3}.$$
+
+```{r}
+# sizes for onset of senescence
+m_s <- 1000
+
+# Set mortality rate matrix
+D_O <- matrix(0.2 * w(params)^(-0.25) + 0.2 * (w(params) / m_s) ^ 0.3, 
+              nrow = 2, ncol = length(w(params)), byrow = TRUE)
+ext_mort(params) <- D_O
+```
+
+Let's visualise this:
+```{r}
+plotDataFrame(melt(ext_mort(params))[, c(2, 3, 1)], params, 
+              xtrans = "log10", ytrans = "log10")
+```
+
+
+## Detritus
+
+### Params
+```{r}
+other_params(params)$omega_D <- 1
+other_params(params)$E_D <- 0.5
+other_params(params)$K_D <- 0.2
+other_params(params)$R_D <- 0.1
+```
+
+### Encounter
+```{r}
+detritus_encounter <- function(params, n_other, ...) {
+    encounter <- matrix(0, nrow = 2, ncol = length(w(params)))
+    encounter[2, ] <- search_vol(params)[2, ] * n_other$detritus *
+        other_params(params)$omega_D
+    encounter
+}
+```
+
+```{r}
+setS <- function(params, S) {
+    other_params(params)$S <- S
+    
+    other_params(params)$resource_to_detritus <-
+        sum(initialNResource(params) * 
+                (0.2 * w_full(params)^(-0.25) + 0.2 * (w_full(params) / m_s)^0.3) *
+                w_full(params) * dw_full(params)) * S
+    params
+}
+```
+
+### Dynamics
+
+```{r}
+detritus_consumption_ms <- function(params, n = initialN(params), 
+                                    rates = getRates(params)) {
+    sum((search_vol(params) * n * (1 - rates$feeding_level))[2, ] *
+                params@dw)
+}
+
+detritus_production <- function(params, n = initialN(params),
+                                n_pp = initialNResource(params),
+                                n_other = initialNOther(params), 
+                                rates = getRates(params), ...){
+    from_mort <- sum((ext_mort(params) * n) %*% (w(params) * dw(params)) *
+                         c(other_params(params)$S, 1))
+    
+    inter <- getInteraction(params)
+    inter <- inter * species_params(params)$E
+    params <- setInteraction(params, interaction = inter)
+    other_params(params)$omega_D <- other_params(params)$omega_D *
+        other_params(params)$E_D
+    from_pred <- sum(mizerEncounter(params, n = n, n_pp = n_pp,
+                                    n_other = n_other, t = 0)[1, ] * 
+        (1 - rates$feeding_level)[1, ] * n[1, ] * dw(params)) *
+        other_params(params)$S
+    
+    c(from_mort = from_mort, from_pred = from_pred, 
+      from_resource = other_params(params)$resource_to_detritus)
+}
+
+detritus_dynamics <- function(params, n, n_other, rates, dt, ...) {
+    
+    consumption <- detritus_consumption_ms(params, n, rates)
+    if (is.nan(consumption)) browser()
+    
+    production <- sum(detritus_production(params, n, n_other, rates, ...))
+    
+    if (consumption) {
+        et <- exp(-consumption * dt)
+        return(n_other$detritus * et + production / consumption  * (1 - et))
+    }
+    return(n_other$detritus + production * dt)
+}
+```
+
+
+```{r}
+params <- setComponent(params, "detritus",
+                       initial_value = 0.6,
+                       dynamics_fun = "detritus_dynamics",
+                       encounter_fun = "detritus_encounter")
+```
+
+
+## Rates
+
+### Growth
+```{r}
+dbpmEGrowth <- function(params, ...) {
+    inter <- getInteraction(params)
+    inter[1, ] <- inter[1, ] * species_params(params)$K *
+        (1 - species_params(params)$E)
+    params <- setInteraction(params, interaction = inter)
+    # species_params(params)$interaction_resource <- 
+    #     species_params(params)$interaction_resource *
+    #     species_params(params)$K *
+    #     (1 - species_params(params)$E)
+    
+    other_params(params)$omega_D <- other_params(params)$omega_D *
+        other_params(params)$K_D * (1 - other_params(params)$E_D)
+    
+    mizerEncounter(params, ...)# * (1 - feeding_level)
+}
+
+params <- setRateFunction(params, "EGrowth", "dbpmEGrowth")
+```
+
+### Reproduction
+
+```{r}
+dbpmERepro <- function(params, ...) {
+    inter <- getInteraction(params)
+    inter[1, ] <- inter[1, ] * species_params(params)$R *
+        (1 - species_params(params)$E)
+    params <- setInteraction(params, interaction = inter)
+    # species_params(params)$interaction_resource <- 
+    #     species_params(params)$interaction_resource *
+    #     species_params(params)$R *
+    #     (1 - species_params(params)$E)
+    
+    other_params(params)$omega_D <- other_params(params)$omega_D *
+        other_params(params)$R_D * (1 - other_params(params)$E_D)
+    
+    mizerEncounter(params, ...)# * (1 - feeding_level)
+}
+
+params <- setRateFunction(params, "ERepro", "dbpmERepro")
+```
+
+```{r}
+constantERepro <- function(params, ...) {
+    species_params(params)$ERepro
+}
+```
+
+
+## Initial values
+
+```{r}
+initialN(params)["pelagic", ] <- 0.000006 * w(params) ^ -2
+initialN(params)["pelagic", w(params) < 1e-3] <- 0
+initialN(params)["benthic", ] <- 0.000006 * w(params) ^ -2
+plotSpectra(params)
+```
+
+## Figures
+
+### 1a
+```{r}
+p <- params |>
+    setInteraction(matrix(c(1, 0, 0, 0), nrow = 2, byrow = TRUE)) |>
+    setS(0.05)
+
+sim_a <- project(p, dt = 0.1, t_max = 50)
+plotSpectra(sim_a)
+```
+
+```{r}
+finalNOther(sim_a)
+```
+```{r}
+p <- setInitialValues(p, sim_a)
+detritus_production(p)
+detritus_consumption_ms(p)
+```
+
+
+### 1b
+```{r}
+p <- params |>
+    setInteraction(matrix(c(1, 0, 0, 0), nrow = 2, byrow = TRUE)) |>
+    setS(0.5)
+
+sim_b <- project(p, dt = 0.1, t_max = 50)
+plotSpectra(sim_b)
+```
+
+```{r}
+finalNOther(sim_b)
+```
+
+```{r}
+p <- setInitialValues(p, sim_b)
+detritus_production(p)
+detritus_consumption_ms(p)
+```
+
+### 1c
+```{r}
+p <- setInteraction(params, matrix(c(1/2, 1/2, 0, 0), 
+                                        nrow = 2, byrow = TRUE))
+other_params(p)$S <- 0.5
+sim_c <- project(p, dt = 0.1, t_max = 50)
+plotSpectra(sim_c)
+```
+
+```{r}
+finalNOther(sim)
+```
+
+### 1d
+```{r}
+p <- setInteraction(params, matrix(c(0, 1, 0, 0), 
+                                        nrow = 2, byrow = TRUE))
+other_params(p)$S <- 0.5
+sim_d <- project(p, dt = 1/365, t_max = 5)
+plotSpectra(sim_d)
+```
+
+```{r}
+finalNOther(sim_d)
+```
