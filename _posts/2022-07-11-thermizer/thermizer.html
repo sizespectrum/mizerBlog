@@ -118,7 +118,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["thermizer_files/figure-html5/unnamed-chunk-8-1.png"]}
+  {"type":"character","attributes":{},"value":["thermizer_files/anchor-4.2.2/anchor.min.js","thermizer_files/bowser-1.9.3/bowser.min.js","thermizer_files/distill-2.2.21/template.v2.js","thermizer_files/figure-html5/unnamed-chunk-8-1.png","thermizer_files/header-attrs-2.14/header-attrs.js","thermizer_files/header-attrs-2.15/header-attrs.js","thermizer_files/jquery-3.6.0/jquery-3.6.0.js","thermizer_files/jquery-3.6.0/jquery-3.6.0.min.js","thermizer_files/jquery-3.6.0/jquery-3.6.0.min.map","thermizer_files/popper-2.6.0/popper.min.js","thermizer_files/tippy-6.2.7/tippy-bundle.umd.min.js","thermizer_files/tippy-6.2.7/tippy-light-border.css","thermizer_files/tippy-6.2.7/tippy.css","thermizer_files/tippy-6.2.7/tippy.umd.min.js","thermizer_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1468,7 +1468,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </script>
 
   <!--/radix_placeholder_distill-->
-  <script src="thermizer_files/header-attrs-2.14/header-attrs.js"></script>
+  <script src="thermizer_files/header-attrs-2.15/header-attrs.js"></script>
   <script src="thermizer_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <script src="thermizer_files/popper-2.6.0/popper.min.js"></script>
   <link href="thermizer_files/tippy-6.2.7/tippy.css" rel="stylesheet" />
@@ -1489,7 +1489,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Temperature-dependent rates in mizer","description":"Temperature is an important driver of ecosystem change.  Now you can include it in mizer.","authors":[{"author":"Phoebe Woodworth-Jefcoats","authorURL":"https://www.fisheries.noaa.gov/contact/phoebe-woodworth-jefcoats","affiliation":"NOAA","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-07-11T00:00:00.000+01:00","citationText":"Woodworth-Jefcoats, 2022"}
+{"title":"Temperature-dependent rates in mizer","description":"Temperature is an important driver of ecosystem change.  Now you can include it in mizer.","authors":[{"author":"Phoebe Woodworth-Jefcoats","authorURL":"https://www.fisheries.noaa.gov/contact/phoebe-woodworth-jefcoats","affiliation":"NOAA","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-07-11T00:00:00.000+02:00","citationText":"Woodworth-Jefcoats, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -1519,18 +1519,24 @@ class="uri">https://www.fisheries.noaa.gov/contact/phoebe-woodworth-jefcoats</a>
 <nav class="l-text toc figcaption" id="TOC">
 <h3>Contents</h3>
 <ul>
-<li><a href="#introduction">Introduction</a>
+<li><a href="#introduction" id="toc-introduction">Introduction</a>
 <ul>
-<li><a href="#aerobic-scope">Aerobic scope</a></li>
-<li><a href="#metabolic-rate">Metabolic rate</a></li>
+<li><a href="#aerobic-scope" id="toc-aerobic-scope">Aerobic
+scope</a></li>
+<li><a href="#metabolic-rate" id="toc-metabolic-rate">Metabolic
+rate</a></li>
 </ul></li>
-<li><a href="#model-input">Model input</a></li>
-<li><a href="#a-simple-simulation">A simple simulation</a></li>
-<li><a href="#adapting-this-for-a-data-based-simulation">Adapting this
-for a data-based simulation</a></li>
-<li><a href="#in-the-works">In the works</a></li>
-<li><a href="#acknowledgements">Acknowledgements</a></li>
-<li><a href="#references">References</a></li>
+<li><a href="#model-input" id="toc-model-input">Model input</a></li>
+<li><a href="#a-simple-simulation" id="toc-a-simple-simulation">A simple
+simulation</a></li>
+<li><a href="#adapting-this-for-a-data-based-simulation"
+id="toc-adapting-this-for-a-data-based-simulation">Adapting this for a
+data-based simulation</a></li>
+<li><a href="#in-the-works" id="toc-in-the-works">In the works</a></li>
+<li><a href="#acknowledgements"
+id="toc-acknowledgements">Acknowledgements</a></li>
+<li><a href="#update-note" id="toc-update-note">Update note</a></li>
+<li><a href="#references" id="toc-references">References</a></li>
 </ul>
 </nav>
 </div>
@@ -1553,21 +1559,20 @@ species and requires a fair bit of physiological research to establish.
 Therefore, it is generally necessary to approximate this relationship,
 which is what therMizer does. A generic polynomial rate equation is used
 to approximate the effect of temperature on aerobic scope, <em>s</em>:
-<span class="math display">\[
-\begin{align}
-s = T(T_{max} - T)(T - T_{min}) &amp;&amp; \text{(1)}
+<span class="math display">\[\begin{align}
+s = T(T - T_{min})(T_{max} - T)^\frac{1}{2} &amp;&amp; \text{(1)}
 \end{align}
 \]</span> where <em>T</em> is the temperature to which a fish is exposed
 and <span class="math inline">\(T_{max}\)</span> and <span
 class="math inline">\(T_{min}\)</span> are the species’ upper and lower
 thermal tolerance limits, respectively (<a
 href="https://doi.org/10.1016/j.aquabot.2005.09.004">van der Heide et
-al. 2010</a>). All temperatures in eq. (1) are in degrees Celsius. The
-result of this expression varies considerably given a species’ thermal
-tolerance limits. Therefore, it is necessary to scale this value across
-all modeled species so that it equals a value ranging from 0 – 1. This
-is done by dividing by the maximum value over each species’ thermal
-range (<a
+al. 2010</a>). All temperatures in eq. (1) are in Kelvin. The result of
+this expression varies considerably given a species’ thermal tolerance
+limits. Therefore, it is necessary to scale this value across all
+modeled species so that it equals a value ranging from 0 – 1. This is
+done by dividing by the maximum value over each species’ thermal range
+(<a
 href="https://www.frontiersin.org/articles/10.3389/fmars.2019.00383/full">Woodworth-Jefcoats
 et al. 2019</a>). therMizer will take care of this scaling for you.</p>
 <p>The scaled value is then used as a multiplier for encounter rate and
@@ -1620,7 +1625,8 @@ href="https://github.com/ropensci/rfishbase">rfishbase</a> (<a
 href="https://doi.org/10.1111/j.1095-8649.2012.03464.x">Boettiger et
 al. 2012</a>). You also need to provide <code>ocean_temp</code>, the
 temperature to which species are exposed. This can be static or dynamic,
-and informed from either empirical or modeled data.</p>
+and informed from either empirical or modeled data. Temperatures are
+input in degrees Celsius. therMizer will convert them to Kelvin.</p>
 <p>That’s it. That’s all you need.</p>
 <h2 id="a-simple-simulation">A simple simulation</h2>
 <p>Let’s do a simple simulation with two fictional fish species. We’ll
@@ -1680,14 +1686,14 @@ needed to do the scaling that’s mentioned above:</p>
 <span>    <span class='co'># Create a vector of all temperatures each species might encounter</span></span>
 <span>    <span class='va'>temperature</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span>, </span>
 <span>                       <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span>, </span>
-<span>                       by <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span></span>
+<span>                       by <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>273</span></span>
 <span>    </span>
 <span>    <span class='co'># Find the maximum value of the unscaled effect of temperature on encounter</span></span>
 <span>    <span class='co'># and predation rate for each species </span></span>
 <span>  <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>encounterpred_scale</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span> <span class='op'>&lt;-</span> </span>
 <span>      <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='op'>(</span><span class='va'>temperature</span><span class='op'>)</span> <span class='op'>*</span> </span>
-<span>              <span class='op'>(</span><span class='va'>temperature</span> <span class='op'>-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span><span class='op'>)</span> <span class='op'>*</span></span>
-<span>              <span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span> <span class='op'>-</span> <span class='va'>temperature</span><span class='op'>)</span></span>
+<span>              <span class='op'>(</span><span class='va'>temperature</span> <span class='op'>-</span> <span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span> <span class='op'>+</span> <span class='fl'>273</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>*</span></span>
+<span>              <span class='op'>(</span><span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span><span class='op'>[</span><span class='va'>indv</span><span class='op'>]</span> <span class='op'>+</span> <span class='fl'>273</span><span class='op'>)</span> <span class='op'>-</span> <span class='va'>temperature</span><span class='op'>)</span><span class='op'>^</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>/</span><span class='fl'>2</span><span class='op'>)</span></span>
 <span>          <span class='op'>)</span></span>
 <span><span class='op'>}</span></span>
 <span></span>
@@ -1711,12 +1717,12 @@ based on the temperature at a given time step:</p>
 <span><span class='co'># predation rate</span></span>
 <span><span class='va'>scaled_temp_effect</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>t</span><span class='op'>)</span> <span class='op'>{</span></span>
 <span>    <span class='co'># Using t+1 to avoid calling ocean_temp[0,] at the first time step</span></span>
-<span>    <span class='va'>temp_at_t</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setRateFunction.html'>other_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>ocean_temp</span><span class='op'>[</span><span class='va'>t</span> <span class='op'>+</span> <span class='fl'>1</span>,<span class='op'>]</span></span>
+<span>    <span class='va'>temp_at_t</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setRateFunction.html'>other_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>ocean_temp</span><span class='op'>[</span><span class='va'>t</span> <span class='op'>+</span> <span class='fl'>1</span>,<span class='op'>]</span> <span class='op'>+</span> <span class='fl'>273</span></span>
 <span>    </span>
 <span>    <span class='co'># Calculate unscaled temperature effect using a generic polynomial rate equation</span></span>
 <span>    <span class='va'>unscaled_temp_effect</span> <span class='op'>&lt;-</span> </span>
-<span>        <span class='va'>temp_at_t</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>temp_at_t</span> <span class='op'>-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span><span class='op'>)</span> <span class='op'>*</span> </span>
-<span>        <span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span> <span class='op'>-</span> <span class='va'>temp_at_t</span><span class='op'>)</span></span>
+<span>        <span class='va'>temp_at_t</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>temp_at_t</span> <span class='op'>-</span> <span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span> <span class='op'>+</span> <span class='fl'>273</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>*</span> </span>
+<span>        <span class='op'>(</span><span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span> <span class='op'>+</span> <span class='fl'>273</span><span class='op'>)</span> <span class='op'>-</span> <span class='va'>temp_at_t</span><span class='op'>)</span><span class='op'>^</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>/</span><span class='fl'>2</span><span class='op'>)</span></span>
 <span>    </span>
 <span>    <span class='co'># Scale using new parameter</span></span>
 <span>    <span class='va'>scaled_temp_effect</span> <span class='op'>&lt;-</span> </span>
@@ -1724,8 +1730,8 @@ based on the temperature at a given time step:</p>
 <span>    </span>
 <span>    <span class='co'># Set temperature effect to 0 if temperatures are outside thermal </span></span>
 <span>    <span class='co'># tolerance limits</span></span>
-<span>    <span class='va'>above_max</span> <span class='op'>&lt;-</span> <span class='va'>temp_at_t</span> <span class='op'>&gt;</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span></span>
-<span>    <span class='va'>below_min</span> <span class='op'>&lt;-</span> <span class='va'>temp_at_t</span> <span class='op'>&lt;</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span></span>
+<span>    <span class='va'>above_max</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='va'>temp_at_t</span> <span class='op'>-</span> <span class='fl'>273</span><span class='op'>)</span> <span class='op'>&gt;</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_max</span></span>
+<span>    <span class='va'>below_min</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='va'>temp_at_t</span> <span class='op'>-</span> <span class='fl'>273</span><span class='op'>)</span> <span class='op'>&lt;</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>temp_min</span></span>
 <span>    <span class='va'>scaled_temp_effect</span><span class='op'>[</span><span class='va'>above_max</span> <span class='op'>|</span> <span class='va'>below_min</span><span class='op'>]</span> <span class='op'>=</span> <span class='fl'>0</span></span>
 <span>    </span>
 <span>    <span class='va'>scaled_temp_effect</span></span>
@@ -1819,15 +1825,26 @@ stages at different depths and therefore different thermal habitats. I’m
 working on adding to therMizer the capacity for different size classes
 to experience different temperatures.</p>
 <h2 id="acknowledgements">Acknowledgements</h2>
-<p>This blog post was compiled with mizer version 2.3.0.1 and R version
+<p>This blog post was compiled with mizer version 2.3.1 and R version
 4.2.1. Many thanks to Gustav Delius for guidance on mizer’s inner
-workings and writing better code.</p>
+workings and writing better code. Thank you also to Romain Forestier for
+insight on working with temperatures below 0<span
+class="math inline">\(^\circ C\)</span>.</p>
+<h2 id="update-note">Update note</h2>
+<p>Post updated on 19/09/22: The equation for aerobic scope was changed
+to allow users to input negative Celsius temperature. To accommodate
+this, temperatures are now converted to Kelvin and the square root of
+the final polynomial term is taken to preserve the curve shape.</p>
 <h2 id="references">References</h2>
-<p>Boettiger, C., Lang, D. T., and Wainwright, P. C. (2012). rfishbase:
-exploring, manipulating, and visualizaing FishBase from R. Journal of
-Fish Biology 81, 2030–2039. <a
+<p>Boettiger C, Lang DT, Wainwright PC. (2012) rfishbase: exploring,
+manipulating, and visualizaing FishBase from R. Journal of Fish Biology
+81, 2030–2039. <a
 href="https://doi.org/10.1111/j.1095-8649.2012.03464.x"
 class="uri">https://doi.org/10.1111/j.1095-8649.2012.03464.x</a></p>
+<p>Briere J-F, Pracros P, Le Roux A-Y, Pierre J-S. (1999) A novel rate
+model of temperature-dependent development in arthropods. Population
+Ecology, 28(1): 22-29. <a href="https://doi.org/10.1093/ee/28.1.22"
+class="uri">https://doi.org/10.1093/ee/28.1.22</a></p>
 <p>Brown JH, Gillooly JF, Allen AP, Savage VM, West GB. (2004) Toward a
 metabolic theory of ecology. Ecology, 85: 1771–1789. <a
 href="https://doi.org/10.1890/03-9000"

@@ -227,17 +227,17 @@ You're likely going to want to do simulations based on real species and real tem
 
 Once you've prepared your input, you can use the code above to create and use the `encounterpred_scale`, `metab_min`, and `metab_range` parameters and the `therMizerEncounter`, `therMizerPredRate`, and `therMizerEReproAndGrowth` rate functions.
 
-## Update note
-
-This blog has been updated since its original posting.  The equation for aerobic scope was changed to allow users to input negative Celsius temperature.  To accommodate this, temperatures are now converted to Kelvin and the square root of the final polynomial term is taken to preserve the curve shape.  The order of the terms in the equation in the aerobic scope explanation was also corrected to match that used in the code.
-
 ## In the works
 
 Many fish undergo ontogentic migration, spending different life stages at different depths and therefore different thermal habitats. I'm working on adding to therMizer the capacity for different size classes to experience different temperatures.
 
 ## Acknowledgements
 
-This blog post was compiled with mizer version 2.3.0.1 and R version 4.2.1. Many thanks to Gustav Delius for guidance on mizer's inner workings and writing better code. Thank you also to Romain Forestier for insight on working with temperatures below 0$^\circ$.
+This blog post was compiled with mizer version 2.3.1 and R version 4.2.1. Many thanks to Gustav Delius for guidance on mizer's inner workings and writing better code. Thank you also to Romain Forestier for insight on working with temperatures below 0$^\circ C$.
+
+## Update note
+
+Post updated on 19/09/22:  The equation for aerobic scope was changed to allow users to input negative Celsius temperature.  To accommodate this, temperatures are now converted to Kelvin and the square root of the final polynomial term is taken to preserve the curve shape.
 
 ## References
 
