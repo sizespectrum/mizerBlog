@@ -23,11 +23,12 @@ therMizer models the effects of temperature on individuals' aerobic scope and me
 
 ### Aerobic scope
 
-The relationship between aerobic scope and temperature is a somewhat left-skewed distribution with a thermal optimum and upper and lower thermal tolerance limits. [Pörtner and Peck (2010)](https://doi.org/10.1111/j.1095-8649.2010.02783.x) provide an overview of this relationship and [Pörtner (2012)](https://doi.org/10.3354/meps10123) discusses open questions related to temperature and physiology. The exact nature of the relationship between aerobic scope and temperature varies by species and requires a fair bit of physiological research to establish. Therefore, it is generally necessary to approximate this relationship, which is what therMizer does. A generic polynomial rate equation is used to approximate the effect of temperature on aerobic scope, *s*: $$
-\begin{align}
-s = T(T_{max} - T)(T - T_{min})^\frac{1}{2} && \text{(1)}
+The relationship between aerobic scope and temperature is a somewhat left-skewed distribution with a thermal optimum and upper and lower thermal tolerance limits. [Pörtner and Peck (2010)](https://doi.org/10.1111/j.1095-8649.2010.02783.x) provide an overview of this relationship and [Pörtner (2012)](https://doi.org/10.3354/meps10123) discusses open questions related to temperature and physiology. The exact nature of the relationship between aerobic scope and temperature varies by species and requires a fair bit of physiological research to establish. Therefore, it is generally necessary to approximate this relationship, which is what therMizer does. A generic polynomial rate equation is used to approximate the effect of temperature on aerobic scope, *s*: 
+$$\begin{align}
+s = T(T - T_{min})(T_{max} - T)^\frac{1}{2} && \text{(1)}
 \end{align}
-$$ where *T* is the temperature to which a fish is exposed and $T_{max}$ and $T_{min}$ are the species' upper and lower thermal tolerance limits, respectively ([Briere et al. 1999](https://academic.oup.com/ee/article/28/1/22/501436), [van der Heide et al. 2010](https://doi.org/10.1016/j.aquabot.2005.09.004)). All temperatures in eq. (1) are in degrees Celsius. The result of this expression varies considerably given a species' thermal tolerance limits. Therefore, it is necessary to scale this value across all modeled species so that it equals a value ranging from 0 -- 1. This is done by dividing by the maximum value over each species' thermal range ([Woodworth-Jefcoats et al. 2019](https://www.frontiersin.org/articles/10.3389/fmars.2019.00383/full)). therMizer will take care of this scaling for you.
+$$ 
+where *T* is the temperature to which a fish is exposed and $T_{max}$ and $T_{min}$ are the species' upper and lower thermal tolerance limits, respectively ([van der Heide et al. 2010](https://doi.org/10.1016/j.aquabot.2005.09.004)). All temperatures in eq. (1) are in Kelvin. The result of this expression varies considerably given a species' thermal tolerance limits. Therefore, it is necessary to scale this value across all modeled species so that it equals a value ranging from 0 -- 1. This is done by dividing by the maximum value over each species' thermal range ([Woodworth-Jefcoats et al. 2019](https://www.frontiersin.org/articles/10.3389/fmars.2019.00383/full)). therMizer will take care of this scaling for you.
 
 The scaled value is then used as a multiplier for encounter rate and predation rate in mizer. The scaling is applied to encounter rate as proxy for foraging movement. The resulting temperature effect is such that when species are at their thermal optima they realize peak aerobic performance and encounter the maximum amount of prey possible. This ability diminishes to either side of the optimum and reaches zero outside species' thermal tolerance limits. The scaling is applied to predation rate to ensure encountered prey are predated upon.
 
@@ -45,7 +46,7 @@ Finally, therMizer sets the rate scalings to 0 outside species' thermal range, s
 
 ## Model input
 
-The only additional input you'll need to provide, beyond what's needed to run mizer, are three temperature values for each species. `temp_min` and `temp_max` represent the lower and upper bounds of a species' thermal tolerance limits. You can find this information in the literature or in databases such as [rfishbase](https://github.com/ropensci/rfishbase) ([Boettiger et al. 2012](https://doi.org/10.1111/j.1095-8649.2012.03464.x)). You also need to provide `ocean_temp`, the temperature to which species are exposed. This can be static or dynamic, and informed from either empirical or modeled data.
+The only additional input you'll need to provide, beyond what's needed to run mizer, are three temperature values for each species. `temp_min` and `temp_max` represent the lower and upper bounds of a species' thermal tolerance limits. You can find this information in the literature or in databases such as [rfishbase](https://github.com/ropensci/rfishbase) ([Boettiger et al. 2012](https://doi.org/10.1111/j.1095-8649.2012.03464.x)). You also need to provide `ocean_temp`, the temperature to which species are exposed. This can be static or dynamic, and informed from either empirical or modeled data. Temperatures are input in degrees Celsius. therMizer will convert them to Kelvin.
 
 That's it. That's all you need.
 
@@ -225,6 +226,10 @@ plot(sim)
 You're likely going to want to do simulations based on real species and real temperature observations or projections. This is straightforward to do. When you prepare your species parameters, add `temp_min` and `temp_max` columns for each species. You'll also need to prepare an `ocean_temp` input with dimensions that match those of `time` and `species`.
 
 Once you've prepared your input, you can use the code above to create and use the `encounterpred_scale`, `metab_min`, and `metab_range` parameters and the `therMizerEncounter`, `therMizerPredRate`, and `therMizerEReproAndGrowth` rate functions.
+
+## Update note
+
+This blog has been updated since its original posting.  The equation for aerobic scope was changed to allow users to input negative Celsius temperature.  To accommodate this, temperatures are now converted to Kelvin and the square root of the final polynomial term is taken to preserve the curve shape.  The order of the terms in the equation in the aerobic scope explanation was also corrected to match that used in the code.
 
 ## In the works
 
