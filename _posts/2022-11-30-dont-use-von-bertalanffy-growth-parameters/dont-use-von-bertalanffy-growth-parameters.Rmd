@@ -1,0 +1,131 @@
+---
+title: "Don't use von Bertalanffy growth parameters"
+description: |
+  Beware of the difference between age-dependent growth curves and the 
+  size-dependent growth curves used by mizer.
+author:
+  - name: Gustav Delius
+    url: {}
+date: 30-11-2022
+twitter:
+  site: "@mizer_model"
+  creator: "@gustavdelius"
+preview: change.jpg
+output:
+  distill::distill_article:
+    self_contained: false
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(FSA)
+library(FSAdata)
+library(nlstools)
+library(tidyverse)
+```
+
+## Data
+
+```{r}
+df <- BlackDrum2001 |>
+    select(age = otoage, length = tl) |>
+    filter(age < 50, age > 0) |>
+    na.omit()
+headtail(df, n = 3)
+```
+
+```{r}
+df <- StripedBass3 |>
+    select(age = age, length = tl) |>
+    filter(age < 50, age > 0) |>
+    na.omit()
+headtail(df, n = 3)
+```
+
+```{r}
+df <- Croaker2 |>
+    select(age = age, length = tl) |>
+    filter(age < 50, age > 0) |>
+    na.omit()
+headtail(df, n = 3)
+```
+
+## Fitting mean length
+
+```{r}
+length_vB <- function(age, Linf, K, t0) {
+    Linf * (1 - exp(-K * (age - t0)))
+}
+start <- list(Linf = max(df$length),
+              K = 0.3,
+              t0 = 0)
+nlsfit_length <- nls(log(length) ~ log(length_vB(age, Linf, K, t0)),
+                     data = df,
+                     start = start)
+coef(nlsfit_length)
+```
+
+```{r}
+ggplot(df) +
+    geom_jitter(aes(x = age, y = length)) +
+    geom_function(fun = length_vB, args = as.list(coef(nlsfit_length))) +
+    scale_y_log10()
+```
+
+```{r}
+ggplot(df) +
+    geom_jitter(aes(x = length, y = age)) +
+    geom_function(fun = age_vB, args = as.list(coef(nlsfit_length))) +
+    scale_x_log10()
+```
+
+## Fitting mean age
+
+```{r}
+age_vB <- function(L, Linf, K, t0) {
+    r <- pmin(L / Linf, 0.99999)
+    -log(1 - r) / K + t0
+}
+start <- list(Linf = max(df$length),
+              K = 0.1,
+              t0 = 0)
+nlsfit_age <- nls(age ~ age_vB(length, Linf, K, t0),
+              data = df,
+              start = start)
+coef(nlsfit_age)
+```
+
+```{r}
+ggplot(df) +
+    geom_jitter(aes(x = age, y = length)) +
+    geom_function(fun = length_vB, args = as.list(coef(nlsfit_age))) +
+    scale_y_log10()
+```
+
+```{r}
+ggplot(df) +
+    geom_jitter(aes(x = length, y = age)) +
+    geom_function(fun = age_vB, args = as.list(coef(nlsfit_age))) +
+    scale_x_log10()
+```
+
+
+
+## Do it by hand:
+```{r}
+ss <- function(par, df) {
+    Linf <- par[[1]]
+    K <- par[[2]]
+    t0 <- par[[3]]
+    sum((df$length - Linf * (1 - exp(-K * (df$age - t0))))^2)
+}
+initial <- list(Linf = max(df$length), K = 0.3, t0 = 0)
+lower <- list(Linf = 0, K = 0.01, t0 = -2)
+op <- optim(initial, fn = ss, df = df, lower = lower, method = "L-BFGS-B")
+op
+```
+
