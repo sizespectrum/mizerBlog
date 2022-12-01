@@ -28,53 +28,84 @@ library(nlstools)
 library(tidyverse)
 ```
 
-## Data
+This blog post is not about criticising the von Bertalanffy growth model or the methods used to estimate the von Bertalanffy parameters from size-at-age data. There is a lot of literature about that. This blog post is about how in the past we had mis-used von Bertalanffy growth species parameters `w_inf` and `k_vb` when setting up mizer models.
 
-```{r}
-df <- BlackDrum2001 |>
-    select(age = otoage, length = tl) |>
-    filter(age < 50, age > 0) |>
-    na.omit()
-headtail(df, n = 3)
-```
+## What are von Bertalanffy growth curves?
 
-```{r}
-df <- StripedBass3 |>
-    select(age = age, length = tl) |>
-    filter(age < 50, age > 0) |>
-    na.omit()
-headtail(df, n = 3)
-```
+A von Bertalanffy growth curve is an expression for the length $L$ of an average fish of age $a$:
 
-```{r}
-df <- Croaker2 |>
-    select(age = age, length = tl) |>
-    filter(age < 50, age > 0) |>
-    na.omit()
-headtail(df, n = 3)
-```
-
-## Fitting mean length
-
+$$
+L(a) = L_\inf\left(1-e^{-K(a-t_0)}\right).
+$$
 ```{r}
 length_vB <- function(age, Linf, K, t0) {
     Linf * (1 - exp(-K * (age - t0)))
 }
+```
+
+The constants $L_\inf, K$ and $t_0$ are the von Bertalanffy growth parameters. They are usually obtained by fitting the von Bertalanffy curve to size-at-age data. This [fishR vignette](http://derekogle.com/fishR/examples/oldFishRVignettes/VonBertalanffy.pdf) gives a good introduction. The data consists of observations of the lengths and ages of a sample of fish. Here we illustrate this with the `Croaker2` data set contained in the FSAdata package:
+
+```{r}
+library(FSAdata)
+df <- Croaker2 |>
+    select(age = age, length = tl) |>
+    filter(age > 0) |>
+    na.omit()
+df
+```
+
+We now use the `nls()` function from R to do a least squares error fit of a von Bertalanffy curve to this data. The error is assumed to be a multiplicative error, i.e., an additive error in the log length.
+```{r}
 start <- list(Linf = max(df$length),
               K = 0.3,
               t0 = 0)
 nlsfit_length <- nls(log(length) ~ log(length_vB(age, Linf, K, t0)),
                      data = df,
                      start = start)
+ggplot(df) +
+    geom_jitter(aes(x = age, y = length)) +
+    geom_function(fun = length_vB, args = as.list(coef(nlsfit_length)),
+                  linewidth = 2, colour = "blue") +
+    scale_y_log10()
+```
+
+The blue curve is the von Bertalanffy curve. At each age it approximates the geometric average of the lengths of all the fish of that age. The parameters are
+
+```{r}
 coef(nlsfit_length)
 ```
 
+The curve clearly does not extrapolate well to larval sizes as we can see from the large negative value of $t_0$. There are many issues that we could debate and that have been debated at length in the literature:
+
+1. Is the von Bertalanffy growth model the best growth model.
+2. How reliably can the growth can be estimated from the size-at-age data.
+3. Is least squares estimation an appropriate method. 
+
+But none of these are our topic. We will assume that the von Bertalanffy curve gives an appropriate representation of the length at age of an average fish of that age. 
+
+## Growth rate from slope of growth curve
+
+The slope of the von Bertalanffy curve at age $a$ gives the average growth rate of fish of that age:
+
+$$\frac{dL(a)}{da}=K\, L_\inf\, e^{-K(a-t_0)}$$
+
+This is useful information in age-based population models. The point we want to make in this blog post is that it is not useful in size-based models like mizer.
+
+## Size-based growth curve
+
+The von Bertalanffy curve is an age-based growth curve in the sense that at each age it approximates the average length of all the fish of that age. Its slope gives the average growth rate as a function of age.
+
+What mizer works with and calculates with the `getEGrowth()` function is the average growth rate as a function of size. So we want size to be on the x axis. This flips the point cloud on its side:
+
 ```{r}
 ggplot(df) +
-    geom_jitter(aes(x = age, y = length)) +
-    geom_function(fun = length_vB, args = as.list(coef(nlsfit_length))) +
-    scale_y_log10()
+    geom_jitter(aes(x = length, y = age)) +
+    scale_x_log10()
 ```
+
+The length-based growth curve would now be a curve $a(L)$ approximating at each length $L$ the average age of all the fish of that length. The slope of that curve at a particular length would be 1 over the growth rate averaged over all fish of that length
+
+
 
 ```{r}
 ggplot(df) +
