@@ -13,7 +13,17 @@ new features, technical details, plans and ideas. Contributions welcome.
       <link>https://blog.mizer.sizespectrum.org</link>
     </image>
     <generator>Distill</generator>
-    <lastBuildDate>Mon, 11 Jul 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 30 Nov 2022 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Don't use von Bertalanffy growth parameters</title>
+      <dc:creator>Gustav Delius</dc:creator>
+      <link>https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters</link>
+      <description>Beware of the difference between age-dependent growth curves and the 
+size-dependent growth curves used by mizer.</description>
+      <guid>https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters</guid>
+      <pubDate>Wed, 30 Nov 2022 00:00:00 +0000</pubDate>
+      <media:content url="https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-7-1.png" medium="image" type="image/png" width="1248" height="768"/>
+    </item>
     <item>
       <title>Temperature-dependent rates in mizer</title>
       <dc:creator>Phoebe Woodworth-Jefcoats</dc:creator>

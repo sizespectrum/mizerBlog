@@ -50,16 +50,17 @@ pre.numberSource code > span > a:first-child::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {   }
+  { color: #00769e; background-color: #f1f3f5; }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
+code span { color: #00769e; } /* Normal */
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { color: #20794d; } /* Attribute */
+code span.at { color: #657422; } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
-code span.cf { color: #007ba5; } /* ControlFlow */
+code span.cf { color: #00769e; } /* ControlFlow */
 code span.ch { color: #20794d; } /* Char */
 code span.cn { color: #8f5902; } /* Constant */
 code span.co { color: #5e5e5e; } /* Comment */
@@ -73,11 +74,11 @@ code span.fl { color: #ad0000; } /* Float */
 code span.fu { color: #4758ab; } /* Function */
 code span.im { } /* Import */
 code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #007ba5; } /* Keyword */
+code span.kw { color: #00769e; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #007ba5; } /* Other */
+code span.ot { color: #00769e; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #20794d; } /* SpecialChar */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
 code span.st { color: #20794d; } /* String */
 code span.va { color: #111111; } /* Variable */
@@ -85,55 +86,60 @@ code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
+
   <!--radix_placeholder_meta_tags-->
-<title>mizer blog: Change model parameters without using @</title>
+<title>mizer blog: Don't use von Bertalanffy growth parameters</title>
 
-<meta property="description" itemprop="description" content="Mizer provides dedicated functions for changing model parameters. Using them&#10;protects you from pitfalls arising from manipulations with the `@` symbol."/>
+<meta property="description" itemprop="description" content="Beware of the difference between age-dependent growth curves and the &#10;size-dependent growth curves used by mizer."/>
 
-<link rel="canonical" href="https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/"/>
+<link rel="canonical" href="https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/"/>
 <link rel="license" href="https://creativecommons.org/licenses/by/4.0/"/>
 <link rel="icon" type="image/png" href="../../images/favicon-16x16.png"/>
 
 <!--  https://schema.org/Article -->
-<meta property="article:published" itemprop="datePublished" content="2021-08-08"/>
-<meta property="article:created" itemprop="dateCreated" content="2021-08-08"/>
+<meta property="article:published" itemprop="datePublished" content="2022-11-30"/>
+<meta property="article:created" itemprop="dateCreated" content="2022-11-30"/>
 <meta name="article:author" content="Gustav Delius"/>
 
 <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-<meta property="og:title" content="mizer blog: Change model parameters without using @"/>
+<meta property="og:title" content="mizer blog: Don&#39;t use von Bertalanffy growth parameters"/>
 <meta property="og:type" content="article"/>
-<meta property="og:description" content="Mizer provides dedicated functions for changing model parameters. Using them&#10;protects you from pitfalls arising from manipulations with the `@` symbol."/>
-<meta property="og:url" content="https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/"/>
-<meta property="og:image" content="https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/change.jpg"/>
+<meta property="og:description" content="Beware of the difference between age-dependent growth curves and the &#10;size-dependent growth curves used by mizer."/>
+<meta property="og:url" content="https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/"/>
+<meta property="og:image" content="https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-7-1.png"/>
+<meta property="og:image:width" content="1248"/>
+<meta property="og:image:height" content="768"/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:site_name" content="mizer blog"/>
 
 <!--  https://dev.twitter.com/cards/types/summary -->
 <meta property="twitter:card" content="summary_large_image"/>
-<meta property="twitter:title" content="mizer blog: Change model parameters without using @"/>
-<meta property="twitter:description" content="Mizer provides dedicated functions for changing model parameters. Using them&#10;protects you from pitfalls arising from manipulations with the `@` symbol."/>
-<meta property="twitter:url" content="https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/"/>
-<meta property="twitter:image" content="https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/change.jpg"/>
+<meta property="twitter:title" content="mizer blog: Don&#39;t use von Bertalanffy growth parameters"/>
+<meta property="twitter:description" content="Beware of the difference between age-dependent growth curves and the &#10;size-dependent growth curves used by mizer."/>
+<meta property="twitter:url" content="https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/"/>
+<meta property="twitter:image" content="https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-7-1.png"/>
+<meta property="twitter:image:width" content="1248"/>
+<meta property="twitter:image:height" content="768"/>
 <meta property="twitter:site" content="@mizer_model"/>
 <meta property="twitter:creator" content="@gustavdelius"/>
 
 <!--  https://scholar.google.com/intl/en/scholar/inclusion.html#indexing -->
-<meta name="citation_title" content="mizer blog: Change model parameters without using @"/>
-<meta name="citation_fulltext_html_url" content="https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/"/>
+<meta name="citation_title" content="mizer blog: Don&#39;t use von Bertalanffy growth parameters"/>
+<meta name="citation_fulltext_html_url" content="https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/"/>
 <meta name="citation_fulltext_world_readable" content=""/>
-<meta name="citation_online_date" content="2021/08/08"/>
-<meta name="citation_publication_date" content="2021/08/08"/>
+<meta name="citation_online_date" content="2022/11/30"/>
+<meta name="citation_publication_date" content="2022/11/30"/>
 <meta name="citation_author" content="Gustav Delius"/>
 <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
 <script type="text/json" id="radix-rmarkdown-metadata">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["creative_commons","title","description","author","date","twitter","preview","output","citation_url","canonical_url"]}},"value":[{"type":"character","attributes":{},"value":["CC BY"]},{"type":"character","attributes":{},"value":["Change model parameters without using @"]},{"type":"character","attributes":{},"value":["Mizer provides dedicated functions for changing model parameters. Using them\nprotects you from pitfalls arising from manipulations with the `@` symbol."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Gustav Delius"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":[]}},"value":[]}]}]},{"type":"character","attributes":{},"value":["08-08-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["site","creator"]}},"value":[{"type":"character","attributes":{},"value":["@mizer_model"]},{"type":"character","attributes":{},"value":["@gustavdelius"]}]},{"type":"character","attributes":{},"value":["change.jpg"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","toc"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]}]}]},{"type":"character","attributes":{},"value":["https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/"]},{"type":"character","attributes":{},"value":["https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/"]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["creative_commons","title","description","author","date","twitter","preview","output","citation_url","canonical_url"]}},"value":[{"type":"character","attributes":{},"value":["CC BY"]},{"type":"character","attributes":{},"value":["Don't use von Bertalanffy growth parameters"]},{"type":"character","attributes":{},"value":["Beware of the difference between age-dependent growth curves and the \nsize-dependent growth curves used by mizer."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Gustav Delius"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":[]}},"value":[]}]}]},{"type":"character","attributes":{},"value":["2022-11-30"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["site","creator"]}},"value":[{"type":"character","attributes":{},"value":["@mizer_model"]},{"type":"character","attributes":{},"value":["@gustavdelius"]}]},{"type":"character","attributes":{},"value":["change.jpg"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","toc"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]}]}]},{"type":"character","attributes":{},"value":["https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/"]},{"type":"character","attributes":{},"value":["https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/"]}]}
 </script>
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["change.jpg","drawbacks-of-using_files/anchor-4.2.2/anchor.min.js","drawbacks-of-using_files/bowser-1.9.3/bowser.min.js","drawbacks-of-using_files/distill-2.2.21/template.v2.js","drawbacks-of-using_files/header-attrs-2.10/header-attrs.js","drawbacks-of-using_files/jquery-1.11.3/jquery.min.js","drawbacks-of-using_files/popper-2.6.0/popper.min.js","drawbacks-of-using_files/tippy-6.2.7/tippy-bundle.umd.min.js","drawbacks-of-using_files/tippy-6.2.7/tippy-light-border.css","drawbacks-of-using_files/tippy-6.2.7/tippy.css","drawbacks-of-using_files/tippy-6.2.7/tippy.umd.min.js","drawbacks-of-using_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["dont-use-von-bertalanffy-growth-parameters_files/anchor-4.2.2/anchor.min.js","dont-use-von-bertalanffy-growth-parameters_files/bowser-1.9.3/bowser.min.js","dont-use-von-bertalanffy-growth-parameters_files/distill-2.2.21/template.v2.js","dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-11-1.png","dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-12-1.png","dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-13-1.png","dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-14-1.png","dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-16-1.png","dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-2-1.png","dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-4-1.png","dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-6-1.png","dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-7-1.png","dont-use-von-bertalanffy-growth-parameters_files/header-attrs-2.18/header-attrs.js","dont-use-von-bertalanffy-growth-parameters_files/jquery-3.6.0/jquery-3.6.0.js","dont-use-von-bertalanffy-growth-parameters_files/jquery-3.6.0/jquery-3.6.0.min.js","dont-use-von-bertalanffy-growth-parameters_files/jquery-3.6.0/jquery-3.6.0.min.map","dont-use-von-bertalanffy-growth-parameters_files/popper-2.6.0/popper.min.js","dont-use-von-bertalanffy-growth-parameters_files/tippy-6.2.7/tippy-bundle.umd.min.js","dont-use-von-bertalanffy-growth-parameters_files/tippy-6.2.7/tippy-light-border.css","dont-use-von-bertalanffy-growth-parameters_files/tippy-6.2.7/tippy.css","dont-use-von-bertalanffy-growth-parameters_files/tippy-6.2.7/tippy.umd.min.js","dont-use-von-bertalanffy-growth-parameters_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2456,8 +2462,8 @@ d-appendix d-footnote-list a.footnote-backlink {
   color: var(--hover-color, white);
 }</style>
 <!--/radix_placeholder_distill-->
-  <script src="../../site_libs/header-attrs-2.10/header-attrs.js"></script>
-  <script src="../../site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <script src="../../site_libs/header-attrs-2.18/header-attrs.js"></script>
+  <script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <script src="../../site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="../../site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="../../site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2477,7 +2483,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Change model parameters without using @","description":"Mizer provides dedicated functions for changing model parameters. Using them\nprotects you from pitfalls arising from manipulations with the `@` symbol.","authors":[{"author":"Gustav Delius","authorURL":{},"affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-08-08T00:00:00.000+01:00","citationText":"Delius, 2021"}
+{"title":"Don't use von Bertalanffy growth parameters","description":"Beware of the difference between age-dependent growth curves and the \nsize-dependent growth curves used by mizer.","authors":[{"author":"Gustav Delius","authorURL":{},"affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-11-30T00:00:00.000+00:00","citationText":"Delius, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2508,16 +2514,17 @@ d-appendix d-footnote-list a.footnote-backlink {
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>Change model parameters without using @</h1>
+<h1>Don’t use von Bertalanffy growth parameters</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>Mizer provides dedicated functions for changing model parameters. Using them protects you from pitfalls arising from manipulations with the <code>@</code> symbol.</p></p>
+<p><p>Beware of the difference between age-dependent growth curves and the
+size-dependent growth curves used by mizer.</p></p>
 </div>
 
 <div class="d-byline">
   Gustav Delius true 
   
-<br/>08-08-2021
+<br/>2022-11-30
 </div>
 
 <div class="d-article">
@@ -2525,327 +2532,265 @@ d-appendix d-footnote-list a.footnote-backlink {
 <nav class="l-text toc figcaption" id="TOC">
 <h3>Contents</h3>
 <ul>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#species-parameters">Species parameters</a></li>
-<li><a href="#gear-parameters">Gear parameters</a></li>
-<li><a href="#resource-parameters">Resource parameters</a></li>
-<li><a href="#rate-arrays">Rate arrays</a></li>
-<li><a href="#summary">Summary</a></li>
+<li><a href="#estimating-von-bertalanffy-parameters" id="toc-estimating-von-bertalanffy-parameters">Estimating von Bertalanffy parameters</a></li>
+<li><a href="#age-dependent-growth-rate" id="toc-age-dependent-growth-rate">Age-dependent growth rate</a></li>
+<li><a href="#size-dependent-growth-rate" id="toc-size-dependent-growth-rate">Size-dependent growth rate</a></li>
+<li><a href="#size-based-growth-curve" id="toc-size-based-growth-curve">Size-based growth curve</a></li>
+<li><a href="#so-what-should-you-do" id="toc-so-what-should-you-do">So what should you do?</a>
+<ul>
+<li><a href="#maximum-size" id="toc-maximum-size">Maximum size</a></li>
+<li><a href="#maximum-intake-rate" id="toc-maximum-intake-rate">Maximum intake rate</a></li>
+</ul></li>
 </ul>
 </nav>
 </div>
-<h1 id="introduction">Introduction</h1>
-<p>Often, after creating a mizer model, you will want to make changes to the model parameters, either to improve the model or to investigate the effect of changes. For example you might want to study the community consequence of changes in the physiology due to warmer waters, or whatever your research question is.</p>
-<p>Mizer makes this very easy. However, it is important to use the right syntax. In particular, one should avoid the use of the <code>@</code> symbol, as I will explain in this blog post. So this post serves as a reminder of how one can make changes to a model after it has been created.</p>
-<figure>
-<img src="change.jpg" alt="change" /><figcaption aria-hidden="true">change</figcaption>
-</figure>
-<p>As you will know, all the parameters describing a mizer model are contained in an object of class MizerParams. You may either have created this object yourself, for example with the <code>newMultispeciesParams()</code> function, or received it from a colleague. Such an object has many slots holding the various pieces of information about the model.</p>
-<p>There are often two ways of accessing these slots. One involves the use of the <code>@</code> symbol, the other uses a dedicated mizer function. If you look at the mizer code, you will see a lot of <code>@</code> symbols. However I will discuss the potential pitfalls when using the <code>@</code> symbol and advocate for the use of dedicated functions that mizer provides for the purpose of changing model parameters.</p>
-<p>This blog post was written with mizer version 2.2.1.9001</p>
+<p>This blog post is not about criticising the von Bertalanffy growth model or the methods used to estimate the von Bertalanffy parameters from size-at-age data. There is a lot of literature about that. This blog post is about the difference between age-dependent and size-dependent growth rates. In the past we had mis-used the age-based von Bertalanffy growth species parameters <code>w_inf</code> and <code>k_vb</code> when setting up mizer models and this blog posts explains why that was a bad idea.</p>
+<p>A von Bertalanffy growth curve is an expression for the length <span class="math inline">\(L\)</span> of an average fish of age <span class="math inline">\(a\)</span>:</p>
+<p><span class="math display">\[
+L(a) = L_\infty\left(1-e^{-K(a-t_0)}\right).
+\]</span></p>
+<p>The constants <span class="math inline">\(L_\infty, K\)</span> and <span class="math inline">\(t_0\)</span> are the von Bertalanffy growth parameters.</p>
+<p>We can teach R about this with</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://sizespectrum.org/mizer/'>mizer</a></span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/packageDescription.html'>packageVersion</a></span><span class='op'>(</span><span class='st'>"mizer"</span><span class='op'>)</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>length_vB</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>age</span>, <span class='va'>Linf</span>, <span class='va'>K</span>, <span class='va'>t0</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>    <span class='va'>Linf</span> <span class='op'>*</span> <span class='op'>(</span><span class='fl'>1</span> <span class='op'>-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='op'>-</span><span class='va'>K</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>age</span> <span class='op'>-</span> <span class='va'>t0</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='op'>}</span></span></code></pre>
 </div>
-<pre><code>[1] &#39;2.2.1.9001&#39;</code></pre>
 </div>
-<p>Throughout this post we will use the <code>NS_params</code> MizerParams object that comes as an example with the mizer package.</p>
+<p>If we assume a length-weight relationship of the form <span class="math inline">\(w = a L^b\)</span> then we get an expression for the weight as a function of age:</p>
+<p><span class="math display">\[
+w(a) = w_\infty\left(1-e^{-K(a-t_0)}\right)^b
+\]</span></p>
+<p>with the same parameters <span class="math inline">\(K\)</span> and <span class="math inline">\(t_0\)</span> and <span class="math inline">\(w_\infty = aL_\infty^b\)</span>.</p>
+<p>The von Bertalanffy growth model is quite simple as a deterministic model of growth. The issue becomes complicated only because growth in the real world is not deterministic. Different fish, even in the same stock, have different luck in finding food and they also have different genes. So the von Bertalanffy growth curve is used to describe average fish. Whenever one hears the word “average”, on needs to be very careful that one knows how that average is taken.</p>
+<p>Here is the short summary of the main message from this blog post:</p>
+<blockquote>
+<p>The von Bertalanffy parameters describe the growth averaged over all fish of the same age, as is appropriate in age-based models. Mizer is a size-based model and hence needs the growth averaged over all fish of the same size. This makes it inappropriate to use the von Bertalanffy parameters when calibrating a mizer model.</p>
+</blockquote>
+<blockquote>
+<p>In particular, the von Bertalanffy parameter <span class="math inline">\(w_\infty\)</span> is the asymptotic size of an <strong>average</strong> individual whereas the mizer parameter <code>w_inf</code> is the asymptotic size of the <strong>largest</strong> individual. A mizer model that uses estimated values for <span class="math inline">\(w_\infty\)</span> as the value for <code>w_inf</code> will predict that there are no fish larger than <span class="math inline">\(w_\infty\)</span> and thus can not reproduce the observed size distributions.</p>
+</blockquote>
+<p>The message about the difference between the growth rate of an average individual of a particular age and the growth rate of an average individual of a particular size can also be important outside of mizer, for example when using size-resolved data to estimate the productivity of a species.</p>
+<p>The remainder of this blog post is just about illustrating the above message. In particular, it makes it concrete what we mean by averaging at a fixed age or averaging at a fixed size. That is, we demonstrate the difference between fitting a curve by minimising the squared difference between observed size and predicted size and fitting a curve by minimising the squared difference between observed age and predicted age.</p>
+<p>If you just want to know what you can use instead of the von Bertalanffy parameters you can jump straight to <a href="#so-what-should-you-do">“So what should you do?”</a></p>
+<h2 id="estimating-von-bertalanffy-parameters">Estimating von Bertalanffy parameters</h2>
+<p>The von Bertalanffy growth parameters are usually obtained by fitting the von Bertalanffy curve to size-at-age data. For a good introduction I recommend the <a href="http://derekogle.com/fishR/examples/oldFishRVignettes/VonBertalanffy.pdf">fishR vignette</a>. To illustrate this we will use the <code>Croaker2</code> data set contained in the FSAdata package. The data consists of observations of the lengths and ages of a sample of fish.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>params</span> <span class='op'>&lt;-</span> <span class='va'>NS_params</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span></span>
+<span><span class='va'>df</span> <span class='op'>&lt;-</span> <span class='fu'>FSAdata</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/FSAdata/man/Croaker2.html'>Croaker2</a></span> <span class='op'>|&gt;</span></span>
+<span>    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span>age <span class='op'>=</span> <span class='va'>age</span>, length <span class='op'>=</span> <span class='va'>tl</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>age</span> <span class='op'>&gt;</span> <span class='fl'>0</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>    <span class='fu'><a href='https://rdrr.io/r/stats/na.fail.html'>na.omit</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span><span class='va'>pl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>    <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_jitter.html'>geom_jitter</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>age</span>, y <span class='op'>=</span> <span class='va'>length</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='va'>pl</span></span></code></pre>
 </div>
+<p><img src="dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-2-1.png" width="624" /></p>
 </div>
-<h1 id="species-parameters">Species parameters</h1>
-<p>Let’s start with the <code>species_params</code> data frame. This holds species-specific parameters that are used by mizer to calculate physiological rates according to specific assumptions about the size-dependence of these rates. (The details do not concern us here, but you can find all the information on the <a href="https://sizespectrum.org/mizer/reference/species_params.html">help page</a> of <code>species_params()</code>. These size-dependent rates are then stored as large arrays in the slots of the MizerParams object, to be efficiently used during model projections. But also the species parameters are stored, and can therefore be used to recalculate the rates when some species parameters change.</p>
-<p>You can get the species parameters out of a MizerParams object in two ways, both giving identical results:</p>
+<p>In this scatterplot each point shows the length and age of one croaker from our sample.</p>
+<p>The standard method to fit a von Bertalanffy curve to such a point cloud of size-at-age observations is the method of least squares. This consists of choosing the parameters so as to minimise the sum of the squares of the differences between the the observed lengths and the length predicted by the von Bertalanffy curve. So if we denote the length measurements by <span class="math inline">\(L_i\)</span> and the corresponding age measurements by <span class="math inline">\(a_i\)</span> then we want to minimise</p>
+<p><span class="math display">\[ \sum_i (L_i - L(a_i))^2\]</span></p>
+<p>where the sum is over all fish in our sample.</p>
+<p>To find the minimum, we will use the function <code>optim()</code>. First we create a function that calculates the sum of squares when given a vector with the parameters:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># Using function</span>
-<span class='va'>sp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>
-<span class='co'># Using @</span>
-<span class='va'>spa</span> <span class='op'>&lt;-</span> <span class='va'>params</span><span class='op'>@</span><span class='va'>species_params</span>
-<span class='co'># These are identical</span>
-<span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span><span class='op'>(</span><span class='va'>sp</span>, <span class='va'>spa</span><span class='op'>)</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>sum_of_squares</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>par</span>, <span class='va'>df</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>    <span class='va'>Linf</span> <span class='op'>&lt;-</span> <span class='va'>par</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span></span>
+<span>    <span class='va'>K</span> <span class='op'>&lt;-</span> <span class='va'>par</span><span class='op'>[[</span><span class='fl'>2</span><span class='op'>]</span><span class='op'>]</span></span>
+<span>    <span class='va'>t0</span> <span class='op'>&lt;-</span> <span class='va'>par</span><span class='op'>[[</span><span class='fl'>3</span><span class='op'>]</span><span class='op'>]</span></span>
+<span>    <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='va'>length</span> <span class='op'>-</span> <span class='fu'>length_vB</span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='va'>age</span>, <span class='va'>Linf</span>, <span class='va'>K</span>, <span class='va'>t0</span><span class='op'>)</span><span class='op'>)</span><span class='op'>^</span><span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='op'>}</span></span></code></pre>
 </div>
-<pre><code>[1] TRUE</code></pre>
 </div>
-<p>The fact that these are identical is not surprising if you look at the code for the <code>species_params()</code> function:</p>
+<p>We need to give an initial guess for the parameters to <code>optim</code>, as well as lower bounds on the parameter values.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>species_params</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>start</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>Linf <span class='op'>=</span> <span class='fl'>400</span>, K <span class='op'>=</span> <span class='fl'>0.3</span>, t0 <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span></span>
+<span><span class='va'>lower</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>Linf <span class='op'>=</span> <span class='fl'>0</span>, K <span class='op'>=</span> <span class='fl'>0.01</span>, t0 <span class='op'>=</span> <span class='op'>-</span><span class='fl'>4</span><span class='op'>)</span></span></code></pre>
 </div>
-<pre><code>function(params) {
-    params@species_params
-}
-&lt;bytecode: 0x55ea4c495ba8&gt;
-&lt;environment: namespace:mizer&gt;</code></pre>
 </div>
-<p>The function actually only contains one statement, which accesses the <code>species_params</code> slot using the <code>@</code> notation.</p>
-<p>The difference between the two notations becomes apparent only when you want to make a change to the species parameters. Let’s assume we want to change the <code>h</code> parameter for the first species in our example model. It currently has the value</p>
+<p>It does not matter too much what the initial guess is as long as it is not too wrong. The lower bound is needed to keep the optimizer from trying negative values for <span class="math inline">\(K\)</span>. Now we can call <code>optim()</code>. (We use the method “L-BFGS-B” because that is the only built-in method that handles bounds on the parameters.)</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>h</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>op_age</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/optim.html'>optim</a></span><span class='op'>(</span><span class='va'>start</span>, fn <span class='op'>=</span> <span class='va'>sum_of_squares</span>, </span>
+<span>            df <span class='op'>=</span> <span class='va'>df</span>, lower <span class='op'>=</span> <span class='va'>lower</span>, </span>
+<span>            method <span class='op'>=</span> <span class='st'>"L-BFGS-B"</span><span class='op'>)</span></span>
+<span><span class='va'>op_age</span><span class='op'>$</span><span class='va'>par</span></span></code></pre>
 </div>
-<pre><code>[1] 18.20276</code></pre>
+<pre><code>       Linf           K          t0 
+416.0794061   0.2423941  -2.1629160 </code></pre>
 </div>
-<p>As you know, this parameter <code>h</code> is used to calculate the maximum intake rate <span class="math inline">\(h(w)\)</span> as a power-law function of size: <span class="math inline">\(h(w) = h w^n\)</span>. So for example the maximum intake rate at the smallest size is</p>
+<p>Let us plot the von Bertalanffy curve with these parameters on top of or observations:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html'>getMaxIntakeRate</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>pl</span> <span class='op'>&lt;-</span> <span class='va'>pl</span> <span class='op'>+</span></span>
+<span>    <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_function.html'>geom_function</a></span><span class='op'>(</span>fun <span class='op'>=</span> <span class='va'>length_vB</span>, args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span><span class='op'>(</span><span class='va'>op_age</span><span class='op'>$</span><span class='va'>par</span><span class='op'>)</span>,</span>
+<span>                  linewidth <span class='op'>=</span> <span class='fl'>2</span>, colour <span class='op'>=</span> <span class='st'>"blue"</span><span class='op'>)</span></span>
+<span><span class='va'>pl</span></span></code></pre>
 </div>
-<pre><code>[1] 0.1820276</code></pre>
+<p><img src="dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-6-1.png" width="624" /></p>
 </div>
-<p>Now let’s increase the value of the <code>h</code> parameter using the <code>@</code> notation:</p>
+<p>At each age the fitted von Bertalanffy curve approximates the average of the lengths of all the fish of that age.</p>
+<p>Of course, the curve is only made to fit the data in the observed size range. The curve clearly does not extrapolate well to larval sizes as we can see from the large negative value of <span class="math inline">\(t_0\)</span>. This becomes clearer if we extend the age range of the plot.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>params</span><span class='op'>@</span><span class='va'>species_params</span><span class='op'>$</span><span class='va'>h</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>20</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>pl</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/lims.html'>xlim</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>12</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>    <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_hline</a></span><span class='op'>(</span>yintercept <span class='op'>=</span> <span class='va'>op_age</span><span class='op'>$</span><span class='va'>par</span><span class='op'>[[</span><span class='st'>"Linf"</span><span class='op'>]</span><span class='op'>]</span>, </span>
+<span>               colour <span class='op'>=</span> <span class='st'>"blue"</span>, linetype <span class='op'>=</span> <span class='st'>"dashed"</span><span class='op'>)</span></span></code></pre>
 </div>
+<p><img src="dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-7-1.png" width="624" data-distill-preview=1 /></p>
 </div>
-<p>If we look at the maximum intake rate, we see that it has not changed:</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html'>getMaxIntakeRate</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span>
-</code></pre>
-</div>
-<pre><code>[1] 0.1820276</code></pre>
-</div>
-<p>All we have done is change the value in the species parameter data frame, but this did not trigger a recalculation of the maximum intake rate. We should instead have used</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>h</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>20</span>
-</code></pre>
-</div>
-</div>
-<p>Take a look at the syntax, which is really a bit weird when compared to other programming languages. If you want to dig deeper into this, a good place to look is <a href="https://adv-r.hadley.nz/functions.html#replacement-functions" class="uri">https://adv-r.hadley.nz/functions.html#replacement-functions</a>.</p>
-<p>This way of changing <span class="math inline">\(h\)</span> does indeed change the maximum intake rate:</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html'>getMaxIntakeRate</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span>
-</code></pre>
-</div>
-<pre><code>[1] 0.2</code></pre>
-</div>
-<p>The reason is clear if we look at the code:</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>`species_params&lt;-`</span>
-</code></pre>
-</div>
-<pre><code>function(params, value) {
-    value &lt;- validSpeciesParams(value)
-    params@species_params &lt;- value
-    suppressMessages(setParams(params))
-}
-&lt;bytecode: 0x55ea4fdb2030&gt;
-&lt;environment: namespace:mizer&gt;</code></pre>
-</div>
-<p>So three things actually happen when you change a species parameter via the setter function:</p>
+<p>The curve would predict a length of more than 170cm at birth, which is clearly nonsense. The larval growth must be much faster than predicted by the von Bertalanffy curve. That is why mizer works with a bi-phasic growth model, but that is not our current topic.</p>
+<p>In the above plot we also indicated the average asymptotic length <span class="math inline">\(L_\infty\)</span> with a dashed blue line. What will be important for us is to note that this is the <em>average</em> asymptotic length and that there are a lot of fish with a length larger than <span class="math inline">\(L_\infty\)</span>.</p>
+<p>There are many issues that we could debate and that have been debated at length in the literature:</p>
 <ol type="1">
-<li>Your new value is checked for validity</li>
-<li>Your new value is saved in the <code>species_params</code> slot</li>
-<li>The other slots in the MizerParams object are updated by calling <code>setParams()</code>.</li>
+<li>Is the von Bertalanffy growth model the best growth model.</li>
+<li>How reliably can the growth be estimated from the size-at-age data.</li>
+<li>Is least squares estimation an appropriate method.</li>
 </ol>
-<h1 id="gear-parameters">Gear parameters</h1>
-<p>Similar comments apply to the gear parameters. The gear parameters are used by mizer to set up the catchability and selectivity arrays. You can find more details on the <a href="https://sizespectrum.org/mizer/reference/setFishing.html#setting-fishing">help page for setting fishing</a>. You can get the current gear parameters in two equivalent ways:</p>
+<p>But none of these are our topic. We will assume that the von Bertalanffy curve gives an appropriate representation of the length at age of an average fish of that age.</p>
+<h2 id="age-dependent-growth-rate">Age-dependent growth rate</h2>
+<p>The slope of the von Bertalanffy curve at age <span class="math inline">\(a\)</span> gives the average growth rate of fish of that age:</p>
+<p><span class="math display">\[\frac{dL(a)}{dt}=\frac{dL(a)}{da}=K\, L_\infty\, e^{-K(a-t_0)}
+= K(L_\infty - L(a)).\]</span> (We used that time <span class="math inline">\(t\)</span> and age <span class="math inline">\(a\)</span> increase together, <span class="math inline">\(da/dt=1\)</span>.)</p>
+<p>The important point to understand is that this is the growth rate as a function of age. The length <span class="math inline">\(L(a)\)</span> that enters the expression is the average length of fish of age <span class="math inline">\(a\)</span>. This is useful information in age-based population models. It is not useful in size-based models like mizer.</p>
+<h2 id="size-dependent-growth-rate">Size-dependent growth rate</h2>
+<p>We want the average growth rate for fish of some given length <span class="math inline">\(L\)</span> rather than the average growth rate for fish of a given age <span class="math inline">\(a\)</span>. Why? There can be several reasons.</p>
+<p>Assume for example that we want to estimate the productivity of a population and have only information about the size distribution of the population. Such size data is often more readily available than age data because length or weight measurements are easy while age determination is difficult and time consuming. If we have the average growth rate of fish as a function of size then we can multiply that by the abundance of fish of that size and sum over all sizes to get the total productivity.</p>
+<p>More relevantly to us, the mizer model is a size-based model that uses the growth rate as a function of size to project the size distribution into the future. Mizer of course can calculate this growth rate itself with its <code>getEGrowth()</code> function. However it would be good if one had an observed growth rate to compare to to calibrate the species parameters in mizer that influence the mizer growth rate.</p>
+<p>One might think that the above equation also gives an expression for the average growth rate for fish of length <span class="math inline">\(L\)</span>. Can’t we simply replace the <span class="math inline">\(L(a)\)</span> by <span class="math inline">\(L\)</span>?</p>
+<p><span class="math display">\[\frac{dL}{dt} \stackrel{?}{=} K(L_\infty - L).\]</span></p>
+<p>We can’t. If we try that, then at all <span class="math inline">\(L\)</span> above <span class="math inline">\(L_\infty\)</span> the formula gives a negative growth rate. But that is not how fish work. Fish that are lucky enough to grow beyond the average asymptotic size <span class="math inline">\(L_\infty\)</span> are not compelled to shrink back to average size.</p>
+<p>What we need to realise is that in fitting the von Bertalanffy curve to the size-at-age data we did not treat size and age equally. Rather we chose to average over all sizes at fixed age. From that averaged data we can not reconstruct the information about what happens at a specific size.</p>
+<h2 id="size-based-growth-curve">Size-based growth curve</h2>
+<p>We now understand that from a curve describing the average size of all fish of a certain age we can not deduce the average age of all fish of a certain size and hence we can not use it to determine the growth rate as a function of size. What we would need is a curve describing the average age of all fish of a certain size. Let’s refer to that as a size-based growth curve as opposed to an age-based growth curve.</p>
+<p>Now we want to discuss how we can determine a size-based growth curve from size-at-age data. This should be possible. If the size-at-age data comes from a random sample of fish for each of which its size and age were measured, then the data treats size and age the same. It was only our least squares fit that singled out age as the explanatory variable and size as the variable to average over. We now simply have to reverse the roles of size and age.</p>
+<p>We’ll again use the von Bertalanffy growth model, in the sense of assuming that the growth rate decreases linearly with length,</p>
+<p><span class="math display">\[\frac{dL}{dt} = K(L_{max}-L),\]</span></p>
+<p>but now we interpret this as the growth rate of an average individual of size <span class="math inline">\(L\)</span>. This immediately implies that the parameter <span class="math inline">\(L_{max}\)</span> is the length of the largest individual in the population. We can use that growth rate to express the age as a function of length instead of expressing length as a function of age. This gives the expression</p>
+<p><span class="math display">\[
+a(L) = t_0 - \frac{1}{K}\log\left(1-\frac{L}{L_{max}}\right).
+\]</span></p>
+<p>This expression of course has a singularity at <span class="math inline">\(L = L_{max}\)</span> because even if a fish lived for an infinite amount of time it would not grow beyond <span class="math inline">\(L_{max}\)</span>. Dealing with that singularity in the expression numerically would be challenging, so we acknowledge that fish are never going to live infinitely long and therefore <span class="math inline">\(L\)</span> will never quite reach <span class="math inline">\(L_{max}\)</span> and so we can cut of the curve when <span class="math inline">\(L\)</span> gets sufficiently close to <span class="math inline">\(L_{max}\)</span>.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># Using function</span>
-<span class='va'>gp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/gear_params.html'>gear_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>
-<span class='co'># Using @</span>
-<span class='va'>gpa</span> <span class='op'>&lt;-</span> <span class='va'>params</span><span class='op'>@</span><span class='va'>gear_params</span>
-<span class='co'># These are identical</span>
-<span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span><span class='op'>(</span><span class='va'>gp</span>, <span class='va'>gpa</span><span class='op'>)</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>age_vB</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>L</span>, <span class='va'>Lmax</span>, <span class='va'>K</span>, <span class='va'>t0</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>    <span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>pmin</a></span><span class='op'>(</span><span class='va'>L</span> <span class='op'>/</span> <span class='va'>Lmax</span>, <span class='fl'>0.999999</span><span class='op'>)</span></span>
+<span>    <span class='va'>t0</span> <span class='op'>-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>-</span> <span class='va'>r</span><span class='op'>)</span> <span class='op'>/</span> <span class='va'>K</span></span>
+<span><span class='op'>}</span></span></code></pre>
 </div>
-<pre><code>[1] TRUE</code></pre>
 </div>
-<p>But if you want to actually change the selectivity or catchability by changing the gear parameters you need to use the functional form. Here is the current <code>gear_params</code> data frame in the example model:</p>
+<p>Instead of choosing the parameters so as to minimize the sum of squares of the difference between the observed lengths and the predicted lengths, we minimize the sum of squares of the difference between the observed ages and the predicted ages. The function calculating the sum of squares is now</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/gear_params.html'>gear_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>sum_of_squares</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>par</span>, <span class='va'>df</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>    <span class='va'>Lmax</span> <span class='op'>&lt;-</span> <span class='va'>par</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span></span>
+<span>    <span class='va'>K</span> <span class='op'>&lt;-</span> <span class='va'>par</span><span class='op'>[[</span><span class='fl'>2</span><span class='op'>]</span><span class='op'>]</span></span>
+<span>    <span class='va'>t0</span> <span class='op'>&lt;-</span> <span class='va'>par</span><span class='op'>[[</span><span class='fl'>3</span><span class='op'>]</span><span class='op'>]</span></span>
+<span>    <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='va'>age</span> <span class='op'>-</span> <span class='fu'>age_vB</span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='va'>length</span>, <span class='va'>Lmax</span>, <span class='va'>K</span>, <span class='va'>t0</span><span class='op'>)</span><span class='op'>)</span><span class='op'>^</span><span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='op'>}</span></span></code></pre>
 </div>
-<pre><code>         gear species   sel_func knife_edge_size catchability
-1  Industrial   Sprat knife_edge              13            1
-2  Industrial Sandeel knife_edge               4            1
-3  Industrial  N.pout knife_edge              23            1
-4     Pelagic Herring knife_edge              99            1
-5        Beam     Dab knife_edge              21            1
-6       Otter Whiting knife_edge              75            1
-7        Beam    Sole knife_edge              78            1
-8       Otter Gurnard knife_edge              39            1
-9        Beam  Plaice knife_edge             105            1
-10      Otter Haddock knife_edge             165            1
-11      Otter     Cod knife_edge            1606            1
-12      Otter  Saithe knife_edge            1076            1</code></pre>
 </div>
-<p>If, for example, we want to reduce the catchability of Sprat with the Industrial gear to 0.8 we would do</p>
+<p>Because all observations must be strictly shorter than <span class="math inline">\(L_{max}\)</span> we need to start optim with a starting value for <span class="math inline">\(L_{max}\)</span> that is above the largest observed length.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/gear_params.html'>gear_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>catchability</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>0.8</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>start</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>Lmax <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='va'>length</span><span class='op'>)</span> <span class='op'>*</span> <span class='fl'>1.2</span>, K <span class='op'>=</span> <span class='fl'>0.3</span>, t0 <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span></span>
+<span><span class='va'>lower</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>Lmax <span class='op'>=</span> <span class='fl'>0</span>, K <span class='op'>=</span> <span class='fl'>0.01</span>, t0 <span class='op'>=</span> <span class='op'>-</span><span class='fl'>4</span><span class='op'>)</span></span>
+<span><span class='va'>op_length</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/optim.html'>optim</a></span><span class='op'>(</span><span class='va'>start</span>, fn <span class='op'>=</span> <span class='va'>sum_of_squares</span>, df <span class='op'>=</span> <span class='va'>df</span>, </span>
+<span>            lower <span class='op'>=</span> <span class='va'>lower</span>, method <span class='op'>=</span> <span class='st'>"L-BFGS-B"</span><span class='op'>)</span></span>
+<span><span class='va'>op_length</span><span class='op'>$</span><span class='va'>par</span></span></code></pre>
 </div>
+<pre><code>         Lmax             K            t0 
+1235.69702683    0.04733173   -1.22046772 </code></pre>
 </div>
-<p>Note that changing gear parameters in the <code>species_params</code> data frame will <strong>not</strong> have the desired effect. You need to change them in the <code>gear_params</code> data frame.</p>
-<h1 id="resource-parameters">Resource parameters</h1>
-<p>Not surprisingly, the same applies to the resource parameters. These are used to set up the size-dependent carrying capacity and replenishment rate for the resource. You should access them with</p>
+<p>We can now again visualise this curve by plotting it on top of the point cloud of observations:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/resource_params.html'>resource_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>pl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>    <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_jitter.html'>geom_jitter</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>length</span>, y <span class='op'>=</span> <span class='va'>age</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>    <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_function.html'>geom_function</a></span><span class='op'>(</span>fun <span class='op'>=</span> <span class='va'>age_vB</span>, args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span><span class='op'>(</span><span class='va'>op_length</span><span class='op'>$</span><span class='va'>par</span><span class='op'>)</span>,</span>
+<span>                  linewidth <span class='op'>=</span> <span class='fl'>2</span>, colour <span class='op'>=</span> <span class='st'>"blue"</span><span class='op'>)</span></span>
+<span><span class='va'>pl</span></span></code></pre>
 </div>
-<pre><code>$kappa
-[1] 1e+11
-
-$lambda
-[1] 2.133333
-
-$r_pp
-[1] 10
-
-$n
-[1] 0.6666667
-
-$w_pp_cutoff
-[1] 9.820907</code></pre>
+<p><img src="dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-11-1.png" width="624" /></p>
 </div>
-<p>and change them with, for example,</p>
+<p>Given that we are now dealing with the size-based growth curve, we plot the length on the x axis and the age on the y axis.</p>
+<p>I am not saying that fitting a von Bertalanffy curve to the average growth at size via least squares is a good idea. I am showing it only to compare to the fitting of a von Bertalanffy curve to the average growth at age that is commonly done. I think that a bi-phasic growth model like that used in mizer is more appropriate.</p>
+<p>One problem with the von Bertalanffy curve is that there is a wide range of maximum sizes that can fit the data almost equally well. For example we may find that the maximum length of 1236cm predicted by the least squares fit is unrealistic and set an upper bound of 600cm:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/resource_params.html'>resource_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>r_pp</span> <span class='op'>&lt;-</span> <span class='fl'>4</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>upper</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>Lmax <span class='op'>=</span> <span class='fl'>600</span>, K <span class='op'>=</span> <span class='fl'>0.5</span>, t0 <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span></span>
+<span><span class='va'>op_length_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/optim.html'>optim</a></span><span class='op'>(</span><span class='va'>start</span>, fn <span class='op'>=</span> <span class='va'>sum_of_squares</span>, df <span class='op'>=</span> <span class='va'>df</span>, </span>
+<span>            lower <span class='op'>=</span> <span class='va'>lower</span>, upper <span class='op'>=</span> <span class='va'>upper</span>, method <span class='op'>=</span> <span class='st'>"L-BFGS-B"</span><span class='op'>)</span></span>
+<span><span class='va'>op_length_2</span><span class='op'>$</span><span class='va'>par</span></span></code></pre>
 </div>
+<pre><code>       Lmax           K          t0 
+600.0000000   0.1838247   0.9216962 </code></pre>
 </div>
-<h1 id="rate-arrays">Rate arrays</h1>
-<p>When you call <code>newMultispeciesParams()</code>, then mizer uses the information in <code>species_params</code>, <code>gear_params</code> and <code>resource_params</code> to set up various arrays that will later make it much faster to run simulations of the model. If you are not happy with how mizer fills these arrays, you can also change them directly. And again you can do that either with <code>@</code> notation or without.</p>
-<p>Let’s take the example of the maximum intake rate <span class="math inline">\(h(w)\)</span> that we already discussed earlier. This is stored in the <code>intake_max</code> slot of the MizerParams object, as a two-dimensional array, with one row for each species and one column for each size bin. You can get at this way in the two equivalent ways:</p>
+<p>That leads to totally different values for <span class="math inline">\(K\)</span> and <span class="math inline">\(t_0\)</span> but the fit is almost as good:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span><span class='op'>(</span><span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html'>getMaxIntakeRate</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>, <span class='va'>params</span><span class='op'>@</span><span class='va'>intake_max</span><span class='op'>)</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>pl</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_function.html'>geom_function</a></span><span class='op'>(</span>fun <span class='op'>=</span> <span class='va'>age_vB</span>, args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span><span class='op'>(</span><span class='va'>op_length_2</span><span class='op'>$</span><span class='va'>par</span><span class='op'>)</span>,</span>
+<span>                   linewidth <span class='op'>=</span> <span class='fl'>2</span>, colour <span class='op'>=</span> <span class='st'>"green"</span><span class='op'>)</span></span></code></pre>
 </div>
-<pre><code>[1] TRUE</code></pre>
+<p><img src="dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-13-1.png" width="624" /></p>
 </div>
-<p>You may wonder, why the function is called <code>getMaxIntakeRate()</code> rather than <code>intake_max()</code>, and I am wondering too. Naming things is difficult, and I now think that I made a bad choice when choosing those names. It gets worse when we now look at the syntax for changing <code>intake_max</code>.</p>
-<p>We can either do it with the <code>@</code> notation, for example</p>
+<h2 id="so-what-should-you-do">So what should you do?</h2>
+<p>We have now understood that to estimate the size-dependent growth rate you should not use the age-based von Bertalanffy parameters, even though they are routinely used in age-based models and are therefore often readily available. So what do I propose you use instead for your species parameters when setting up a mizer model?</p>
+<h3 id="maximum-size">Maximum size</h3>
+<p>I propose that for the maximum size parameter <code>w_inf</code> you use the largest observed size. If necessary you can obtain this from FishBase. FishBase gives the maximum length in cm, so you also need the length-weight conversion parameters <code>a</code> and <code>b</code> to get he maximum weight in grams. Here is an example:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>params</span><span class='op'>@</span><span class='va'>intake_max</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>*</span> <span class='va'>params</span><span class='op'>@</span><span class='va'>intake_max</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>species</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Gadus morhua"</span>, <span class='st'>"Sprattus sprattus"</span><span class='op'>)</span></span>
+<span><span class='va'>length_weight</span> <span class='op'>&lt;-</span> <span class='fu'>rfishbase</span><span class='fu'>::</span><span class='fu'><a href='https://docs.ropensci.org/rfishbase/reference/estimate.html'>estimate</a></span><span class='op'>(</span><span class='va'>species</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='st'>"Species"</span>, <span class='st'>"a"</span>, <span class='st'>"b"</span><span class='op'>)</span></span>
+<span><span class='va'>max_length</span> <span class='op'>&lt;-</span> <span class='fu'>rfishbase</span><span class='fu'>::</span><span class='fu'><a href='https://docs.ropensci.org/rfishbase/reference/species.html'>species</a></span><span class='op'>(</span><span class='va'>species</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>Species</span>, <span class='va'>Length</span><span class='op'>)</span></span>
+<span><span class='va'>max_weight</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate-joins.html'>left_join</a></span><span class='op'>(</span><span class='va'>max_length</span>, <span class='va'>length_weight</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>w_inf <span class='op'>=</span> <span class='va'>a</span> <span class='op'>*</span> <span class='va'>Length</span> <span class='op'>^</span> <span class='va'>b</span><span class='op'>)</span></span>
+<span><span class='va'>max_weight</span></span></code></pre>
 </div>
+<pre><code># A tibble: 2 × 5
+  Species           Length       a     b   w_inf
+  &lt;chr&gt;              &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+1 Gadus morhua         200 0.00692  3.08 84561. 
+2 Sprattus sprattus     16 0.00550  3.09    28.9</code></pre>
 </div>
-<p>or we can do it without <code>@</code> notation</p>
+<h3 id="maximum-intake-rate">Maximum intake rate</h3>
+<p>To determine a good value for the coefficient <code>h</code> of the maximum intake rate in mizer I recommend using the size and age at maturity. For that you need both a <code>w_mat</code> (in grams) and an <code>age_mat</code> (in years) column in your species parameter data frame.</p>
+<p>If necessary, you can look up values for the maturity length and maturity age on fishbase. For example</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html'>setMaxIntakeRate</a></span><span class='op'>(</span><span class='va'>params</span>, intake_max <span class='op'>=</span> <span class='fl'>2</span> <span class='op'>*</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html'>getMaxIntakeRate</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>)</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>maturity_tbl</span> <span class='op'>&lt;-</span> <span class='fu'>rfishbase</span><span class='fu'>::</span><span class='fu'><a href='https://docs.ropensci.org/rfishbase/reference/maturity.html'>maturity</a></span><span class='op'>(</span><span class='st'>"Sprattus sprattus"</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>Species</span>, l_mat <span class='op'>=</span> <span class='va'>Lm</span>, age_mat <span class='op'>=</span> <span class='va'>tm</span>, <span class='va'>Locality</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>    <span class='fu'><a href='https://rdrr.io/r/stats/na.fail.html'>na.omit</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span><span class='va'>maturity_tbl</span></span></code></pre>
 </div>
+<pre><code># A tibble: 4 × 4
+  Species           l_mat age_mat Locality                            
+  &lt;chr&gt;             &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;                               
+1 Sprattus sprattus 11.5     2    North Sea                           
+2 Sprattus sprattus  8.10    1.20 Baltic Sea, Sub-divisions 22-32, 20…
+3 Sprattus sprattus 12       2    Baltic Sea                          
+4 Sprattus sprattus  8.10    1.20 Baltic Sea, sub-divisions 22-32     </code></pre>
 </div>
-<p>This is ugly, and in future versions of mizer I think we will also allow</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>intake_max</span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>*</span> <span class='fu'>intake_max</span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>
-</code></pre>
-</div>
-</div>
-<p>But for now we are stuck with the functions that are all listed on the [help page] for <code>setParams()</code>. Note that these functions do not modify the params object in place, but create a new MizerParams object, which we then have to assign to a variable.</p>
-<p>Again there are benefits in avoiding directly accessing the slot with <code>@</code>. These are:</p>
-<ol type="1">
-<li><p>The new value you assign is checked for validity. If you make a mistake in an assignment using <code>@</code> you will not get any warning and instead will run into mysterious and cryptic error messages later.</p></li>
-<li><p>The new value gets protected from automatically being overwritten when you make changes to other parameters.</p></li>
-</ol>
-<p>We illustrate the second point with a simple example. Let’s set one entry in the <code>metab</code> slot, which holds the size-dependent metabolic rates, to a particular value.</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>params</span><span class='op'>@</span><span class='va'>metab</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>2</span>
-<span class='va'>params</span><span class='op'>@</span><span class='va'>metab</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span>
-</code></pre>
-</div>
-<pre><code>[1] 2</code></pre>
-</div>
-<p>Let us then make a totally unrelated change, say by changing the reproductive efficiency of the 5th species and look again at our entry in <code>metab</code>.</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>erepro</span><span class='op'>[</span><span class='fl'>5</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>0.1</span>
-<span class='va'>params</span><span class='op'>@</span><span class='va'>metab</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span>
-</code></pre>
-</div>
-<pre><code>[1] 0.02891793</code></pre>
-</div>
-<p>The reason for this is that the change in the species parameter has triggered a recalculation of the rate arrays from the species parameters, overwriting our manual change.</p>
-<p>Now let’s try the same with the proper way of changing the metabolic rate.</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>metab</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMetabolicRate.html'>getMetabolicRate</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>
-<span class='va'>metab</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>2</span>
-<span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMetabolicRate.html'>setMetabolicRate</a></span><span class='op'>(</span><span class='va'>params</span>, metab <span class='op'>=</span> <span class='va'>metab</span><span class='op'>)</span>
-</code></pre>
-</div>
-</div>
-<p>Now this will not get overwritten when some other parameter changes.</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>erepro</span><span class='op'>[</span><span class='fl'>5</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>0.1</span>
-<span class='va'>params</span><span class='op'>@</span><span class='va'>metab</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span>
-</code></pre>
-</div>
-<pre><code>[1] 2</code></pre>
-</div>
-<p>The way that was done internally is by attaching a comment to the <code>metab</code> slot.</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/comment.html'>comment</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>@</span><span class='va'>metab</span><span class='op'>)</span>
-</code></pre>
-</div>
-<pre><code>[1] &quot;set manually&quot;</code></pre>
-</div>
-<p>You could have chosen a more informative comment, for example</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>comment</span> <span class='op'>&lt;-</span> <span class='st'>"Just changed the [1, 1] entry for test purposes."</span>
-<span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://sizespectrum.org/mizer/reference/setMetabolicRate.html'>setMetabolicRate</a></span><span class='op'>(</span><span class='va'>params</span>, metab <span class='op'>=</span> <span class='va'>metab</span>,
-                           comment_metab <span class='op'>=</span> <span class='va'>comment</span><span class='op'>)</span>
-</code></pre>
-</div>
-</div>
-<p>All that matters is that there is a comment. This also tells us how we can un-protect a slot so that it can be auto-computed from the species parameters again:</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/comment.html'>comment</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>@</span><span class='va'>metab</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='cn'>NULL</span>
-</code></pre>
-</div>
-</div>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://sizespectrum.org/mizer/reference/species_params.html'>species_params</a></span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>$</span><span class='va'>erepro</span><span class='op'>[</span><span class='fl'>5</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>0.1</span>
-<span class='va'>params</span><span class='op'>@</span><span class='va'>metab</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span>
-</code></pre>
-</div>
-<pre><code>[1] 0.02891793</code></pre>
-</div>
-<h1 id="summary">Summary</h1>
-<p>We have seen how to change species parameters, gear parameters, resource parameters or other slots in a MizerParams object by using the appropriate functions. You can find a complete <a href="https://sizespectrum.org/mizer/reference/index.html#section-model-parameters">list of these functions</a> in the mizer reference pages. We discussed how this avoids the pitfalls that arise when accessing slots directly with the <code>@</code> notation. I hope this will be useful to you when you explore your own mizer model.</p>
-<p>This blog post was motivated by a question by <a href="https://www.researchgate.net/profile/Leslie-Garay-Narvaez">Leslie Garay-Narváez</a>. Please keep the questions coming.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p>You can then select the row most suitable for your purposes and convert the maturity length to maturity weight. Then you can determine the value for <code>h</code> that will create the juvenile growth necessary to reach the maturity size by the maturity age with the <code>mizerExperimental::get_h_default()</code> function. In the next release of mizer calling this function will no longer be necessary because mizer will use it by default if you do not include an <code>h</code> column in your species parameters.</p>
+<p>The next release of mizer will also encourage the use of the column name <code>w_max</code> instead of <code>w_inf</code> to avoid the confusion with the age-based von Bertalanffy parameter and it will issue a warning if you use the <code>k_vb</code> column in the species parameter data frame. The help pages will be updated accordingly.</p>
+<p>If you have good size-at-age data then you will of course want to use it to also extract information about the shape of the growth curve between maturity and maximum size. This would for example allow you to get information about how fast the investment into reproduction increases with body size. For this purpose it is important that you have access to the actual size-at-age data, not its age-based summary in terms of von Bertalanffy parameters.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <div class="article-footer">
   <p class="social_footer">
     <span class="disqus-comments">
       <i class="fas fa-comments"></i>
       &nbsp;
-      <span class="disqus-comment-count" data-disqus-identifier="posts/2021-08-08-change-model-parameters-without-using/">Comment on this article</span>
+      <span class="disqus-comment-count" data-disqus-identifier="posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/">Comment on this article</span>
     </span>
     <span class="article-sharing">
       Share: &nbsp;
-      <a href="https://twitter.com/share?text=Change%20model%20parameters%20without%20using%20%40&amp;url=https%3A%2F%2Fblog.mizer.sizespectrum.org%2Fposts%2F2021-08-08-change-model-parameters-without-using%2F" aria-label="share on twitter">
+      <a href="https://twitter.com/share?text=Don%27t%20use%20von%20Bertalanffy%20growth%20parameters&amp;url=https%3A%2F%2Fblog.mizer.sizespectrum.org%2Fposts%2F2022-11-30-dont-use-von-bertalanffy-growth-parameters%2F" aria-label="share on twitter">
         <i class="fab fa-twitter" aria-hidden="true"></i>
       </a>
     </span>
@@ -2854,8 +2799,8 @@ $w_pp_cutoff
   <div id="disqus_thread"></div>
   <script type="text/javascript" cookie-consent="functionality">
 var disqus_config = function () {
-  this.page.url = 'https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/';
-  this.page.identifier = 'posts/2021-08-08-change-model-parameters-without-using/';
+  this.page.url = 'https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/';
+  this.page.identifier = 'posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/';
 };
 (function() {
   var d = document, s = d.createElement('script');
@@ -2891,13 +2836,13 @@ var disqus_config = function () {
   <p>Text and figures are licensed under Creative Commons Attribution <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Source code is available at <a href="https://github.com/sizespectrum/MizerBlog/">https://github.com/sizespectrum/MizerBlog/</a>, unless otherwise noted. The figures that have been reused from other sources don't fall under this license and can be recognized by a note in their caption: "Figure from ...".</p>
   <h3 id="citation">Citation</h3>
   <p>For attribution, please cite this work as</p>
-  <pre class="citation-appendix short">Delius (2021, Aug. 8). mizer blog: Change model parameters without using @. Retrieved from https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/</pre>
+  <pre class="citation-appendix short">Delius (2022, Nov. 30). mizer blog: Don't use von Bertalanffy growth parameters. Retrieved from https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/</pre>
   <p>BibTeX citation</p>
-  <pre class="citation-appendix long">@misc{delius2021change,
+  <pre class="citation-appendix long">@misc{delius2022don't,
   author = {Delius, Gustav},
-  title = {mizer blog: Change model parameters without using @},
-  url = {https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/},
-  year = {2021}
+  title = {mizer blog: Don't use von Bertalanffy growth parameters},
+  url = {https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/},
+  year = {2022}
 }</pre>
 </div>
 <!--/radix_placeholder_appendices-->

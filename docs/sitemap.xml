@@ -2,38 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" version="1.0">
   <url>
     <loc>https://blog.mizer.sizespectrum.org/about.html</loc>
-    <lastmod>2022-07-11T13:33:15+02:00</lastmod>
+    <lastmod>2021-08-10T15:43:55+01:00</lastmod>
   </url>
   <url>
     <loc>https://blog.mizer.sizespectrum.org/</loc>
-    <lastmod>2022-07-11T13:33:16+02:00</lastmod>
+    <lastmod>2021-08-10T15:43:55+01:00</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/</loc>
+    <lastmod>2022-12-04T14:36:06+00:00</lastmod>
   </url>
   <url>
     <loc>https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer/</loc>
-    <lastmod>2022-09-19T09:16:26+02:00</lastmod>
+    <lastmod>2022-12-02T08:09:20+00:00</lastmod>
   </url>
   <url>
     <loc>https://blog.mizer.sizespectrum.org/posts/2021-09-07-tuning-growth-curves-with-a-shiny-gadget/</loc>
-    <lastmod>2022-07-11T13:33:15+02:00</lastmod>
+    <lastmod>2022-12-02T08:09:20+00:00</lastmod>
   </url>
   <url>
     <loc>https://blog.mizer.sizespectrum.org/posts/2021-08-20-a-5-step-recipe-for-tuning-the-model-steady-state/</loc>
-    <lastmod>2022-07-11T13:33:15+02:00</lastmod>
+    <lastmod>2022-12-02T08:09:20+00:00</lastmod>
   </url>
   <url>
     <loc>https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/</loc>
-    <lastmod>2022-07-11T13:33:15+02:00</lastmod>
+    <lastmod>2021-08-18T09:00:00+01:00</lastmod>
   </url>
   <url>
     <loc>https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/</loc>
-    <lastmod>2022-07-11T13:33:15+02:00</lastmod>
+    <lastmod>2021-08-14T20:43:43+01:00</lastmod>
   </url>
   <url>
     <loc>https://blog.mizer.sizespectrum.org/posts/2021-08-03-density-dependence-in-reproduction/</loc>
-    <lastmod>2022-07-11T13:33:15+02:00</lastmod>
+    <lastmod>2021-08-10T15:43:55+01:00</lastmod>
   </url>
   <url>
     <loc>https://blog.mizer.sizespectrum.org/posts/welcome/</loc>
-    <lastmod>2022-07-11T13:33:15+02:00</lastmod>
+    <lastmod>2021-08-10T15:43:55+01:00</lastmod>
   </url>
 </urlset>
