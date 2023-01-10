@@ -1,0 +1,71 @@
+---
+title: "Density-dependence in predation rates"
+description: |
+  
+preview: images/Christmas_tree_mizer.png
+author:
+  - name: Gustav Delius
+    url: {}
+date: 2022-12-23
+twitter:
+  site: "@mizer_model"
+  creator: "@gustavdelius"
+output:
+  distill::distill_article:
+    self_contained: false
+    toc: true
+---
+
+Mizer implements satiation by imposing a maximum intake rate $h_i(w)$ for predators of species $i$ and size $w$. This leads to a feeding level $$
+f_i(w)=\frac{E_i(w)}{E_i(w)+h_i(w)},
+$$ where $E_i(w)$ is the encounter rate. The feeding level is a number between $0$ and $1$ where $0$ means that the predator eats everything it encounters and $1$ means that it feeds at the maximum intake rate. More generally, the consumption rate of an individual predator is $$
+(1-f_i(w))E_i(w) = \frac{E_i(w)h_i(w)}{E_i(w)+h_i(w)} = f_i(w)h_i(w).
+$$
+
+This consumption by the predators imposes a predation mortality on the prey:
+$$
+\mu_{p.j}(w_p) = \sum_i\int dw\,(1-f_i(w))\phi_i(w,w_p)\gamma_i(w)N_i(w)\theta_{ij}.
+$$
+
+Note the predator abundance factor $N_i(w)$ in the expression for the per-capita predation mortality. Thus, while satiation imposes a limit on how far predation by an individual predator can grow if the abundance of prey increases, the predation mortality of the prey is still unbounded. The predation mortality of the prey actually grows more than linearly with the abundance of predators, because as the number of predators grows, the number of prey decreases, which decreases the encounter rate and hence the feeding level, thereby increasing the per-capita mortality.
+
+Instead of imposing a limit $h_i(w)$ on the consumption of an individual predator we can impose a limit $\mu_{max.j}(w_p)$ on the mortality of an individual prey of species $j$ and size $w_p$, so that no matter how much the abundance of predators is increased, the per-capita predation mortality never exceeds $\mu_{max.j}(w_p)$. This could for example arise from protective behaviour of the prey, like hiding in refuges or schooling. 
+
+[@walters_structuring_1997] suggest a simple model for how the limit on predation mortality can arise. They assume that prey move between a protected and a vulnerable state. Let us denote by $V_j(w_p)$ the abundance density of vulnerable individuals. Then $N_j(w_p)-V_j(w_p)$ is the abundance density of protected individuals. We introduce a rate $\nu_j(w_p)$ at which protected individuals leave their protection and make themselves vulnerable (for example to feed) and a rate $\lambda_j(w_p)\nu_j(w_p)$ at which vulnerable individuals go back to protection. The ratio $\lambda_j(w_p)$ between the two rates expresses how much longer on average an individual spends in the protected state rather than the vulnerable state.
+
+Only in the vulnerable state does a prey experiences predation mortality. In the protected state it experiences no mortality. To compensate for the relative amount of time an individual spends in the vulnerable state we write the predation mortality rate of a vulnerable individual as $(1+\lambda_j(w_p))\mu_{p.j}(w_p)$. Then the rate of change in the abundance of vulnerable individuals is
+$$
+\frac{dV}{dt}=\nu\left(N-V\right)
+-\lambda\nu V-(1+\lambda)\mu V.
+$$
+Because all terms above are for the species and size we save space by not indicating the species index $j$ and the size $w_p$ on each term.
+
+We now assume that this process of moving between states is fast enough so that it stays close to the steady state solution where $dV/dt=0$:
+$$
+V = \frac{\nu}{(1+\lambda)\nu+\mu}N 
+= \frac{1}{1+\lambda}\frac{\mu_{max}}{\mu + \mu_{max}}N
+$$
+
+where we have introduced $\mu_{max}=(1+\lambda)\nu$.
+
+The encounter rate at which a predator encounters prey is now
+$$
+E_i(w) = \gamma_i(w) 
+\sum_j\int dw_p\,\phi_i(w, w_p)\theta_{ij}w_pV_j(w_p)
+$$
+which differs from the standard mizer expression in replacing $N_j(w_p)$ by $V_j(w_p)$ because the predator only encounters the vulnerable individuals. Expressing this back in terms of $N$ gives
+$$
+E_i(w) = \gamma_i(w) 
+\sum_j\int dw_p\,\phi_i(w, w_p)\theta_{ij}w_pV_j(w_p)
+$$
+
+
+and introduce the "protection level"
+$$
+\pi = \frac{\mu}{\mu + \mu_{max}}
+$$
+we can rewrite the above as
+$$
+V = \frac{1}{1+\lambda} \pi N.
+$$
+
