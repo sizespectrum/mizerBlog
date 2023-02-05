@@ -63,17 +63,17 @@ We see that protection of the prey does not put an upper limit on the encounter 
 
 [@walters_structuring_1997] assume that prey move between a protected and a vulnerable state. Only in the vulnerable state does a prey experiences predation mortality. In the protected state it experiences no mortality. The effective per-capita rate of predation mortality is thus lowered by a factor equal to the proportion of the prey that are vulnerable. Predation mortality, by acting only on the vulnerable, has the effect of reducing this proportion. As the number of predators increases, the proportion of vulnerable prey decreases. Therefore the effective predation mortality no longer grows linearly with the number of predators.
 
-Let us now see how this mechanism plays out in detail. Let us denote by $V_j(w_p)$ the abundance density of vulnerable individuals. Then $N_j(w_p)-V_j(w_p)$ is the abundance density of protected individuals. We introduce a rate $\nu_j(w_p)$ at which protected individuals leave their protection and make themselves vulnerable (for example to feed) and a rate $\lambda_j(w_p)\nu_j(w_p)$ at which vulnerable individuals go back to protection. The rate of change in the abundance of vulnerable individuals is
+Let us now see how this mechanism plays out in detail. Let us denote by $V_j(w_p)$ the abundance density of vulnerable individuals. Then $N_j(w_p)-V_j(w_p)$ is the abundance density of protected individuals. We introduce a rate $\nu_j(w_p)$ at which protected individuals move between the protected and the vulnerable state. The rate of change in the abundance of vulnerable individuals is
 $$
 \frac{dV}{dt}=\nu\left(N-V\right)
--\lambda\nu V-(1+\lambda)\mu V.
+-\nu V-\mu V.
 $$
 The first term of the right hand side represents individuals moving from the protected state to the vulnerable state at rate $\nu$ and the second term the opposite movement from vulnerable to protected at rate $\lambda\nu$. The third term represents the mortality of vulnerable individuals. Because all terms above are for the species and size we save space by not indicating the species index $j$ and the size $w_p$ on each term.
 
 We now assume that this process of moving between states is fast enough so that it stays close to the steady state solution where $dV/dt=0$. At this steady state we have
 $$
-V = \frac{\nu}{(1+\lambda)\nu+\mu}N 
-= \frac{1}{1+\lambda}\frac{\mu_{max}}{\mu + \mu_{max}}N
+V = \frac{\nu}{2\nu+\mu}N 
+= \frac{1}{2}\frac{\mu_{max}}{\mu + \mu_{max}}N
 $$
 
 where we have introduced $\mu_{max}=(1+\lambda)\nu$.
@@ -84,7 +84,7 @@ $$
 $$
 we can rewrite the above as
 $$
-V = (1-\pi)\frac{1}{1+\lambda}N.
+V = (1-\pi)\frac{1}{2}N.
 $$
 
 The rate at which a predator of species $i$ and weight $w$ encounters prey is now
@@ -95,9 +95,8 @@ $$
 which differs from the standard mizer expression in replacing $N_j(w_p)$ by $V_j(w_p)$ because the predator only encounters the vulnerable individuals. Expressing this back in terms of $N$ gives
 $$
 E_i(w) = \gamma_i(w) 
-\sum_j\int dw_p\,\phi_i(w, w_p)\frac{\theta_{ij}}{1+\lambda_j(w_p)}w_p(1-\pi_j(w_p))N_j(w_p).
+\sum_j\int dw_p\,\phi_i(w, w_p)\frac{\theta_{ij}}{2}w_p(1-\pi_j(w_p))N_j(w_p).
 $$
 
-The factor of $1/(1+\lambda)$ arises from the fact that a prey spends only a fraction
-$1/(1+\lambda)$ of its time in the vulnerable state. 
+The factor of $1/2$ in the interaction matrix comes from the fact that each predator only spends half its time in the vulnerable state. 
 
