@@ -16,6 +16,10 @@ output:
     toc: true
 ---
 
+This is a rather technical post about how one could modify how mizer models density dependence of predation rates. Currently mizer approaches this very differently from EcoSim. In mizer the density dependence comes from satiation of the predator, in EcoSim it comes from protective behaviour of the prey. For comparing mizer models with EcoSim models it might be interesting to be able to have mizer also implement protective behaviour of prey.
+
+## Satiation and feeding level
+
 Mizer implements satiation by imposing a maximum intake rate $h_i(w)$ for predators of species $i$ and size $w$. This leads to a feeding level $$
 f_i(w)=\frac{E_i(w)}{E_i(w)+h_i(w)},
 $$ where $E_i(w)$ is the encounter rate. The feeding level is a number between $0$ and $1$ where $0$ means that the predator eats everything it encounters and $1$ means that it feeds at the maximum intake rate. More generally, the consumption rate of an individual predator is $$
@@ -29,18 +33,44 @@ $$
 
 Note the predator abundance factor $N_i(w)$ in the expression for the per-capita predation mortality. Thus, while satiation imposes a limit on how far predation by an individual predator can grow if the abundance of prey increases, the predation mortality of the prey is still unbounded. The predation mortality of the prey actually grows more than linearly with the abundance of predators, because as the number of predators grows, the number of prey decreases, which decreases the encounter rate and hence the feeding level, thereby increasing the per-capita mortality.
 
-Instead of imposing a limit $h_i(w)$ on the consumption of an individual predator we can impose a limit $\mu_{max.j}(w_p)$ on the mortality of an individual prey of species $j$ and size $w_p$, so that no matter how much the abundance of predators is increased, the per-capita predation mortality never exceeds $\mu_{max.j}(w_p)$. This could for example arise from protective behaviour of the prey, like hiding in refuges or schooling. 
+## Protection and vulnerability level
 
-[@walters_structuring_1997] suggest a simple model for how the limit on predation mortality can arise. They assume that prey move between a protected and a vulnerable state. Let us denote by $V_j(w_p)$ the abundance density of vulnerable individuals. Then $N_j(w_p)-V_j(w_p)$ is the abundance density of protected individuals. We introduce a rate $\nu_j(w_p)$ at which protected individuals leave their protection and make themselves vulnerable (for example to feed) and a rate $\lambda_j(w_p)\nu_j(w_p)$ at which vulnerable individuals go back to protection. The ratio $\lambda_j(w_p)$ between the two rates expresses how much longer on average an individual spends in the protected state rather than the vulnerable state.
+Instead of imposing a limit $h_i(w)$ on the consumption of an individual predator we can impose a limit $\mu_{max.j}(w_p)$ on the mortality of an individual prey of species $j$ and size $w_p$, so that no matter how much the abundance of predators is increased, the per-capita predation mortality never exceeds $\mu_{max.j}(w_p)$. This could for example arise from protective behaviour of the prey, like hiding in refuges or schooling.
 
-Only in the vulnerable state does a prey experiences predation mortality. In the protected state it experiences no mortality. To compensate for the relative amount of time an individual spends in the vulnerable state we write the predation mortality rate of a vulnerable individual as $(1+\lambda_j(w_p))\mu_{p.j}(w_p)$. Then the rate of change in the abundance of vulnerable individuals is
+In close analogy to how we introduced the feeding level above, we now introduce a vulnerability level
+$$
+\pi_j(w_p) = \frac{\mu_j(w_p)}{\mu_j(w_p) + \mu_{max.j}(w_p)}
+$$
+
+The mortality rate on a prey of species $j$ and weight $w_p$ is then
+$$
+(1-\pi_j(w_p))\mu_j(w_p) = 
+\frac{\mu_j(w_p)\mu_{max.j}(w_p)}{\mu_j(w_p) + \mu_{max.j}(w_p)} =
+\pi_j(w_p)\mu_{max.j}(w_p).
+$$
+
+The encounter rate at which a predator of species $i$ and weight $w$ encounters prey is now
+$$
+E_i(w) = \gamma_i(w) 
+\sum_j\int dw_p\,\phi_i(w, w_p)\theta_{ij}w_p(1-\pi_j(w_p))N_j(w_p).
+$$
+
+We see that protection of the prey does not put an upper limit on the encounter rate for predators, because this is still linear in the density of prey. 
+
+### Mechanism for limit on mortality rate
+
+[@walters_structuring_1997] suggest a simple mechanistic model for how the limit on predation mortality can arise. You should skip this section if you are only interested in how to include the limit on mortality rate in the mizer model. Its mechanistic origin will not be modelled explicitly in mizer. I present it here only for the curious.
+
+[@walters_structuring_1997] assume that prey move between a protected and a vulnerable state. Only in the vulnerable state does a prey experiences predation mortality. In the protected state it experiences no mortality. The effective per-capita rate of predation mortality is thus lowered by a factor equal to the proportion of the prey that are vulnerable. Predation mortality, by acting only on the vulnerable, has the effect of reducing this proportion. As the number of predators increases, the proportion of vulnerable prey decreases. Therefore the effective predation mortality no longer grows linearly with the number of predators.
+
+Let us now see how this mechanism plays out in detail. Let us denote by $V_j(w_p)$ the abundance density of vulnerable individuals. Then $N_j(w_p)-V_j(w_p)$ is the abundance density of protected individuals. We introduce a rate $\nu_j(w_p)$ at which protected individuals leave their protection and make themselves vulnerable (for example to feed) and a rate $\lambda_j(w_p)\nu_j(w_p)$ at which vulnerable individuals go back to protection. The rate of change in the abundance of vulnerable individuals is
 $$
 \frac{dV}{dt}=\nu\left(N-V\right)
 -\lambda\nu V-(1+\lambda)\mu V.
 $$
-Because all terms above are for the species and size we save space by not indicating the species index $j$ and the size $w_p$ on each term.
+The first term of the right hand side represents individuals moving from the protected state to the vulnerable state at rate $\nu$ and the second term the opposite movement from vulnerable to protected at rate $\lambda\nu$. The third term represents the mortality of vulnerable individuals. Because all terms above are for the species and size we save space by not indicating the species index $j$ and the size $w_p$ on each term.
 
-We now assume that this process of moving between states is fast enough so that it stays close to the steady state solution where $dV/dt=0$:
+We now assume that this process of moving between states is fast enough so that it stays close to the steady state solution where $dV/dt=0$. At this steady state we have
 $$
 V = \frac{\nu}{(1+\lambda)\nu+\mu}N 
 = \frac{1}{1+\lambda}\frac{\mu_{max}}{\mu + \mu_{max}}N
@@ -48,24 +78,26 @@ $$
 
 where we have introduced $\mu_{max}=(1+\lambda)\nu$.
 
-The encounter rate at which a predator encounters prey is now
-$$
-E_i(w) = \gamma_i(w) 
-\sum_j\int dw_p\,\phi_i(w, w_p)\theta_{ij}w_pV_j(w_p)
-$$
-which differs from the standard mizer expression in replacing $N_j(w_p)$ by $V_j(w_p)$ because the predator only encounters the vulnerable individuals. Expressing this back in terms of $N$ gives
-$$
-E_i(w) = \gamma_i(w) 
-\sum_j\int dw_p\,\phi_i(w, w_p)\theta_{ij}w_pV_j(w_p)
-$$
-
-
-and introduce the "protection level"
+In terms of the vulnerability level
 $$
 \pi = \frac{\mu}{\mu + \mu_{max}}
 $$
 we can rewrite the above as
 $$
-V = \frac{1}{1+\lambda} \pi N.
+V = (1-\pi)\frac{1}{1+\lambda}N.
 $$
+
+The rate at which a predator of species $i$ and weight $w$ encounters prey is now
+$$
+E_i(w) = \gamma_i(w) 
+\sum_j\int dw_p\,\phi_i(w, w_p)\theta_{ij}w_pV_j(w_p),
+$$
+which differs from the standard mizer expression in replacing $N_j(w_p)$ by $V_j(w_p)$ because the predator only encounters the vulnerable individuals. Expressing this back in terms of $N$ gives
+$$
+E_i(w) = \gamma_i(w) 
+\sum_j\int dw_p\,\phi_i(w, w_p)\frac{\theta_{ij}}{1+\lambda_j(w_p)}w_p(1-\pi_j(w_p))N_j(w_p).
+$$
+
+The factor of $1/(1+\lambda)$ arises from the fact that a prey spends only a fraction
+$1/(1+\lambda)$ of its time in the vulnerable state. 
 
