@@ -16,7 +16,18 @@ output:
     toc: true
 ---
 
-This is a rather technical post about how one could modify how mizer models density dependence of predation rates. Currently mizer approaches this very differently from EcoSim. In mizer the density dependence comes from satiation of the predator, in EcoSim it comes from protective behaviour of the prey. For comparing mizer models with EcoSim models it might be interesting to be able to have mizer also implement protective behaviour of prey.
+In this blog post, we delve into the technicalities of altering the manner in which mizer models address the density dependence of predation rates. At present, mizer's approach significantly diverges from that of EcoSim. Mizer focuses on the predator's satiation to determine density dependence, while EcoSim emphasizes the protective behaviour exhibited by the prey. To facilitate a more comprehensive comparison between mizer and EcoSim models, it is worth exploring the possibility of incorporating prey protective behaviour into the mizer framework.
+
+The blog post is structured as follows: 
+We first summarise the current way in which satiation is implemented in
+mizer via the concept of a "feeding level". Then we discuss how protective
+prey behaviour can be implemented in a perfectly analogous manner by
+introducing the concept of a "vulnerability level". In an aside, we describe
+a way how such a vulnerability level can arise from the protective behaviour
+of prey individuals, modelled on the mechanism described in [@walters_structuring_1997]. We then provide the code necessary to instruct
+mizer to switch from implementing predator satiation to implementing 
+prey protection.
+
 
 ## Satiation and feeding level
 
@@ -35,19 +46,25 @@ Note the predator abundance factor $N_i(w)$ in the expression for the per-capita
 
 ## Protection and vulnerability level
 
-Instead of imposing a limit $h_i(w)$ on the consumption of an individual predator we can impose a limit $\mu_{max.j}(w_p)$ on the mortality of an individual prey of species $j$ and size $w_p$, so that no matter how much the abundance of predators is increased, the per-capita predation mortality never exceeds $\mu_{max.j}(w_p)$. This could for example arise from protective behaviour of the prey, like hiding in refuges or schooling.
+The protective behaviour of prey can be modelled in a perfectly analogous
+way to the satiation of predators, as we will now describe.
+
+Instead of imposing a limit $h_i(w)$ on the consumption of an individual predator we can impose a limit $\mu_{max.j}(w_p)$ on the predation mortality of an individual prey of species $j$ and size $w_p$, so that no matter how much the abundance of predators is increased, the per-capita predation mortality never exceeds $\mu_{max.j}(w_p)$. This could for example arise from protective behaviour of the prey, like hiding in refuges or schooling.
 
 In close analogy to how we introduced the feeding level above, we now introduce a vulnerability level
 $$
-\pi_j(w_p) = \frac{\mu_j(w_p)}{\mu_j(w_p) + \mu_{max.j}(w_p)}
+\pi_j(w_p) = \frac{\mu_j(w_p)}{\mu_j(w_p) + \mu_{max.j}(w_p)},
 $$
+where $\mu_j(w_p)$ is the standard mizer predation mortality rate.
 
-The mortality rate on a prey of species $j$ and weight $w_p$ is then
+The modified predation mortality rate on a prey of species $j$ and weight $w_p$ is then
 $$
 (1-\pi_j(w_p))\mu_j(w_p) = 
 \frac{\mu_j(w_p)\mu_{max.j}(w_p)}{\mu_j(w_p) + \mu_{max.j}(w_p)} =
 \pi_j(w_p)\mu_{max.j}(w_p).
 $$
+The factor $(1-\pi_j(w_p))$ can be interpreted as the fraction of the prey that
+are vulnerable to predation.
 
 The encounter rate at which a predator of species $i$ and weight $w$ encounters prey is now
 $$
@@ -76,7 +93,7 @@ V = \frac{\nu}{2\nu+\mu}N
 = \frac{1}{2}\frac{\mu_{max}}{\mu + \mu_{max}}N
 $$
 
-where we have introduced $\mu_{max}=(1+\lambda)\nu$.
+where we have introduced $\mu_{max}=2\nu$.
 
 In terms of the vulnerability level
 $$
@@ -99,4 +116,6 @@ E_i(w) = \gamma_i(w)
 $$
 
 The factor of $1/2$ in the interaction matrix comes from the fact that each predator only spends half its time in the vulnerable state. 
+
+## Implementation in mizer
 
