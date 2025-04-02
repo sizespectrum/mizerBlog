@@ -387,4 +387,3 @@ The work presented here is exact in the limit when `dt` and `dw` are 0, however 
 
 In this blog post, we introduced an extension that allows you to calculate dynamic growth curves and ages at size in mizer. This addition will improve how mizer is calibrated to data and also allows it to be interpreted and compared to age-based models, potentially increasing the utility of mizer in the assessment and advice process.
 
-# References
