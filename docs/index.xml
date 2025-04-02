@@ -13,7 +13,21 @@ new features, technical details, plans and ideas. Contributions welcome.
       <link>https://blog.mizer.sizespectrum.org</link>
     </image>
     <generator>Distill</generator>
-    <lastBuildDate>Fri, 23 Dec 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 02 Apr 2025 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Age in mizer</title>
+      <dc:creator>Luke Broadbent</dc:creator>
+      <dc:creator>Michael A. Spence</dc:creator>
+      <link>https://blog.mizer.sizespectrum.org/posts/2025-04-02-age-in-mizer</link>
+      <description>In this blog post, we introduce an extension that allows you to calculate
+dynamic growth curves and ages at size in mizer. This addition will improve how
+mizer is calibrated to data and also allows it to be interpreted and compared 
+to age-based models, potentially increasing the utility of mizer in the 
+assessment and advice process.</description>
+      <guid>https://blog.mizer.sizespectrum.org/posts/2025-04-02-age-in-mizer</guid>
+      <pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate>
+      <media:content url="https://blog.mizer.sizespectrum.org/posts/2025-04-02-age-in-mizer/pictures/aging_mizer_toy.png" medium="image" type="image/png" width="528" height="480"/>
+    </item>
     <item>
       <title>Mizer 2.4.0</title>
       <dc:creator>Gustav Delius</dc:creator>
@@ -32,7 +46,6 @@ realistic multispecies models even simpler.</description>
 size-dependent growth curves used by mizer.</description>
       <guid>https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters</guid>
       <pubDate>Wed, 30 Nov 2022 00:00:00 +0000</pubDate>
-      <media:content url="https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/dont-use-von-bertalanffy-growth-parameters_files/figure-html5/unnamed-chunk-7-1.png" medium="image" type="image/png" width="1248" height="768"/>
     </item>
     <item>
       <title>Temperature-dependent rates in mizer</title>
