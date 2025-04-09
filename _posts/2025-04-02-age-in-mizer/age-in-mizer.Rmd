@@ -282,7 +282,7 @@ knitr::include_graphics("pictures/cohort_plot.png")
 ## Mortality rates{#sec:Zatage}
 
 
-By calculating the numbers at age, as done in Section \@ref(sec:numatage), we can calculate how many individuals die in a cohort in a year. Consider that at time $t-1$ and $t$ we have calculated numbers age $a-1$ and $a$ respectively, then we can rearrange equation \@ref(eq:grow) to find
+By calculating the numbers at age, as done in the previous section, we can calculate how many individuals die in a cohort in a year. Consider that at time $t-1$ and $t$ we have calculated numbers age $a-1$ and $a$ respectively, then we can rearrange equation \@ref(eq:grow) to find
 \begin{equation}
     Z_{a-1,t-1}=-\ln(N_{a,t})+\ln(N_{a-1,t-1}).
     (\#eq:getZ)
@@ -377,7 +377,7 @@ Most models used in advice are age-based. In this blog post, we have introduced 
 
 For example, mizer could be used as an operating model for MSEs. A common MSE framework is to use an operating model to test management actions. The operating model stands in for reality and management actions, such as harvest control rules, are run [@punt_MSE]. This process involves the operating model generating data, which assessment models are fitted to. As data for assessment models is age resolved, the operating model has to be able to sample age resolved data. By introducing emergent age in mizer, mizer can now generate age-based data, meaning that it can be used as an operating model in the MSE frameworks.
 
-Some category 1 assessments, those that have full analytical assessments, use natural mortality at age from fitted multispecies models as inputs to the assessment. For example, many North Sea stocks use natural mortality estimates from the stochastic multispecies model [@sms]. Typically, assessment models require natural mortality at age rather than size. In Section \@ref(sec:Zatage) we showed that we can calculate emergent natural mortality at age. Therefore, coupled with dynamical fitting, [@spence_cs], mizer could be used to provide natural mortality estimates as inputs to single-species assessments.
+Some category 1 assessments, those that have full analytical assessments, use natural mortality at age from fitted multispecies models as inputs to the assessment. For example, many North Sea stocks use natural mortality estimates from the stochastic multispecies model [@sms]. Typically, assessment models require natural mortality at age rather than size. In the section 'Mortality rates' we showed that we can calculate emergent natural mortality at age. Therefore, coupled with dynamical fitting, [@spence_cs], mizer could be used to provide natural mortality estimates as inputs to single-species assessments.
 
 Many data collection schemes are designed to be fit to age-based models, for example, length stratified sample is used on surveys to calculate age-length keys. For these reasons, it can be difficult to incorporate age-based data when calibrating mizer. Furthermore, the data collected are not in a steady state (e.g., see Figure \@ref(fig:historic-weights)). Using the ages process described here, we can compare these data with mizer. For example, growth could be tuned by looking at emergent growth rates rather than steady states.
 
