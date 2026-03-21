@@ -202,7 +202,7 @@ window.Quarto = {
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Don’t use von Bertalanffy growth parameters</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<h1 class="title">Don’t use von Bertalanffy growth parameters</h1>
 </div>
 
 <div>
@@ -241,10 +241,9 @@ L(a) = L_\infty\left(1-e^{-K(a-t_0)}\right).
 <p>The constants <span class="math inline">\(L_\infty, K\)</span> and <span class="math inline">\(t_0\)</span> are the von Bertalanffy growth parameters.</p>
 <p>We can teach R about this with</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">length_vB</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">age</span>, <span class="va">Linf</span>, <span class="va">K</span>, <span class="va">t0</span><span class="op">)</span> <span class="op">{</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">length_vB</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">age</span>, <span class="va">Linf</span>, <span class="va">K</span>, <span class="va">t0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">Linf</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">K</span> <span class="op">*</span> <span class="op">(</span><span class="va">age</span> <span class="op">-</span> <span class="va">t0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 <p>If we assume a length-weight relationship of the form <span class="math inline">\(w = a L^b\)</span> then we get an expression for the weight as a function of age:</p>
 <p><span class="math display">\[
@@ -265,7 +264,7 @@ w(a) = w_\infty\left(1-e^{-K(a-t_0)}\right)^b
 <section id="estimating-von-bertalanffy-parameters" class="level2"><h2 class="anchored" data-anchor-id="estimating-von-bertalanffy-parameters">Estimating von Bertalanffy parameters</h2>
 <p>The von Bertalanffy growth parameters are usually obtained by fitting the von Bertalanffy curve to size-at-age data. For a good introduction I recommend the <a href="http://derekogle.com/fishR/examples/oldFishRVignettes/VonBertalanffy.pdf">fishR vignette</a>. To illustrate this we will use the <code>Croaker2</code> data set contained in the FSAdata package. The data consists of observations of the lengths and ages of a sample of fish.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">FSAdata</span><span class="fu">::</span><span class="va"><a href="https://fishr-core-team.github.io/FSAdata/reference/Croaker2.html">Croaker2</a></span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span>age <span class="op">=</span> <span class="va">age</span>, length <span class="op">=</span> <span class="va">tl</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">age</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -273,7 +272,7 @@ w(a) = w_\infty\left(1-e^{-K(a-t_0)}\right)^b
 <span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html">geom_jitter</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">age</span>, y <span class="op">=</span> <span class="va">length</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">pl</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output-display">
+<div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="dont-use-von-bertalanffy-growth-parameters_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
@@ -286,38 +285,36 @@ w(a) = w_\infty\left(1-e^{-K(a-t_0)}\right)^b
 <p>where the sum is over all fish in our sample.</p>
 <p>To find the minimum, we will use the function <code><a href="https://rdrr.io/r/stats/optim.html">optim()</a></code>. First we create a function that calculates the sum of squares when given a vector with the parameters:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sum_of_squares</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">par</span>, <span class="va">df</span><span class="op">)</span> <span class="op">{</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sum_of_squares</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">par</span>, <span class="va">df</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">Linf</span> <span class="op">&lt;-</span> <span class="va">par</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span>    <span class="va">K</span> <span class="op">&lt;-</span> <span class="va">par</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span>    <span class="va">t0</span> <span class="op">&lt;-</span> <span class="va">par</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">length</span> <span class="op">-</span> <span class="fu">length_vB</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">age</span>, <span class="va">Linf</span>, <span class="va">K</span>, <span class="va">t0</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 <p>We need to give an initial guess for the parameters to <code>optim</code>, as well as lower bounds on the parameter values.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Linf <span class="op">=</span> <span class="fl">400</span>, K <span class="op">=</span> <span class="fl">0.3</span>, t0 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Linf <span class="op">=</span> <span class="fl">400</span>, K <span class="op">=</span> <span class="fl">0.3</span>, t0 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">lower</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Linf <span class="op">=</span> <span class="fl">0</span>, K <span class="op">=</span> <span class="fl">0.01</span>, t0 <span class="op">=</span> <span class="op">-</span><span class="fl">4</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 <p>It does not matter too much what the initial guess is as long as it is not too wrong. The lower bound is needed to keep the optimizer from trying negative values for <span class="math inline">\(K\)</span>. Now we can call <code><a href="https://rdrr.io/r/stats/optim.html">optim()</a></code>. (We use the method “L-BFGS-B” because that is the only built-in method that handles bounds on the parameters.)</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">op_age</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/optim.html">optim</a></span><span class="op">(</span><span class="va">start</span>, fn <span class="op">=</span> <span class="va">sum_of_squares</span>, </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">op_age</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/optim.html">optim</a></span><span class="op">(</span><span class="va">start</span>, fn <span class="op">=</span> <span class="va">sum_of_squares</span>, </span>
 <span>            df <span class="op">=</span> <span class="va">df</span>, lower <span class="op">=</span> <span class="va">lower</span>, </span>
 <span>            method <span class="op">=</span> <span class="st">"L-BFGS-B"</span><span class="op">)</span></span>
 <span><span class="va">op_age</span><span class="op">$</span><span class="va">par</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="cell-output cell-output-stdout">
 <pre><code>       Linf           K          t0 
 416.0794061   0.2423941  -2.1629160 </code></pre>
 </div>
 </div>
 <p>Let us plot the von Bertalanffy curve with these parameters on top of or observations:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="va">pl</span> <span class="op">+</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="va">pl</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_function.html">geom_function</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="va">length_vB</span>, args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span><span class="op">(</span><span class="va">op_age</span><span class="op">$</span><span class="va">par</span><span class="op">)</span>,</span>
 <span>                  linewidth <span class="op">=</span> <span class="fl">2</span>, colour <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
 <span><span class="va">pl</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output-display">
+<div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="dont-use-von-bertalanffy-growth-parameters_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
@@ -327,10 +324,10 @@ w(a) = w_\infty\left(1-e^{-K(a-t_0)}\right)^b
 <p>At each age the fitted von Bertalanffy curve approximates the average of the lengths of all the fish of that age.</p>
 <p>Of course, the curve is only made to fit the data in the observed size range. The curve clearly does not extrapolate well to larval sizes as we can see from the large negative value of <span class="math inline">\(t_0\)</span>. This becomes clearer if we extend the age range of the plot.</p>
 <div class="cell" data-preview="true">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pl</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">xlim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pl</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">xlim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="va">op_age</span><span class="op">$</span><span class="va">par</span><span class="op">[[</span><span class="st">"Linf"</span><span class="op">]</span><span class="op">]</span>, </span>
 <span>               colour <span class="op">=</span> <span class="st">"blue"</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output-display">
+<div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="dont-use-von-bertalanffy-growth-parameters_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
@@ -370,42 +367,40 @@ a(L) = t_0 - \frac{1}{K}\log\left(1-\frac{L}{L_{max}}\right).
 \]</span></p>
 <p>This expression of course has a singularity at <span class="math inline">\(L = L_{max}\)</span> because even if a fish lived for an infinite amount of time it would not grow beyond <span class="math inline">\(L_{max}\)</span>. Dealing with that singularity in the expression numerically would be challenging, so we acknowledge that fish are never going to live infinitely long and therefore <span class="math inline">\(L\)</span> will never quite reach <span class="math inline">\(L_{max}\)</span> and so we can cut of the curve when <span class="math inline">\(L\)</span> gets sufficiently close to <span class="math inline">\(L_{max}\)</span>.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">age_vB</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">L</span>, <span class="va">Lmax</span>, <span class="va">K</span>, <span class="va">t0</span><span class="op">)</span> <span class="op">{</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">age_vB</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">L</span>, <span class="va">Lmax</span>, <span class="va">K</span>, <span class="va">t0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">pmin</a></span><span class="op">(</span><span class="va">L</span> <span class="op">/</span> <span class="va">Lmax</span>, <span class="fl">0.999999</span><span class="op">)</span></span>
 <span>    <span class="va">t0</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">r</span><span class="op">)</span> <span class="op">/</span> <span class="va">K</span></span>
 <span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 <p>Instead of choosing the parameters so as to minimize the sum of squares of the difference between the observed lengths and the predicted lengths, we minimize the sum of squares of the difference between the observed ages and the predicted ages. The function calculating the sum of squares is now</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sum_of_squares</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">par</span>, <span class="va">df</span><span class="op">)</span> <span class="op">{</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sum_of_squares</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">par</span>, <span class="va">df</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">Lmax</span> <span class="op">&lt;-</span> <span class="va">par</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span>    <span class="va">K</span> <span class="op">&lt;-</span> <span class="va">par</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span>    <span class="va">t0</span> <span class="op">&lt;-</span> <span class="va">par</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">age</span> <span class="op">-</span> <span class="fu">age_vB</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">length</span>, <span class="va">Lmax</span>, <span class="va">K</span>, <span class="va">t0</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 <p>Because all observations must be strictly shorter than <span class="math inline">\(L_{max}\)</span> we need to start optim with a starting value for <span class="math inline">\(L_{max}\)</span> that is above the largest observed length.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Lmax <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">length</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1.2</span>, K <span class="op">=</span> <span class="fl">0.3</span>, t0 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Lmax <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">length</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1.2</span>, K <span class="op">=</span> <span class="fl">0.3</span>, t0 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">lower</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Lmax <span class="op">=</span> <span class="fl">0</span>, K <span class="op">=</span> <span class="fl">0.01</span>, t0 <span class="op">=</span> <span class="op">-</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">op_length</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/optim.html">optim</a></span><span class="op">(</span><span class="va">start</span>, fn <span class="op">=</span> <span class="va">sum_of_squares</span>, df <span class="op">=</span> <span class="va">df</span>, </span>
 <span>            lower <span class="op">=</span> <span class="va">lower</span>, method <span class="op">=</span> <span class="st">"L-BFGS-B"</span><span class="op">)</span></span>
 <span><span class="va">op_length</span><span class="op">$</span><span class="va">par</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="cell-output cell-output-stdout">
 <pre><code>         Lmax             K            t0 
 1235.69702683    0.04733173   -1.22046772 </code></pre>
 </div>
 </div>
 <p>We can now again visualise this curve by plotting it on top of the point cloud of observations:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html">geom_jitter</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">length</span>, y <span class="op">=</span> <span class="va">age</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_function.html">geom_function</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="va">age_vB</span>, args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span><span class="op">(</span><span class="va">op_length</span><span class="op">$</span><span class="va">par</span><span class="op">)</span>,</span>
 <span>                  linewidth <span class="op">=</span> <span class="fl">2</span>, colour <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
 <span><span class="va">pl</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output-display">
+<div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="dont-use-von-bertalanffy-growth-parameters_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
@@ -416,20 +411,20 @@ a(L) = t_0 - \frac{1}{K}\log\left(1-\frac{L}{L_{max}}\right).
 <p>I am not saying that fitting a von Bertalanffy curve to the average growth at size via least squares is a good idea. I am showing it only to compare to the fitting of a von Bertalanffy curve to the average growth at age that is commonly done. I think that a bi-phasic growth model like that used in mizer is more appropriate.</p>
 <p>One problem with the von Bertalanffy curve is that there is a wide range of maximum sizes that can fit the data almost equally well. For example we may find that the maximum length of 1236cm predicted by the least squares fit is unrealistic and set an upper bound of 600cm:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">upper</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Lmax <span class="op">=</span> <span class="fl">600</span>, K <span class="op">=</span> <span class="fl">0.5</span>, t0 <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">upper</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Lmax <span class="op">=</span> <span class="fl">600</span>, K <span class="op">=</span> <span class="fl">0.5</span>, t0 <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">op_length_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/optim.html">optim</a></span><span class="op">(</span><span class="va">start</span>, fn <span class="op">=</span> <span class="va">sum_of_squares</span>, df <span class="op">=</span> <span class="va">df</span>, </span>
 <span>            lower <span class="op">=</span> <span class="va">lower</span>, upper <span class="op">=</span> <span class="va">upper</span>, method <span class="op">=</span> <span class="st">"L-BFGS-B"</span><span class="op">)</span></span>
 <span><span class="va">op_length_2</span><span class="op">$</span><span class="va">par</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="cell-output cell-output-stdout">
 <pre><code>       Lmax           K          t0 
 600.0000000   0.1838247   0.9216962 </code></pre>
 </div>
 </div>
 <p>That leads to totally different values for <span class="math inline">\(K\)</span> and <span class="math inline">\(t_0\)</span> but the fit is almost as good:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pl</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_function.html">geom_function</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="va">age_vB</span>, args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span><span class="op">(</span><span class="va">op_length_2</span><span class="op">$</span><span class="va">par</span><span class="op">)</span>,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pl</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_function.html">geom_function</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="va">age_vB</span>, args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span><span class="op">(</span><span class="va">op_length_2</span><span class="op">$</span><span class="va">par</span><span class="op">)</span>,</span>
 <span>                   linewidth <span class="op">=</span> <span class="fl">2</span>, colour <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output-display">
+<div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="dont-use-von-bertalanffy-growth-parameters_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
@@ -441,24 +436,24 @@ a(L) = t_0 - \frac{1}{K}\log\left(1-\frac{L}{L_{max}}\right).
 <section id="maximum-size" class="level3"><h3 class="anchored" data-anchor-id="maximum-size">Maximum size</h3>
 <p>I propose that for the maximum size parameter <code>w_inf</code> you use the largest observed size. If necessary you can obtain this from FishBase. FishBase gives the maximum length in cm, so you also need the length-weight conversion parameters <code>a</code> and <code>b</code> to get he maximum weight in grams. Here is an example:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Gadus morhua"</span>, <span class="st">"Sprattus sprattus"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Gadus morhua"</span>, <span class="st">"Sprattus sprattus"</span><span class="op">)</span></span>
 <span><span class="va">length_weight</span> <span class="op">&lt;-</span> <span class="fu">rfishbase</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/rfishbase/reference/estimate.html">estimate</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="st">"Species"</span>, <span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stderr">
+<div class="cell-output cell-output-stderr">
 <pre><code>Joining with `by = join_by(SpecCode)`</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">max_length</span> <span class="op">&lt;-</span> <span class="fu">rfishbase</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/rfishbase/reference/species.html">species</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">max_length</span> <span class="op">&lt;-</span> <span class="fu">rfishbase</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/rfishbase/reference/species.html">species</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Species</span>, <span class="va">Length</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stderr">
+<div class="cell-output cell-output-stderr">
 <pre><code>Joining with `by = join_by(SpecCode)`</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">max_weight</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">max_length</span>, <span class="va">length_weight</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">max_weight</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">max_length</span>, <span class="va">length_weight</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>w_inf <span class="op">=</span> <span class="va">a</span> <span class="op">*</span> <span class="va">Length</span> <span class="op">^</span> <span class="va">b</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stderr">
+<div class="cell-output cell-output-stderr">
 <pre><code>Joining with `by = join_by(Species)`</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">max_weight</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">max_weight</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 5
   Species           Length       a     b   w_inf
   &lt;chr&gt;              &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
@@ -470,14 +465,14 @@ a(L) = t_0 - \frac{1}{K}\log\left(1-\frac{L}{L_{max}}\right).
 <p>To determine a good value for the coefficient <code>h</code> of the maximum intake rate in mizer I recommend using the size and age at maturity. For that you need both a <code>w_mat</code> (in grams) and an <code>age_mat</code> (in years) column in your species parameter data frame.</p>
 <p>If necessary, you can look up values for the maturity length and maturity age on fishbase. For example</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">maturity_tbl</span> <span class="op">&lt;-</span> <span class="fu">rfishbase</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/rfishbase/reference/maturity.html">maturity</a></span><span class="op">(</span><span class="st">"Sprattus sprattus"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">maturity_tbl</span> <span class="op">&lt;-</span> <span class="fu">rfishbase</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/rfishbase/reference/maturity.html">maturity</a></span><span class="op">(</span><span class="st">"Sprattus sprattus"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Species</span>, l_mat <span class="op">=</span> <span class="va">Lm</span>, age_mat <span class="op">=</span> <span class="va">tm</span>, <span class="va">Locality</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stderr">
+<div class="cell-output cell-output-stderr">
 <pre><code>Joining with `by = join_by(SpecCode)`</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">maturity_tbl</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">maturity_tbl</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 4
   Species           l_mat age_mat Locality                             
   &lt;chr&gt;             &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;                                
@@ -493,8 +488,6 @@ a(L) = t_0 - \frac{1}{K}\log\left(1-\frac{L}{L_{max}}\right).
 <p>The next release of mizer will also encourage the use of the column name <code>w_max</code> instead of <code>w_inf</code> to avoid the confusion with the age-based von Bertalanffy parameter and it will issue a warning if you use the <code>k_vb</code> column in the species parameter data frame. The help pages will be updated accordingly.</p>
 <p>If you have good size-at-age data then you will of course want to use it to also extract information about the shape of the growth curve between maturity and maximum size. This would for example allow you to get information about how fast the investment into reproduction increases with body size. For this purpose it is important that you have access to the actual size-at-age data, not its age-based summary in terms of von Bertalanffy parameters.</p>
 
-
-<!-- -->
 
 </section></section></main><!-- /main --><div id="disqus_thread"></div>
 <script>
@@ -580,57 +573,6 @@ a(L) = t_0 - \frac{1}{K}\log\left(1-\frac{L}{L_{max}}\right).
         container: window.document.getElementById('quarto-embedded-source-code-modal')
       });
       clipboardModal.on('success', onCopySuccess);
-    }
-    const viewSource = window.document.getElementById('quarto-view-source') ||
-                       window.document.getElementById('quarto-code-tools-source');
-    if (viewSource) {
-      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
-      viewSource.addEventListener("click", function(e) {
-        if (sourceUrl) {
-          // rstudio viewer pane
-          if (/\bcapabilities=\b/.test(window.location)) {
-            window.open(sourceUrl);
-          } else {
-            window.location.href = sourceUrl;
-          }
-        } else {
-          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
-          modal.show();
-        }
-        return false;
-      });
-    }
-    function toggleCodeHandler(show) {
-      return function(e) {
-        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-        for (let i=0; i<detailsSrc.length; i++) {
-          const details = detailsSrc[i].parentElement;
-          if (show) {
-            details.open = true;
-          } else {
-            details.removeAttribute("open");
-          }
-        }
-        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
-        const fromCls = show ? "hidden" : "unhidden";
-        const toCls = show ? "unhidden" : "hidden";
-        for (let i=0; i<cellCodeDivs.length; i++) {
-          const codeDiv = cellCodeDivs[i];
-          if (codeDiv.classList.contains(fromCls)) {
-            codeDiv.classList.remove(fromCls);
-            codeDiv.classList.add(toCls);
-          } 
-        }
-        return false;
-      }
-    }
-    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
-    if (hideAllCode) {
-      hideAllCode.addEventListener("click", toggleCodeHandler(false));
-    }
-    const showAllCode = window.document.getElementById("quarto-show-all-code");
-    if (showAllCode) {
-      showAllCode.addEventListener("click", toggleCodeHandler(true));
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
@@ -960,295 +902,7 @@ a(L) = t_0 - \frac{1}{K}\log\left(1-\frac{L}{L_{max}}\right).
       }
     }
   });
-  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Don't use von Bertalanffy growth parameters"</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> |</span></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co">  Beware of the difference between age-dependent growth curves and the </span></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co">  size-dependent growth curves used by mizer.</span></span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span></span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co">  - name: Gustav Delius</span></span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co">    url: {}</span></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2022-11-30</span></span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="an">twitter:</span></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="co">  site: "@mizer_model"</span></span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="co">  creator: "@gustavdelius"</span></span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a><span class="an">preview:</span><span class="co"> change.jpg</span></span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span></span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a><span class="co">  distill::distill_article:</span></span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a><span class="co">    self_contained: false</span></span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE}</span></span>
-<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">echo =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>This blog post is not about criticising the von Bertalanffy growth model or the methods used to estimate the von Bertalanffy parameters from size-at-age data. There is a lot of literature about that. This blog post is about the difference between age-dependent and size-dependent growth rates. In the past we had mis-used the age-based von Bertalanffy growth species parameters <span class="in">`w_inf`</span> and <span class="in">`k_vb`</span> when setting up mizer models and this blog posts explains why that was a bad idea.</span>
-<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>A von Bertalanffy growth curve is an expression for the length $L$ of an average fish of age $a$:</span>
-<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a>L(a) = L_\infty\left(1-e^{-K(a-t_0)}\right).</span>
-<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a>The constants $L_\infty, K$ and $t_0$ are the von Bertalanffy growth parameters.</span>
-<span id="cb29-33"><a href="#cb29-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-34"><a href="#cb29-34" aria-hidden="true" tabindex="-1"></a>We can teach R about this with</span>
-<span id="cb29-35"><a href="#cb29-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-38"><a href="#cb29-38" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-39"><a href="#cb29-39" aria-hidden="true" tabindex="-1"></a>length_vB <span class="ot">&lt;-</span> <span class="cf">function</span>(age, Linf, K, t0) {</span>
-<span id="cb29-40"><a href="#cb29-40" aria-hidden="true" tabindex="-1"></a>    Linf <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">exp</span>(<span class="sc">-</span>K <span class="sc">*</span> (age <span class="sc">-</span> t0)))</span>
-<span id="cb29-41"><a href="#cb29-41" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb29-42"><a href="#cb29-42" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-43"><a href="#cb29-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-44"><a href="#cb29-44" aria-hidden="true" tabindex="-1"></a>If we assume a length-weight relationship of the form $w = a L^b$ then we get an expression for the weight as a function of age:</span>
-<span id="cb29-45"><a href="#cb29-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-46"><a href="#cb29-46" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb29-47"><a href="#cb29-47" aria-hidden="true" tabindex="-1"></a>w(a) = w_\infty\left(1-e^{-K(a-t_0)}\right)^b</span>
-<span id="cb29-48"><a href="#cb29-48" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb29-49"><a href="#cb29-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-50"><a href="#cb29-50" aria-hidden="true" tabindex="-1"></a>with the same parameters $K$ and $t_0$ and $w_\infty = aL_\infty^b$.</span>
-<span id="cb29-51"><a href="#cb29-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-52"><a href="#cb29-52" aria-hidden="true" tabindex="-1"></a>The von Bertalanffy growth model is quite simple as a deterministic model of growth. The issue becomes complicated only because growth in the real world is not deterministic. Different fish, even in the same stock, have different luck in finding food and they also have different genes. So the von Bertalanffy growth curve is used to describe average fish. Whenever one hears the word "average", on needs to be very careful that one knows how that average is taken.</span>
-<span id="cb29-53"><a href="#cb29-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-54"><a href="#cb29-54" aria-hidden="true" tabindex="-1"></a>Here is the short summary of the main message from this blog post:</span>
-<span id="cb29-55"><a href="#cb29-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-56"><a href="#cb29-56" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; The von Bertalanffy parameters describe the growth averaged over all fish of the same age, as is appropriate in age-based models. Mizer is a size-based model and hence needs the growth averaged over all fish of the same size. This makes it inappropriate to use the von Bertalanffy parameters when calibrating a mizer model. </span></span>
-<span id="cb29-57"><a href="#cb29-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-58"><a href="#cb29-58" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; In particular, the von Bertalanffy parameter $w_\infty$ is the asymptotic size of an __average__ individual whereas the mizer parameter `w_inf` is the asymptotic size of the __largest__ individual. A mizer model that uses estimated values for $w_\infty$ as the value for `w_inf` will predict that there are no fish larger than $w_\infty$ and thus can not reproduce the observed size distributions.</span></span>
-<span id="cb29-59"><a href="#cb29-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-60"><a href="#cb29-60" aria-hidden="true" tabindex="-1"></a>The message about the difference between the growth rate of an average individual of a particular age and the growth rate of an average individual of a particular size can also be important outside of mizer, for example when using size-resolved data to estimate the productivity of a species.</span>
-<span id="cb29-61"><a href="#cb29-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-62"><a href="#cb29-62" aria-hidden="true" tabindex="-1"></a>The remainder of this blog post is just about illustrating the above message. In particular, it makes it concrete what we mean by averaging at a fixed age or averaging at a fixed size. That is, we demonstrate the difference between fitting a curve by minimising the squared difference between observed size and predicted size and fitting a curve by minimising the squared difference between observed age and predicted age. </span>
-<span id="cb29-63"><a href="#cb29-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-64"><a href="#cb29-64" aria-hidden="true" tabindex="-1"></a>If you just want to know what you can use instead of the von Bertalanffy parameters you can jump straight to <span class="co">[</span><span class="ot">"So what should you do?"</span><span class="co">](#so-what-should-you-do)</span></span>
-<span id="cb29-65"><a href="#cb29-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-66"><a href="#cb29-66" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estimating von Bertalanffy parameters</span></span>
-<span id="cb29-67"><a href="#cb29-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-68"><a href="#cb29-68" aria-hidden="true" tabindex="-1"></a>The von Bertalanffy growth parameters are usually obtained by fitting the von Bertalanffy curve to size-at-age data. For a good introduction I recommend the <span class="co">[</span><span class="ot">fishR vignette</span><span class="co">](http://derekogle.com/fishR/examples/oldFishRVignettes/VonBertalanffy.pdf)</span>. To illustrate this we will use the <span class="in">`Croaker2`</span> data set contained in the FSAdata package. The data consists of observations of the lengths and ages of a sample of fish.</span>
-<span id="cb29-69"><a href="#cb29-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-72"><a href="#cb29-72" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-73"><a href="#cb29-73" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb29-74"><a href="#cb29-74" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb29-75"><a href="#cb29-75" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb29-76"><a href="#cb29-76" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> FSAdata<span class="sc">::</span>Croaker2 <span class="sc">|&gt;</span></span>
-<span id="cb29-77"><a href="#cb29-77" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="at">age =</span> age, <span class="at">length =</span> tl) <span class="sc">|&gt;</span></span>
-<span id="cb29-78"><a href="#cb29-78" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(age <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
-<span id="cb29-79"><a href="#cb29-79" aria-hidden="true" tabindex="-1"></a>    <span class="fu">na.omit</span>()</span>
-<span id="cb29-80"><a href="#cb29-80" aria-hidden="true" tabindex="-1"></a>pl <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df) <span class="sc">+</span></span>
-<span id="cb29-81"><a href="#cb29-81" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> length))</span>
-<span id="cb29-82"><a href="#cb29-82" aria-hidden="true" tabindex="-1"></a>pl</span>
-<span id="cb29-83"><a href="#cb29-83" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-84"><a href="#cb29-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-85"><a href="#cb29-85" aria-hidden="true" tabindex="-1"></a>In this scatterplot each point shows the length and age of one croaker from our sample.</span>
-<span id="cb29-86"><a href="#cb29-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-87"><a href="#cb29-87" aria-hidden="true" tabindex="-1"></a>The standard method to fit a von Bertalanffy curve to such a point cloud of size-at-age observations is the method of least squares. This consists of choosing the parameters so as to minimise the sum of the squares of the differences between the the observed lengths and the length predicted by the von Bertalanffy curve. So if we denote the length measurements by $L_i$ and the corresponding age measurements by $a_i$ then we want to minimise</span>
-<span id="cb29-88"><a href="#cb29-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-89"><a href="#cb29-89" aria-hidden="true" tabindex="-1"></a>$$ \sum_i (L_i - L(a_i))^2$$</span>
-<span id="cb29-90"><a href="#cb29-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-91"><a href="#cb29-91" aria-hidden="true" tabindex="-1"></a>where the sum is over all fish in our sample.</span>
-<span id="cb29-92"><a href="#cb29-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-93"><a href="#cb29-93" aria-hidden="true" tabindex="-1"></a>To find the minimum, we will use the function <span class="in">`optim()`</span>. First we create a function that calculates the sum of squares when given a vector with the parameters:</span>
-<span id="cb29-94"><a href="#cb29-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-97"><a href="#cb29-97" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-98"><a href="#cb29-98" aria-hidden="true" tabindex="-1"></a>sum_of_squares <span class="ot">&lt;-</span> <span class="cf">function</span>(par, df) {</span>
-<span id="cb29-99"><a href="#cb29-99" aria-hidden="true" tabindex="-1"></a>    Linf <span class="ot">&lt;-</span> par[[<span class="dv">1</span>]]</span>
-<span id="cb29-100"><a href="#cb29-100" aria-hidden="true" tabindex="-1"></a>    K <span class="ot">&lt;-</span> par[[<span class="dv">2</span>]]</span>
-<span id="cb29-101"><a href="#cb29-101" aria-hidden="true" tabindex="-1"></a>    t0 <span class="ot">&lt;-</span> par[[<span class="dv">3</span>]]</span>
-<span id="cb29-102"><a href="#cb29-102" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>((df<span class="sc">$</span>length <span class="sc">-</span> <span class="fu">length_vB</span>(df<span class="sc">$</span>age, Linf, K, t0))<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb29-103"><a href="#cb29-103" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb29-104"><a href="#cb29-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-105"><a href="#cb29-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-106"><a href="#cb29-106" aria-hidden="true" tabindex="-1"></a>We need to give an initial guess for the parameters to <span class="in">`optim`</span>, as well as lower bounds on the parameter values.</span>
-<span id="cb29-107"><a href="#cb29-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-110"><a href="#cb29-110" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-111"><a href="#cb29-111" aria-hidden="true" tabindex="-1"></a>start <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Linf =</span> <span class="dv">400</span>, <span class="at">K =</span> <span class="fl">0.3</span>, <span class="at">t0 =</span> <span class="dv">0</span>)</span>
-<span id="cb29-112"><a href="#cb29-112" aria-hidden="true" tabindex="-1"></a>lower <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Linf =</span> <span class="dv">0</span>, <span class="at">K =</span> <span class="fl">0.01</span>, <span class="at">t0 =</span> <span class="sc">-</span><span class="dv">4</span>)</span>
-<span id="cb29-113"><a href="#cb29-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-114"><a href="#cb29-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-115"><a href="#cb29-115" aria-hidden="true" tabindex="-1"></a>It does not matter too much what the initial guess is as long as it is not too wrong. The lower bound is needed to keep the optimizer from trying negative values for $K$. Now we can call <span class="in">`optim()`</span>. (We use the method "L-BFGS-B" because that is the only built-in method that handles bounds on the parameters.)</span>
-<span id="cb29-116"><a href="#cb29-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-119"><a href="#cb29-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-120"><a href="#cb29-120" aria-hidden="true" tabindex="-1"></a>op_age <span class="ot">&lt;-</span> <span class="fu">optim</span>(start, <span class="at">fn =</span> sum_of_squares, </span>
-<span id="cb29-121"><a href="#cb29-121" aria-hidden="true" tabindex="-1"></a>            <span class="at">df =</span> df, <span class="at">lower =</span> lower, </span>
-<span id="cb29-122"><a href="#cb29-122" aria-hidden="true" tabindex="-1"></a>            <span class="at">method =</span> <span class="st">"L-BFGS-B"</span>)</span>
-<span id="cb29-123"><a href="#cb29-123" aria-hidden="true" tabindex="-1"></a>op_age<span class="sc">$</span>par</span>
-<span id="cb29-124"><a href="#cb29-124" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-125"><a href="#cb29-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-126"><a href="#cb29-126" aria-hidden="true" tabindex="-1"></a>Let us plot the von Bertalanffy curve with these parameters on top of or observations:</span>
-<span id="cb29-127"><a href="#cb29-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-130"><a href="#cb29-130" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-131"><a href="#cb29-131" aria-hidden="true" tabindex="-1"></a>pl <span class="ot">&lt;-</span> pl <span class="sc">+</span></span>
-<span id="cb29-132"><a href="#cb29-132" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_function</span>(<span class="at">fun =</span> length_vB, <span class="at">args =</span> <span class="fu">as.list</span>(op_age<span class="sc">$</span>par),</span>
-<span id="cb29-133"><a href="#cb29-133" aria-hidden="true" tabindex="-1"></a>                  <span class="at">linewidth =</span> <span class="dv">2</span>, <span class="at">colour =</span> <span class="st">"blue"</span>)</span>
-<span id="cb29-134"><a href="#cb29-134" aria-hidden="true" tabindex="-1"></a>pl</span>
-<span id="cb29-135"><a href="#cb29-135" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-136"><a href="#cb29-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-137"><a href="#cb29-137" aria-hidden="true" tabindex="-1"></a>At each age the fitted von Bertalanffy curve approximates the average of the lengths of all the fish of that age.</span>
-<span id="cb29-138"><a href="#cb29-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-139"><a href="#cb29-139" aria-hidden="true" tabindex="-1"></a>Of course, the curve is only made to fit the data in the observed size range. The curve clearly does not extrapolate well to larval sizes as we can see from the large negative value of $t_0$. This becomes clearer if we extend the age range of the plot.</span>
-<span id="cb29-140"><a href="#cb29-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-141"><a href="#cb29-141" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, preview=TRUE}</span></span>
-<span id="cb29-142"><a href="#cb29-142" aria-hidden="true" tabindex="-1"></a>pl <span class="sc">+</span> <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">12</span>) <span class="sc">+</span></span>
-<span id="cb29-143"><a href="#cb29-143" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> op_age<span class="sc">$</span>par[[<span class="st">"Linf"</span>]], </span>
-<span id="cb29-144"><a href="#cb29-144" aria-hidden="true" tabindex="-1"></a>               <span class="at">colour =</span> <span class="st">"blue"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>)</span>
-<span id="cb29-145"><a href="#cb29-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-146"><a href="#cb29-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-147"><a href="#cb29-147" aria-hidden="true" tabindex="-1"></a>The curve would predict a length of more than 170cm at birth, which is clearly nonsense. The larval growth must be much faster than predicted by the von Bertalanffy curve. That is why mizer works with a bi-phasic growth model, but that is not our current topic.</span>
-<span id="cb29-148"><a href="#cb29-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-149"><a href="#cb29-149" aria-hidden="true" tabindex="-1"></a>In the above plot we also indicated the average asymptotic length $L_\infty$ with a dashed blue line. What will be important for us is to note that this is the *average* asymptotic length and that there are a lot of fish with a length larger than $L_\infty$.</span>
-<span id="cb29-150"><a href="#cb29-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-151"><a href="#cb29-151" aria-hidden="true" tabindex="-1"></a>There are many issues that we could debate and that have been debated at length in the literature:</span>
-<span id="cb29-152"><a href="#cb29-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-153"><a href="#cb29-153" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Is the von Bertalanffy growth model the best growth model.</span>
-<span id="cb29-154"><a href="#cb29-154" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>How reliably can the growth be estimated from the size-at-age data.</span>
-<span id="cb29-155"><a href="#cb29-155" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Is least squares estimation an appropriate method.</span>
-<span id="cb29-156"><a href="#cb29-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-157"><a href="#cb29-157" aria-hidden="true" tabindex="-1"></a>But none of these are our topic. We will assume that the von Bertalanffy curve gives an appropriate representation of the length at age of an average fish of that age.</span>
-<span id="cb29-158"><a href="#cb29-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-159"><a href="#cb29-159" aria-hidden="true" tabindex="-1"></a><span class="fu">## Age-dependent growth rate</span></span>
-<span id="cb29-160"><a href="#cb29-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-161"><a href="#cb29-161" aria-hidden="true" tabindex="-1"></a>The slope of the von Bertalanffy curve at age $a$ gives the average growth rate of fish of that age:</span>
-<span id="cb29-162"><a href="#cb29-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-163"><a href="#cb29-163" aria-hidden="true" tabindex="-1"></a>$$\frac{dL(a)}{dt}=\frac{dL(a)}{da}=K\, L_\infty\, e^{-K(a-t_0)}</span>
-<span id="cb29-164"><a href="#cb29-164" aria-hidden="true" tabindex="-1"></a>= K(L_\infty - L(a)).$$ (We used that time $t$ and age $a$ increase together, $da/dt=1$.)</span>
-<span id="cb29-165"><a href="#cb29-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-166"><a href="#cb29-166" aria-hidden="true" tabindex="-1"></a>The important point to understand is that this is the growth rate as a function of age. The length $L(a)$ that enters the expression is the average length of fish of age $a$. This is useful information in age-based population models. It is not useful in size-based models like mizer.</span>
-<span id="cb29-167"><a href="#cb29-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-168"><a href="#cb29-168" aria-hidden="true" tabindex="-1"></a><span class="fu">## Size-dependent growth rate</span></span>
-<span id="cb29-169"><a href="#cb29-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-170"><a href="#cb29-170" aria-hidden="true" tabindex="-1"></a>We want the average growth rate for fish of some given length $L$ rather than the average growth rate for fish of a given age $a$. Why? There can be several reasons.</span>
-<span id="cb29-171"><a href="#cb29-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-172"><a href="#cb29-172" aria-hidden="true" tabindex="-1"></a>Assume for example that we want to estimate the productivity of a population and have only information about the size distribution of the population. Such size data is often more readily available than age data because length or weight measurements are easy while age determination is difficult and time consuming. If we have the average growth rate of fish as a function of size then we can multiply that by the abundance of fish of that size and sum over all sizes to get the total productivity.</span>
-<span id="cb29-173"><a href="#cb29-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-174"><a href="#cb29-174" aria-hidden="true" tabindex="-1"></a>More relevantly to us, the mizer model is a size-based model that uses the growth rate as a function of size to project the size distribution into the future. Mizer of course can calculate this growth rate itself with its <span class="in">`getEGrowth()`</span> function. However it would be good if one had an observed growth rate to compare to to calibrate the species parameters in mizer that influence the mizer growth rate.</span>
-<span id="cb29-175"><a href="#cb29-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-176"><a href="#cb29-176" aria-hidden="true" tabindex="-1"></a>One might think that the above equation also gives an expression for the average growth rate for fish of length $L$. Can't we simply replace the $L(a)$ by $L$?</span>
-<span id="cb29-177"><a href="#cb29-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-178"><a href="#cb29-178" aria-hidden="true" tabindex="-1"></a>$$\frac{dL}{dt} \stackrel{?}{=} K(L_\infty - L).$$</span>
-<span id="cb29-179"><a href="#cb29-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-180"><a href="#cb29-180" aria-hidden="true" tabindex="-1"></a>We can't. If we try that, then at all $L$ above $L_\infty$ the formula gives a negative growth rate. But that is not how fish work. Fish that are lucky enough to grow beyond the average asymptotic size $L_\infty$ are not compelled to shrink back to average size.</span>
-<span id="cb29-181"><a href="#cb29-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-182"><a href="#cb29-182" aria-hidden="true" tabindex="-1"></a>What we need to realise is that in fitting the von Bertalanffy curve to the size-at-age data we did not treat size and age equally. Rather we chose to average over all sizes at fixed age. From that averaged data we can not reconstruct the information about what happens at a specific size.</span>
-<span id="cb29-183"><a href="#cb29-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-184"><a href="#cb29-184" aria-hidden="true" tabindex="-1"></a><span class="fu">## Size-based growth curve</span></span>
-<span id="cb29-185"><a href="#cb29-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-186"><a href="#cb29-186" aria-hidden="true" tabindex="-1"></a>We now understand that from a curve describing the average size of all fish of a certain age we can not deduce the average age of all fish of a certain size and hence we can not use it to determine the growth rate as a function of size. What we would need is a curve describing the average age of all fish of a certain size. Let's refer to that as a size-based growth curve as opposed to an age-based growth curve.</span>
-<span id="cb29-187"><a href="#cb29-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-188"><a href="#cb29-188" aria-hidden="true" tabindex="-1"></a>Now we want to discuss how we can determine a size-based growth curve from size-at-age data. This should be possible. If the size-at-age data comes from a random sample of fish for each of which its size and age were measured, then the data treats size and age the same. It was only our least squares fit that singled out age as the explanatory variable and size as the variable to average over. We now simply have to reverse the roles of size and age.</span>
-<span id="cb29-189"><a href="#cb29-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-190"><a href="#cb29-190" aria-hidden="true" tabindex="-1"></a>We'll again use the von Bertalanffy growth model, in the sense of assuming that the growth rate decreases linearly with length,</span>
-<span id="cb29-191"><a href="#cb29-191" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-192"><a href="#cb29-192" aria-hidden="true" tabindex="-1"></a>$$\frac{dL}{dt} = K(L_{max}-L),$$</span>
-<span id="cb29-193"><a href="#cb29-193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-194"><a href="#cb29-194" aria-hidden="true" tabindex="-1"></a>but now we interpret this as the growth rate of an average individual of size $L$. This immediately implies that the parameter $L_{max}$ is the length of the largest individual in the population. We can use that growth rate to express the age as a function of length instead of expressing length as a function of age. This gives the expression</span>
-<span id="cb29-195"><a href="#cb29-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-196"><a href="#cb29-196" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb29-197"><a href="#cb29-197" aria-hidden="true" tabindex="-1"></a>a(L) = t_0 - \frac{1}{K}\log\left(1-\frac{L}{L_{max}}\right).</span>
-<span id="cb29-198"><a href="#cb29-198" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb29-199"><a href="#cb29-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-200"><a href="#cb29-200" aria-hidden="true" tabindex="-1"></a>This expression of course has a singularity at $L = L_{max}$ because even if a fish lived for an infinite amount of time it would not grow beyond $L_{max}$. Dealing with that singularity in the expression numerically would be challenging, so we acknowledge that fish are never going to live infinitely long and therefore $L$ will never quite reach $L_{max}$ and so we can cut of the curve when $L$ gets sufficiently close to $L_{max}$.</span>
-<span id="cb29-201"><a href="#cb29-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-204"><a href="#cb29-204" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-205"><a href="#cb29-205" aria-hidden="true" tabindex="-1"></a>age_vB <span class="ot">&lt;-</span> <span class="cf">function</span>(L, Lmax, K, t0) {</span>
-<span id="cb29-206"><a href="#cb29-206" aria-hidden="true" tabindex="-1"></a>    r <span class="ot">&lt;-</span> <span class="fu">pmin</span>(L <span class="sc">/</span> Lmax, <span class="fl">0.999999</span>)</span>
-<span id="cb29-207"><a href="#cb29-207" aria-hidden="true" tabindex="-1"></a>    t0 <span class="sc">-</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> r) <span class="sc">/</span> K</span>
-<span id="cb29-208"><a href="#cb29-208" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb29-209"><a href="#cb29-209" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-210"><a href="#cb29-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-211"><a href="#cb29-211" aria-hidden="true" tabindex="-1"></a>Instead of choosing the parameters so as to minimize the sum of squares of the difference between the observed lengths and the predicted lengths, we minimize the sum of squares of the difference between the observed ages and the predicted ages. The function calculating the sum of squares is now</span>
-<span id="cb29-212"><a href="#cb29-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-215"><a href="#cb29-215" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-216"><a href="#cb29-216" aria-hidden="true" tabindex="-1"></a>sum_of_squares <span class="ot">&lt;-</span> <span class="cf">function</span>(par, df) {</span>
-<span id="cb29-217"><a href="#cb29-217" aria-hidden="true" tabindex="-1"></a>    Lmax <span class="ot">&lt;-</span> par[[<span class="dv">1</span>]]</span>
-<span id="cb29-218"><a href="#cb29-218" aria-hidden="true" tabindex="-1"></a>    K <span class="ot">&lt;-</span> par[[<span class="dv">2</span>]]</span>
-<span id="cb29-219"><a href="#cb29-219" aria-hidden="true" tabindex="-1"></a>    t0 <span class="ot">&lt;-</span> par[[<span class="dv">3</span>]]</span>
-<span id="cb29-220"><a href="#cb29-220" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>((df<span class="sc">$</span>age <span class="sc">-</span> <span class="fu">age_vB</span>(df<span class="sc">$</span>length, Lmax, K, t0))<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb29-221"><a href="#cb29-221" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb29-222"><a href="#cb29-222" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-223"><a href="#cb29-223" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-224"><a href="#cb29-224" aria-hidden="true" tabindex="-1"></a>Because all observations must be strictly shorter than $L_{max}$ we need to start optim with a starting value for $L_{max}$ that is above the largest observed length.</span>
-<span id="cb29-225"><a href="#cb29-225" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-228"><a href="#cb29-228" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-229"><a href="#cb29-229" aria-hidden="true" tabindex="-1"></a>start <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Lmax =</span> <span class="fu">max</span>(df<span class="sc">$</span>length) <span class="sc">*</span> <span class="fl">1.2</span>, <span class="at">K =</span> <span class="fl">0.3</span>, <span class="at">t0 =</span> <span class="dv">0</span>)</span>
-<span id="cb29-230"><a href="#cb29-230" aria-hidden="true" tabindex="-1"></a>lower <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Lmax =</span> <span class="dv">0</span>, <span class="at">K =</span> <span class="fl">0.01</span>, <span class="at">t0 =</span> <span class="sc">-</span><span class="dv">4</span>)</span>
-<span id="cb29-231"><a href="#cb29-231" aria-hidden="true" tabindex="-1"></a>op_length <span class="ot">&lt;-</span> <span class="fu">optim</span>(start, <span class="at">fn =</span> sum_of_squares, <span class="at">df =</span> df, </span>
-<span id="cb29-232"><a href="#cb29-232" aria-hidden="true" tabindex="-1"></a>            <span class="at">lower =</span> lower, <span class="at">method =</span> <span class="st">"L-BFGS-B"</span>)</span>
-<span id="cb29-233"><a href="#cb29-233" aria-hidden="true" tabindex="-1"></a>op_length<span class="sc">$</span>par</span>
-<span id="cb29-234"><a href="#cb29-234" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-235"><a href="#cb29-235" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-236"><a href="#cb29-236" aria-hidden="true" tabindex="-1"></a>We can now again visualise this curve by plotting it on top of the point cloud of observations:</span>
-<span id="cb29-237"><a href="#cb29-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-240"><a href="#cb29-240" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-241"><a href="#cb29-241" aria-hidden="true" tabindex="-1"></a>pl <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df) <span class="sc">+</span></span>
-<span id="cb29-242"><a href="#cb29-242" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">x =</span> length, <span class="at">y =</span> age)) <span class="sc">+</span></span>
-<span id="cb29-243"><a href="#cb29-243" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_function</span>(<span class="at">fun =</span> age_vB, <span class="at">args =</span> <span class="fu">as.list</span>(op_length<span class="sc">$</span>par),</span>
-<span id="cb29-244"><a href="#cb29-244" aria-hidden="true" tabindex="-1"></a>                  <span class="at">linewidth =</span> <span class="dv">2</span>, <span class="at">colour =</span> <span class="st">"blue"</span>)</span>
-<span id="cb29-245"><a href="#cb29-245" aria-hidden="true" tabindex="-1"></a>pl</span>
-<span id="cb29-246"><a href="#cb29-246" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-247"><a href="#cb29-247" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-248"><a href="#cb29-248" aria-hidden="true" tabindex="-1"></a>Given that we are now dealing with the size-based growth curve, we plot the length on the x axis and the age on the y axis.</span>
-<span id="cb29-249"><a href="#cb29-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-250"><a href="#cb29-250" aria-hidden="true" tabindex="-1"></a>I am not saying that fitting a von Bertalanffy curve to the average growth at size via least squares is a good idea. I am showing it only to compare to the fitting of a von Bertalanffy curve to the average growth at age that is commonly done. I think that a bi-phasic growth model like that used in mizer is more appropriate.</span>
-<span id="cb29-251"><a href="#cb29-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-252"><a href="#cb29-252" aria-hidden="true" tabindex="-1"></a>One problem with the von Bertalanffy curve is that there is a wide range of maximum sizes that can fit the data almost equally well. For example we may find that the maximum length of 1236cm predicted by the least squares fit is unrealistic and set an upper bound of 600cm:</span>
-<span id="cb29-253"><a href="#cb29-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-256"><a href="#cb29-256" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-257"><a href="#cb29-257" aria-hidden="true" tabindex="-1"></a>upper <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Lmax =</span> <span class="dv">600</span>, <span class="at">K =</span> <span class="fl">0.5</span>, <span class="at">t0 =</span> <span class="dv">4</span>)</span>
-<span id="cb29-258"><a href="#cb29-258" aria-hidden="true" tabindex="-1"></a>op_length_2 <span class="ot">&lt;-</span> <span class="fu">optim</span>(start, <span class="at">fn =</span> sum_of_squares, <span class="at">df =</span> df, </span>
-<span id="cb29-259"><a href="#cb29-259" aria-hidden="true" tabindex="-1"></a>            <span class="at">lower =</span> lower, <span class="at">upper =</span> upper, <span class="at">method =</span> <span class="st">"L-BFGS-B"</span>)</span>
-<span id="cb29-260"><a href="#cb29-260" aria-hidden="true" tabindex="-1"></a>op_length_2<span class="sc">$</span>par</span>
-<span id="cb29-261"><a href="#cb29-261" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-262"><a href="#cb29-262" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-263"><a href="#cb29-263" aria-hidden="true" tabindex="-1"></a>That leads to totally different values for $K$ and $t_0$ but the fit is almost as good:</span>
-<span id="cb29-264"><a href="#cb29-264" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-267"><a href="#cb29-267" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-268"><a href="#cb29-268" aria-hidden="true" tabindex="-1"></a>pl <span class="sc">+</span> <span class="fu">geom_function</span>(<span class="at">fun =</span> age_vB, <span class="at">args =</span> <span class="fu">as.list</span>(op_length_2<span class="sc">$</span>par),</span>
-<span id="cb29-269"><a href="#cb29-269" aria-hidden="true" tabindex="-1"></a>                   <span class="at">linewidth =</span> <span class="dv">2</span>, <span class="at">colour =</span> <span class="st">"green"</span>)</span>
-<span id="cb29-270"><a href="#cb29-270" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-271"><a href="#cb29-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-272"><a href="#cb29-272" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-273"><a href="#cb29-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-274"><a href="#cb29-274" aria-hidden="true" tabindex="-1"></a><span class="fu">## So what should you do?</span></span>
-<span id="cb29-275"><a href="#cb29-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-276"><a href="#cb29-276" aria-hidden="true" tabindex="-1"></a>We have now understood that to estimate the size-dependent growth rate you should not use the age-based von Bertalanffy parameters, even though they are routinely used in age-based models and are therefore often readily available. So what do I propose you use instead for your species parameters when setting up a mizer model?</span>
-<span id="cb29-277"><a href="#cb29-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-278"><a href="#cb29-278" aria-hidden="true" tabindex="-1"></a><span class="fu">### Maximum size</span></span>
-<span id="cb29-279"><a href="#cb29-279" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-280"><a href="#cb29-280" aria-hidden="true" tabindex="-1"></a>I propose that for the maximum size parameter <span class="in">`w_inf`</span> you use the largest observed size. If necessary you can obtain this from FishBase. FishBase gives the maximum length in cm, so you also need the length-weight conversion parameters <span class="in">`a`</span> and <span class="in">`b`</span> to get he maximum weight in grams. Here is an example:</span>
-<span id="cb29-281"><a href="#cb29-281" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-284"><a href="#cb29-284" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-285"><a href="#cb29-285" aria-hidden="true" tabindex="-1"></a>species <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Gadus morhua"</span>, <span class="st">"Sprattus sprattus"</span>)</span>
-<span id="cb29-286"><a href="#cb29-286" aria-hidden="true" tabindex="-1"></a>length_weight <span class="ot">&lt;-</span> rfishbase<span class="sc">::</span><span class="fu">estimate</span>(species) <span class="sc">|&gt;</span></span>
-<span id="cb29-287"><a href="#cb29-287" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="st">"Species"</span>, <span class="st">"a"</span>, <span class="st">"b"</span>)</span>
-<span id="cb29-288"><a href="#cb29-288" aria-hidden="true" tabindex="-1"></a>max_length <span class="ot">&lt;-</span> rfishbase<span class="sc">::</span><span class="fu">species</span>(species) <span class="sc">|&gt;</span></span>
-<span id="cb29-289"><a href="#cb29-289" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(Species, Length)</span>
-<span id="cb29-290"><a href="#cb29-290" aria-hidden="true" tabindex="-1"></a>max_weight <span class="ot">&lt;-</span> <span class="fu">left_join</span>(max_length, length_weight) <span class="sc">|&gt;</span></span>
-<span id="cb29-291"><a href="#cb29-291" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">w_inf =</span> a <span class="sc">*</span> Length <span class="sc">^</span> b)</span>
-<span id="cb29-292"><a href="#cb29-292" aria-hidden="true" tabindex="-1"></a>max_weight</span>
-<span id="cb29-293"><a href="#cb29-293" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-294"><a href="#cb29-294" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-295"><a href="#cb29-295" aria-hidden="true" tabindex="-1"></a><span class="fu">### Maximum intake rate</span></span>
-<span id="cb29-296"><a href="#cb29-296" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-297"><a href="#cb29-297" aria-hidden="true" tabindex="-1"></a>To determine a good value for the coefficient <span class="in">`h`</span> of the maximum intake rate in mizer I recommend using the size and age at maturity. For that you need both a <span class="in">`w_mat`</span> (in grams) and an <span class="in">`age_mat`</span> (in years) column in your species parameter data frame.</span>
-<span id="cb29-298"><a href="#cb29-298" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-299"><a href="#cb29-299" aria-hidden="true" tabindex="-1"></a>If necessary, you can look up values for the maturity length and maturity age on fishbase. For example</span>
-<span id="cb29-300"><a href="#cb29-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-303"><a href="#cb29-303" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb29-304"><a href="#cb29-304" aria-hidden="true" tabindex="-1"></a>maturity_tbl <span class="ot">&lt;-</span> rfishbase<span class="sc">::</span><span class="fu">maturity</span>(<span class="st">"Sprattus sprattus"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb29-305"><a href="#cb29-305" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(Species, <span class="at">l_mat =</span> Lm, <span class="at">age_mat =</span> tm, Locality) <span class="sc">|&gt;</span></span>
-<span id="cb29-306"><a href="#cb29-306" aria-hidden="true" tabindex="-1"></a>    <span class="fu">na.omit</span>()</span>
-<span id="cb29-307"><a href="#cb29-307" aria-hidden="true" tabindex="-1"></a>maturity_tbl</span>
-<span id="cb29-308"><a href="#cb29-308" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb29-309"><a href="#cb29-309" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-310"><a href="#cb29-310" aria-hidden="true" tabindex="-1"></a>You can then select the row most suitable for your purposes and convert the maturity length to maturity weight. Then you can determine the value for <span class="in">`h`</span> that will create the juvenile growth necessary to reach the maturity size by the maturity age with the <span class="in">`mizerExperimental::get_h_default()`</span> function. In the next release of mizer calling this function will no longer be necessary because mizer will use it by default if you do not include an <span class="in">`h`</span> column in your species parameters.</span>
-<span id="cb29-311"><a href="#cb29-311" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-312"><a href="#cb29-312" aria-hidden="true" tabindex="-1"></a>The next release of mizer will also encourage the use of the column name <span class="in">`w_max`</span> instead of <span class="in">`w_inf`</span> to avoid the confusion with the age-based von Bertalanffy parameter and it will issue a warning if you use the <span class="in">`k_vb`</span> column in the species parameter data frame. The help pages will be updated accordingly.</span>
-<span id="cb29-313"><a href="#cb29-313" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-314"><a href="#cb29-314" aria-hidden="true" tabindex="-1"></a>If you have good size-at-age data then you will of course want to use it to also extract information about the shape of the growth curve between maturity and maximum size. This would for example allow you to get information about how fast the investment into reproduction increases with body size. For this purpose it is important that you have access to the actual size-at-age data, not its age-based summary in terms of von Bertalanffy parameters. </span>
-</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
-</div></div></div></div></div>
+  </script>
 </div> <!-- /content -->
 
 

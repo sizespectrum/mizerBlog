@@ -222,7 +222,7 @@ window.Quarto = {
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Age in mizer</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<h1 class="title">Age in mizer</h1>
 </div>
 
 <div>
@@ -301,35 +301,29 @@ Figure&nbsp;1: Demonstration of how we calculate weights for immortal individual
 </div>
 <p>We solve equation (<a href="#eq-IIpde" class="quarto-xref">5</a>) in mizer for time <code>dt</code> numerically given weight classes <code>w</code>, with differences <code>dw</code>. If at the current time the II is size <code>cur_waa</code> then it will be in size class</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cur_idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">cur_waa</span> <span class="op">&gt;=</span> <span class="va">params</span><span class="op">@</span><span class="va">w</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cur_idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">cur_waa</span> <span class="op">&gt;=</span> <span class="va">params</span><span class="op">@</span><span class="va">w</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>and will grow at rate</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="va">grow</span><span class="op">[</span><span class="va">cur_idx</span><span class="op">]</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="va">grow</span><span class="op">[</span><span class="va">cur_idx</span><span class="op">]</span></span>
 <span><span class="va">time_to_end</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">togro</span> <span class="op">-</span> <span class="va">cur_waa</span><span class="op">)</span> <span class="op">/</span> <span class="va">g</span> <span class="co"># how far is next size class, can i grow it in dt?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 <p>It will grow at this rate until it reaches the next size class</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">togro</span> <span class="op">&lt;-</span> <span class="va">params</span><span class="op">@</span><span class="va">w</span><span class="op">[</span><span class="va">cur_idx</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">togro</span> <span class="op">&lt;-</span> <span class="va">params</span><span class="op">@</span><span class="va">w</span><span class="op">[</span><span class="va">cur_idx</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>which will take time</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">time_to_end</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">togro</span> <span class="op">-</span> <span class="va">cur_waa</span><span class="op">)</span> <span class="op">/</span> <span class="va">g</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">time_to_end</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">togro</span> <span class="op">-</span> <span class="va">cur_waa</span><span class="op">)</span> <span class="op">/</span> <span class="va">g</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Initially the II will grow for time <code>dt</code> but will move through weight classes. We monitor how long is left to grow with variable <code>time_left</code> intially setting it to <code>dt</code>. If <code>time_to_end&lt;=time_left</code> then the II’s weight will be</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cur_waa</span> <span class="op">&lt;-</span> <span class="va">cur_waa</span> <span class="op">+</span> <span class="va">g</span> <span class="op">*</span> <span class="va">time_left</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cur_waa</span> <span class="op">&lt;-</span> <span class="va">cur_waa</span> <span class="op">+</span> <span class="va">g</span> <span class="op">*</span> <span class="va">time_left</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>otherwise it will grow to the next size class for <code>time_to_end</code> and we update the time remaining</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cur_waa</span> <span class="op">&lt;-</span> <span class="va">cur_waa</span> <span class="op">+</span> <span class="va">g</span> <span class="op">*</span> <span class="va">time_to_end</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cur_waa</span> <span class="op">&lt;-</span> <span class="va">cur_waa</span> <span class="op">+</span> <span class="va">g</span> <span class="op">*</span> <span class="va">time_to_end</span></span>
 <span><span class="va">time_left</span> <span class="op">&lt;-</span> <span class="va">time_left</span> <span class="op">-</span> <span class="va">time_to_end</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 <p>The process is repeated until <code>time_to_end&lt;=time_left</code>.</p>
 <p><a href="#fig-aging-weights" class="quarto-xref">Figure&nbsp;2</a> shows the emergent weight at age for whiting in mizer.</p>
@@ -347,7 +341,7 @@ Figure&nbsp;2: Emergent growth curve for whiting.
 </div>
 <p>We added the above to the <code>project</code> and <code>project_simple</code> functions so that it updates the size of the IIs each <code>dt</code>. In addition we added a new slot to the <code>MizerSim</code> objects so that we can store the weight at age for all ages, time steps and species, <code>waa</code>.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#the mizerSim object - now with a waa section</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#the mizerSim object - now with a waa section</span></span>
 <span><span class="kw">setClass</span><span class="op">(</span> </span>
 <span>    <span class="st">"MizerSim"</span>,</span>
 <span>    slots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
@@ -359,13 +353,12 @@ Figure&nbsp;2: Emergent growth curve for whiting.
 <span>        waa <span class="op">=</span> <span class="st">"array"</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 <p>Each year we add a new II, and also remove the oldest II at the same time. We give an argument to <code>project</code> to input the initial weights at age (<code>waa_initial</code>), a matrix with dimensions number of species and maximum age (defaulted to 20), <code>nages</code>. If absent the initial weights at age are calculated from the <code>getGrowthCurves</code> function.</p>
 <p>The <code>project</code> function will now return a <code>mizerSim</code> object with a <code>waa</code> slot which contains an <code>array</code> with the dimensions <code>t_max*t_save</code>, number of species and <code>nages</code>.</p>
 <p>We demonstrate the weight at age using the North Sea model with fishing mortality from stock assessments (<code>historicfishingM</code> see <span class="citation" data-cites="spence_prec">Spence et al. (<a href="#ref-spence_prec" role="doc-biblioref">2024</a>)</span>) from 1984 to 2019. We ran the model to the steady state by running it for 100 years using 1984 fishing and then projected it to 2019.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#project to steady state - so that we can use the waa generated here as initial_waa</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#project to steady state - so that we can use the waa generated here as initial_waa</span></span>
 <span><span class="co">#fishing array is the historicfishingM remade for mizer</span></span>
 <span><span class="va">tosteady</span> <span class="op">&lt;-</span> <span class="fu">project</span><span class="op">(</span><span class="va">params</span>, effort <span class="op">=</span> <span class="va">fishing_array</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>,t_max <span class="op">=</span><span class="fl">100</span>, initial_n <span class="op">=</span> <span class="va">params</span><span class="op">@</span><span class="va">initial_n</span><span class="op">)</span></span>
 <span></span>
@@ -373,7 +366,6 @@ Figure&nbsp;2: Emergent growth curve for whiting.
 <span><span class="va">projection</span> <span class="op">&lt;-</span> <span class="fu">project</span><span class="op">(</span><span class="va">params</span>, effort <span class="op">=</span> <span class="va">fishing_array</span>,  initial_n <span class="op">=</span> <span class="op">(</span><span class="va">tosteady</span><span class="op">@</span><span class="va">n</span><span class="op">)</span><span class="op">[</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">tosteady</span><span class="op">@</span><span class="va">n</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,,<span class="op">]</span>,</span>
 <span>                      initial_n_pp <span class="op">=</span> <span class="op">(</span><span class="va">tosteady</span><span class="op">@</span><span class="va">n_pp</span><span class="op">)</span><span class="op">[</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">tosteady</span><span class="op">@</span><span class="va">n</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,<span class="op">]</span>,</span>
 <span>                      waa_initial <span class="op">=</span> <span class="va">tosteady</span><span class="op">@</span><span class="va">waa</span><span class="op">[</span><span class="fl">1001</span>,,<span class="op">]</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
@@ -392,7 +384,7 @@ Figure&nbsp;3: The black line shows the weight at age inputs to SMS’ key-run <
 <p>Given the IIs we can calculate the numbers at age. Suppose that at time <span class="math inline">\(t\)</span> the density of numbers at weight is shown below, with IIs aged one, <span class="math inline">\(I_i(t-1,t)=0.2\)</span>, and two, <span class="math inline">\(I_i(t-2,t)=5\)</span>, being shown.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-weight-classes-1" class="quarto-float quarto-figure quarto-figure-center anchored" width="672" data-fig-align="center">
+<div id="fig-weight-classes-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="672">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-weight-classes-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="age-in-mizer_files/figure-html/fig-weight-classes-1-1.png" id="fig-weight-classes-1" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="672">
 </div>
@@ -406,7 +398,7 @@ Figure&nbsp;4
 <p>In this example the IIs were on the boundary of the weight-classes. However, in practice this will almost surely not happen. The IIs will fall between weight-classes, and so, to assign an age to individuals in that weight-class we describe how individuals are distributed within the weight class. The plot below is more likely:</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-weight-classes-2" class="quarto-float quarto-figure quarto-figure-center anchored" width="672" data-fig-align="center">
+<div id="fig-weight-classes-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="672">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-weight-classes-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="age-in-mizer_files/figure-html/fig-weight-classes-2-1.png" id="fig-weight-classes-2" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="672">
 </div>
@@ -455,21 +447,18 @@ Figure&nbsp;6: The top plot shows the evolution of individual whiting cohorts th
 \tag{8}\]</span></span></p>
 <p>After a simulation we get the numbers at age and the numbers caught at age</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">numbers</span> <span class="op">&lt;-</span> <span class="fu">get_num_by_year_by_age</span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">numbers</span> <span class="op">&lt;-</span> <span class="fu">get_num_by_year_by_age</span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
 <span><span class="va">catch</span> <span class="op">&lt;-</span> <span class="fu">get_catch_by_year_by_age</span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 <p>The <code>get_catch_by_year_by_age</code> function works the same as <code>get_num_by_year_by_age</code>, but prior to the numbers in size classes being summed over ages, they are multiplied by the size, species specific fishing mortality, acquired from <code>getFMort</code>. The catch here is the same as in mizer’s <code>getYield</code>.</p>
 <p>We calculate equations (<a href="#eq-getZ" class="quarto-xref">6</a>) and (<a href="#eq-getF" class="quarto-xref">7</a>) for the <code>i</code>th year, <code>j</code>th species and <code>k</code>th age class to get <span class="math inline">\(Z_{i,k}\)</span> and <span class="math inline">\(F_{i,k}\)</span></p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log</span>(numbers[i<span class="sc">+</span><span class="dv">1</span>,j,k<span class="sc">+</span><span class="dv">1</span>]) <span class="sc">+</span> <span class="fu">log</span>(numbers[i,j,k])</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log</span>(numbers[i<span class="sc">+</span><span class="dv">1</span>,j,k<span class="sc">+</span><span class="dv">1</span>]) <span class="sc">+</span> <span class="fu">log</span>(numbers[i,j,k])</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>F_m <span class="ot">&lt;-</span> catch[i<span class="dv">-1</span>,j,k]<span class="sc">*</span>z<span class="er">)</span><span class="sc">/</span>(numbers[i,j,k]<span class="sc">-</span>next_alive) <span class="do">### F_m rather than F as F is protected</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 <p>and equation (<a href="#eq-getM" class="quarto-xref">8</a>) to get <span class="math inline">\(M_{i,k}\)</span></p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="va">z</span> <span class="op">-</span> <span class="va">F_m</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="va">z</span> <span class="op">-</span> <span class="va">F_m</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><a href="#fig-Z-plot" class="quarto-xref">Figure&nbsp;7</a> is the emergent <span class="math inline">\(Z\)</span>, <span class="math inline">\(F\)</span> and <span class="math inline">\(M\)</span> over time using the historical fishing mortality.</p>
 <div class="cell" data-layout-align="center">
@@ -488,16 +477,14 @@ Figure&nbsp;7: Plots depict the <span class="math inline">\(Z\)</span>, <span cl
 </h1>
 <p>Due to the numerical integration of the partial differential equation (pde) in mizer, the II do not follow the distribution of fish density exactly and this sometimes results in negative <span class="math inline">\(M\)</span>. To investigate this we followed one individual and their growth for different values of <code>dt</code> and <code>no_w</code>. We initialised the <code>params</code> object for <code>no_w</code> equal to 100, 1000 and 10000</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">newMultispeciesParams</span><span class="op">(</span><span class="va">NS_params</span><span class="op">@</span><span class="va">species_params</span>, no_w <span class="op">=</span> <span class="va">no_w</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">newMultispeciesParams</span><span class="op">(</span><span class="va">NS_params</span><span class="op">@</span><span class="va">species_params</span>, no_w <span class="op">=</span> <span class="va">no_w</span><span class="op">)</span></span>
 <span><span class="va">allgrow</span> <span class="op">&lt;-</span> <span class="fu">getEGrowth</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
 <span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="va">allgrow</span><span class="op">[</span><span class="fl">6</span>,<span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 <p>and assumed a constant growth rate <code>gs</code> for a whiting individual. We initialised the population at zero except in the first size class where we set it so that there was only one individual.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">num</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">params</span><span class="op">@</span><span class="va">w</span><span class="op">)</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">num</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">params</span><span class="op">@</span><span class="va">w</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">num</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">params</span><span class="op">@</span><span class="va">dw</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 <p>Assuming no mortality and no recruitment we updated the numbers at size for 10 years using the numerical pde solver in mizer (see supplementary for the code) and compared the size distribution with the size of an II at the same age.</p>
 <div class="cell" data-layout-align="center">
@@ -565,8 +552,6 @@ Figure&nbsp;9: The numerical solution of the growth with different <code>dt</cod
 <p>The work presented here is exact in the limit when <code>dt</code> and <code>dw</code> are 0, however practically this is not possible. We showed that as <code>dt</code> and <code>dw</code> get smaller the age estimation becomes more accurate, however, inaccuracies in the ageing process can lead to some strange behaviour. For example, we found that for the default values of <code>dt</code> and <code>dw</code> some cohorts natural mortality was less than 0, i.e.&nbsp;<span class="math inline">\(M&lt;0\)</span>, which could cause difficulties when comparing mizer to age-based models. This could be caused by the numerical integration and/or how we say the lengths of fish within an age class are distributed. More research is required, although we suspect these problems occur due to how the emergent catch is calculated.</p>
 <p>In this blog post, we introduced an extension that allows you to calculate dynamic growth curves and ages at size in mizer. This addition will improve how mizer is calibrated to data and also allows it to be interpreted and compared to age-based models, potentially increasing the utility of mizer in the assessment and advice process.</p>
 
-
-<!-- -->
 
 
 </section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
@@ -693,57 +678,6 @@ Trijoulet, Vanessa, Gavin Fay, and Timothy J. Miller. 2020. <span>“Performance
         container: window.document.getElementById('quarto-embedded-source-code-modal')
       });
       clipboardModal.on('success', onCopySuccess);
-    }
-    const viewSource = window.document.getElementById('quarto-view-source') ||
-                       window.document.getElementById('quarto-code-tools-source');
-    if (viewSource) {
-      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
-      viewSource.addEventListener("click", function(e) {
-        if (sourceUrl) {
-          // rstudio viewer pane
-          if (/\bcapabilities=\b/.test(window.location)) {
-            window.open(sourceUrl);
-          } else {
-            window.location.href = sourceUrl;
-          }
-        } else {
-          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
-          modal.show();
-        }
-        return false;
-      });
-    }
-    function toggleCodeHandler(show) {
-      return function(e) {
-        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-        for (let i=0; i<detailsSrc.length; i++) {
-          const details = detailsSrc[i].parentElement;
-          if (show) {
-            details.open = true;
-          } else {
-            details.removeAttribute("open");
-          }
-        }
-        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
-        const fromCls = show ? "hidden" : "unhidden";
-        const toCls = show ? "unhidden" : "hidden";
-        for (let i=0; i<cellCodeDivs.length; i++) {
-          const codeDiv = cellCodeDivs[i];
-          if (codeDiv.classList.contains(fromCls)) {
-            codeDiv.classList.remove(fromCls);
-            codeDiv.classList.add(toCls);
-          } 
-        }
-        return false;
-      }
-    }
-    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
-    if (hideAllCode) {
-      hideAllCode.addEventListener("click", toggleCodeHandler(false));
-    }
-    const showAllCode = window.document.getElementById("quarto-show-all-code");
-    if (showAllCode) {
-      showAllCode.addEventListener("click", toggleCodeHandler(true));
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
@@ -1073,397 +1007,7 @@ Trijoulet, Vanessa, Gavin Fay, and Timothy J. Miller. 2020. <span>“Performance
       }
     }
   });
-  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Age in mizer"</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> |</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">  In this blog post, we introduce an extension that allows you to calculate</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">  dynamic growth curves and ages at size in mizer. This addition will improve how</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">  mizer is calibrated to data and also allows it to be interpreted and compared </span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">  to age-based models, potentially increasing the utility of mizer in the </span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co">  assessment and advice process.</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co">- name: "Luke Broadbent"</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation: Centre for Environment, Fisheries and Aquaculture Science, Pakefield Road, Lowestoft, Suffolk NR33 0HT, UK</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co">  email: luke.broadbent@cefas.gov.uk</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co">- name: "Michael A. Spence"</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation: Centre for Environment, Fisheries and Aquaculture Science, Pakefield Road, Lowestoft, Suffolk NR33 0HT, UK</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">  email: michael.spence@cefas.gov.uk</span></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2025-04-02</span></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="co">  distill::distill_article:</span></span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co">    self_contained: false</span></span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co">    number_sections: true</span></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co">    df_print: paged</span></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="an">bibliography:</span><span class="co"> bibliography.bib</span></span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="fu"># Introduction</span></span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>The majority of assessment models for category 1 stocks in the International Council for Exploration of the Seas (ICES) are age based. This is a natural way of thinking about population dynamics as in a closed system, the number of individuals in a cohort, $N$, can only go down as they die. The dynamics of a cohort are</span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>    \frac{dN}{dt}=-ZN</span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>$$ {#eq-dummy11}</span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>where $Z=F+M$, with $F$ being the fishing mortality and $M$ being the natural mortality. Fishing mortality and natural mortality can vary in time. </span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>For an age-based model this has the solution that the numbers at time $t$ in age-class $a$  is</span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>    N_{a,t}=N_{a-1,t-1}\exp(-Z_{a-1,t})</span>
-<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>$$ {#eq-grow}</span>
-<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>for $a=2,\ldots{},A-1$ and $t=1,\ldots$. For the first age-class, the number in the new cohort is the recruits</span>
-<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>    N_{1,t}=R_{t}\exp(-Z_{0,t})</span>
-<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>$$ {#eq-dummy}</span>
-<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>for all $t$. Often $Z_{0,t}$ is zero if there are no catches of age-class one in the data.</span>
-<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>The final age class, $A$, is a plus group, which means there is no maximum age of a fish,</span>
-<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>    N_{A,t}=N_{A-1,t-1}\exp(-Z_{A-1,t}) + N_{A,t-1}\exp(-Z_{A,t}),</span>
-<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>$$ {#eq-plus}</span>
-<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>with $Z_{a,t}=M_{a,t}+F_{a,t}$ for $a=0,\ldots{},A$ and all times.</span>
-<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>Note that these are age classes that have the interval one year and not the ages of the fish. Some stocks have the first age class being age 0 (e.g. North Sea whiting), where as other have the first age class being older (e.g. age 3 for North Sea saithe).</span>
-<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>Most category 1 assessments are based on equations (<span class="co">[</span><span class="ot">-@eq-grow</span><span class="co">]</span>)--(<span class="co">[</span><span class="ot">-@eq-plus</span><span class="co">]</span>), with additional features <span class="co">[</span><span class="ot">e.g., process error in @sam</span><span class="co">]</span>. The same equations are commonly the basis to give catch advice, calculate reference points (e.g. MSY) and perform management strategy evaluations (MSE).</span>
-<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>A lot of data studies are specifically designed to collect data for age-based models. For example, fish that are aged on surveys using a length-stratified design. </span>
-<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>This design is good for finding the age at length, so that fish can be aged just by knowing their length and numbers at age can be calculated. However, the design is not as good at finding length from age, which means that growth curves can be difficult to calculate.</span>
-<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>There are also many multispecies models that are age-based <span class="co">[</span><span class="ot">@Trijoulet_19; @Trijoulet_20; @sms</span><span class="co">]</span>. In some cases, emergent natural mortality from age-based multispecies models are used as inputs to single-species assessments <span class="co">[</span><span class="ot">e.g., @ICES2024</span><span class="co">]</span>.</span>
-<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>Despite strong arguments for adopting size-based models over age-based models <span class="co">[</span><span class="ot">@Andersen_book</span><span class="co">]</span> , we are unaware of any data-rich assessments that use size-based models. This work was motivated by the aim to use the multispecies size spectrum model, mizer <span class="co">[</span><span class="ot">@hartvig; @blanchard; @mizer</span><span class="co">]</span> as an age-based model to fit with current assessment and MSE frameworks. This will take advantage of the mechanistic dynamics of the mizer model, while keeping to the age-structured frameworks used in ICES.</span>
-<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a>In this blog we will explain and demonstrate how we calculate emergent age in mizer.</span>
-<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a><span class="fu"># Calculating age in mizer</span></span>
-<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a>Growth is an emergent property of feeding <span class="co">[</span><span class="ot">@Andersen_book</span><span class="co">]</span> and so is</span>
-<span id="cb14-64"><a href="#cb14-64" aria-hidden="true" tabindex="-1"></a>size-at-age. To calculate the emergent size at age in mizer at time</span>
-<span id="cb14-65"><a href="#cb14-65" aria-hidden="true" tabindex="-1"></a>$t_0$, we introduce an *immortal individual* (II) of species $i$ and</span>
-<span id="cb14-66"><a href="#cb14-66" aria-hidden="true" tabindex="-1"></a>track the size of that individual. At time $t$, the size of the II will</span>
-<span id="cb14-67"><a href="#cb14-67" aria-hidden="true" tabindex="-1"></a>be $I_i(t_0,t)$, with</span>
-<span id="cb14-68"><a href="#cb14-68" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb14-69"><a href="#cb14-69" aria-hidden="true" tabindex="-1"></a>\frac{\partial I_i}{\partial t} \;=\; g_i\bigl(I_i(t_0,t),t\bigr).</span>
-<span id="cb14-70"><a href="#cb14-70" aria-hidden="true" tabindex="-1"></a>$$ {#eq-IIpde}</span>
-<span id="cb14-71"><a href="#cb14-71" aria-hidden="true" tabindex="-1"></a>Solving this from $t_0$ to time $T$ with boundary condition</span>
-<span id="cb14-72"><a href="#cb14-72" aria-hidden="true" tabindex="-1"></a>$I_i(t_0, t_0) = w_{0,i}$, we know that an individual of species $i$ and</span>
-<span id="cb14-73"><a href="#cb14-73" aria-hidden="true" tabindex="-1"></a>age $T - t_0$ will be size $I_i(t_0, T)$. In mizer, fish cannot overtake</span>
-<span id="cb14-74"><a href="#cb14-74" aria-hidden="true" tabindex="-1"></a>each other in size, therefore we know that fish smaller than $I_i(T)$ will be</span>
-<span id="cb14-75"><a href="#cb14-75" aria-hidden="true" tabindex="-1"></a>younger, and larger fish will be older. If we introduce such IIs at</span>
-<span id="cb14-76"><a href="#cb14-76" aria-hidden="true" tabindex="-1"></a>annual increments, then we can follow different age classes throughout</span>
-<span id="cb14-77"><a href="#cb14-77" aria-hidden="true" tabindex="-1"></a>the model. @fig-ageingmizer demonstrates the process, showing how, for a given species, age is calculated.</span>
-<span id="cb14-78"><a href="#cb14-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-79"><a href="#cb14-79" aria-hidden="true" tabindex="-1"></a><span class="in">```{r echo=FALSE, out.width="500px",out.height="500px", fig.align='center', fig.cap="Demonstration of how we calculate weights for immortal individuals across time. Each line represents the weight of one II, each introduced annually."}</span></span>
-<span id="cb14-80"><a href="#cb14-80" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-ageingmizer</span></span>
-<span id="cb14-81"><a href="#cb14-81" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"pictures/aging_mizer_toy.png"</span>)</span>
-<span id="cb14-82"><a href="#cb14-82" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-83"><a href="#cb14-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-84"><a href="#cb14-84" aria-hidden="true" tabindex="-1"></a>We solve equation (<span class="co">[</span><span class="ot">-@eq-IIpde</span><span class="co">]</span>) in mizer for time <span class="in">`dt`</span> numerically given weight classes <span class="in">`w`</span>, with differences <span class="in">`dw`</span>. If at the current time the II is size <span class="in">`cur_waa`</span> then it will be in size class</span>
-<span id="cb14-85"><a href="#cb14-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-86"><a href="#cb14-86" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,eval=F}</span></span>
-<span id="cb14-87"><a href="#cb14-87" aria-hidden="true" tabindex="-1"></a>cur_idx <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="fu">which</span>(cur_waa <span class="sc">&gt;=</span> params<span class="sc">@</span>w))</span>
-<span id="cb14-88"><a href="#cb14-88" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-89"><a href="#cb14-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-90"><a href="#cb14-90" aria-hidden="true" tabindex="-1"></a>and will grow at rate </span>
-<span id="cb14-91"><a href="#cb14-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-92"><a href="#cb14-92" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,eval=F}</span></span>
-<span id="cb14-93"><a href="#cb14-93" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> grow[cur_idx]</span>
-<span id="cb14-94"><a href="#cb14-94" aria-hidden="true" tabindex="-1"></a>time_to_end <span class="ot">&lt;-</span> (togro <span class="sc">-</span> cur_waa) <span class="sc">/</span> g <span class="co"># how far is next size class, can i grow it in dt?</span></span>
-<span id="cb14-95"><a href="#cb14-95" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-96"><a href="#cb14-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-97"><a href="#cb14-97" aria-hidden="true" tabindex="-1"></a>It will grow at this rate until it reaches the next size class</span>
-<span id="cb14-98"><a href="#cb14-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-99"><a href="#cb14-99" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,eval=F}</span></span>
-<span id="cb14-100"><a href="#cb14-100" aria-hidden="true" tabindex="-1"></a>togro <span class="ot">&lt;-</span> params<span class="sc">@</span>w[cur_idx <span class="sc">+</span> <span class="dv">1</span>]</span>
-<span id="cb14-101"><a href="#cb14-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-102"><a href="#cb14-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-103"><a href="#cb14-103" aria-hidden="true" tabindex="-1"></a>which will take time</span>
-<span id="cb14-104"><a href="#cb14-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-105"><a href="#cb14-105" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,eval=F}</span></span>
-<span id="cb14-106"><a href="#cb14-106" aria-hidden="true" tabindex="-1"></a>time_to_end <span class="ot">&lt;-</span> (togro <span class="sc">-</span> cur_waa) <span class="sc">/</span> g</span>
-<span id="cb14-107"><a href="#cb14-107" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-108"><a href="#cb14-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-109"><a href="#cb14-109" aria-hidden="true" tabindex="-1"></a>Initially the II will grow for time <span class="in">`dt`</span> but will move through weight classes. We monitor how long is left to grow with variable <span class="in">`time_left`</span> intially setting it to <span class="in">`dt`</span>. If <span class="in">`time_to_end&lt;=time_left`</span> then the II's weight will be</span>
-<span id="cb14-110"><a href="#cb14-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-111"><a href="#cb14-111" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,eval=F}</span></span>
-<span id="cb14-112"><a href="#cb14-112" aria-hidden="true" tabindex="-1"></a>cur_waa <span class="ot">&lt;-</span> cur_waa <span class="sc">+</span> g <span class="sc">*</span> time_left</span>
-<span id="cb14-113"><a href="#cb14-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-114"><a href="#cb14-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-115"><a href="#cb14-115" aria-hidden="true" tabindex="-1"></a>otherwise it will grow to the next size class for <span class="in">`time_to_end`</span> and we update the time remaining</span>
-<span id="cb14-116"><a href="#cb14-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-117"><a href="#cb14-117" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,eval=F}</span></span>
-<span id="cb14-118"><a href="#cb14-118" aria-hidden="true" tabindex="-1"></a>cur_waa <span class="ot">&lt;-</span> cur_waa <span class="sc">+</span> g <span class="sc">*</span> time_to_end</span>
-<span id="cb14-119"><a href="#cb14-119" aria-hidden="true" tabindex="-1"></a>time_left <span class="ot">&lt;-</span> time_left <span class="sc">-</span> time_to_end </span>
-<span id="cb14-120"><a href="#cb14-120" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-121"><a href="#cb14-121" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-122"><a href="#cb14-122" aria-hidden="true" tabindex="-1"></a>The process is repeated until <span class="in">`time_to_end&lt;=time_left`</span>.</span>
-<span id="cb14-123"><a href="#cb14-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-124"><a href="#cb14-124" aria-hidden="true" tabindex="-1"></a>@fig-aging-weights shows the emergent weight at age for whiting in mizer.</span>
-<span id="cb14-125"><a href="#cb14-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-126"><a href="#cb14-126" aria-hidden="true" tabindex="-1"></a><span class="in">```{r echo=FALSE, out.width="500px",out.height="500px", fig.align='center', fig.cap="Emergent growth curve for whiting."}</span></span>
-<span id="cb14-127"><a href="#cb14-127" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-aging-weights</span></span>
-<span id="cb14-128"><a href="#cb14-128" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"pictures/growth_curve.png"</span>)</span>
-<span id="cb14-129"><a href="#cb14-129" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-130"><a href="#cb14-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-131"><a href="#cb14-131" aria-hidden="true" tabindex="-1"></a>We added the above to the <span class="in">`project`</span> and <span class="in">`project_simple`</span> functions so that it updates the size of the IIs each <span class="in">`dt`</span>. In addition we added a new slot to the <span class="in">`MizerSim`</span> objects so that we can store the weight at age for all ages, time steps and species, <span class="in">`waa`</span>.</span>
-<span id="cb14-132"><a href="#cb14-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-133"><a href="#cb14-133" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE, include=TRUE}</span></span>
-<span id="cb14-134"><a href="#cb14-134" aria-hidden="true" tabindex="-1"></a><span class="co">#the mizerSim object - now with a waa section</span></span>
-<span id="cb14-135"><a href="#cb14-135" aria-hidden="true" tabindex="-1"></a><span class="fu">setClass</span>( </span>
-<span id="cb14-136"><a href="#cb14-136" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MizerSim"</span>,</span>
-<span id="cb14-137"><a href="#cb14-137" aria-hidden="true" tabindex="-1"></a>    <span class="at">slots =</span> <span class="fu">c</span>(</span>
-<span id="cb14-138"><a href="#cb14-138" aria-hidden="true" tabindex="-1"></a>        <span class="at">params =</span> <span class="st">"MizerParams"</span>,</span>
-<span id="cb14-139"><a href="#cb14-139" aria-hidden="true" tabindex="-1"></a>        <span class="at">n =</span> <span class="st">"array"</span>,</span>
-<span id="cb14-140"><a href="#cb14-140" aria-hidden="true" tabindex="-1"></a>        <span class="at">effort =</span> <span class="st">"array"</span>,</span>
-<span id="cb14-141"><a href="#cb14-141" aria-hidden="true" tabindex="-1"></a>        <span class="at">n_pp =</span> <span class="st">"array"</span>,</span>
-<span id="cb14-142"><a href="#cb14-142" aria-hidden="true" tabindex="-1"></a>        <span class="at">n_other =</span> <span class="st">"array"</span>,</span>
-<span id="cb14-143"><a href="#cb14-143" aria-hidden="true" tabindex="-1"></a>        <span class="at">waa =</span> <span class="st">"array"</span></span>
-<span id="cb14-144"><a href="#cb14-144" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb14-145"><a href="#cb14-145" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-146"><a href="#cb14-146" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-147"><a href="#cb14-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-148"><a href="#cb14-148" aria-hidden="true" tabindex="-1"></a>Each year we add a new II, and also remove the oldest II at the same time. We give an argument to <span class="in">`project`</span> to input the initial weights at age (<span class="in">`waa_initial`</span>), a matrix with dimensions number of species and maximum age (defaulted to 20), <span class="in">`nages`</span>. If absent the initial weights at age are calculated from the <span class="in">`getGrowthCurves`</span> function.  </span>
-<span id="cb14-149"><a href="#cb14-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-150"><a href="#cb14-150" aria-hidden="true" tabindex="-1"></a>The <span class="in">`project`</span> function will now return a <span class="in">`mizerSim`</span> object with a <span class="in">`waa`</span> slot which contains an <span class="in">`array`</span> with the dimensions <span class="in">`t_max*t_save`</span>, number of species and <span class="in">`nages`</span>.</span>
-<span id="cb14-151"><a href="#cb14-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-152"><a href="#cb14-152" aria-hidden="true" tabindex="-1"></a>We demonstrate the weight at age using the North Sea model with fishing mortality from stock assessments (<span class="in">`historicfishingM`</span> see @spence_prec) from 1984 to 2019. We ran the model to the steady state by running it for 100 years using 1984 fishing and then projected it to 2019.</span>
-<span id="cb14-153"><a href="#cb14-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-154"><a href="#cb14-154" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE, include=TRUE}</span></span>
-<span id="cb14-155"><a href="#cb14-155" aria-hidden="true" tabindex="-1"></a><span class="co">#project to steady state - so that we can use the waa generated here as initial_waa</span></span>
-<span id="cb14-156"><a href="#cb14-156" aria-hidden="true" tabindex="-1"></a><span class="co">#fishing array is the historicfishingM remade for mizer</span></span>
-<span id="cb14-157"><a href="#cb14-157" aria-hidden="true" tabindex="-1"></a>tosteady <span class="ot">&lt;-</span> <span class="fu">project</span>(params, <span class="at">effort =</span> fishing_array[<span class="dv">1</span>,],<span class="at">t_max =</span><span class="dv">100</span>, <span class="at">initial_n =</span> params<span class="sc">@</span>initial_n)</span>
-<span id="cb14-158"><a href="#cb14-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-159"><a href="#cb14-159" aria-hidden="true" tabindex="-1"></a><span class="co">#projecting, using the values from the end of the steady state run for n, npp and waa</span></span>
-<span id="cb14-160"><a href="#cb14-160" aria-hidden="true" tabindex="-1"></a>projection <span class="ot">&lt;-</span> <span class="fu">project</span>(params, <span class="at">effort =</span> fishing_array,  <span class="at">initial_n =</span> (tosteady<span class="sc">@</span>n)[(<span class="fu">dim</span>(tosteady<span class="sc">@</span>n)[<span class="dv">1</span>]),,],</span>
-<span id="cb14-161"><a href="#cb14-161" aria-hidden="true" tabindex="-1"></a>                      <span class="at">initial_n_pp =</span> (tosteady<span class="sc">@</span>n_pp)[(<span class="fu">dim</span>(tosteady<span class="sc">@</span>n)[<span class="dv">1</span>]),],</span>
-<span id="cb14-162"><a href="#cb14-162" aria-hidden="true" tabindex="-1"></a>                      <span class="at">waa_initial =</span> tosteady<span class="sc">@</span>waa[<span class="dv">1001</span>,,]) </span>
-<span id="cb14-163"><a href="#cb14-163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-164"><a href="#cb14-164" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-165"><a href="#cb14-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-166"><a href="#cb14-166" aria-hidden="true" tabindex="-1"></a>``<span class="in">`{r echo=FALSE, out.width="80%", fig.align='center', fig.cap="The black line shows the weight at age inputs to SMS' key-run [@ICES2024] (and the stock assessent) for whiting and the red line shows the mizer estimate of weight at age for whiting using `</span>NS_params`"}</span>
-<span id="cb14-167"><a href="#cb14-167" aria-hidden="true" tabindex="-1"></a>#| label: fig-historic-weights</span>
-<span id="cb14-168"><a href="#cb14-168" aria-hidden="true" tabindex="-1"></a>knitr::include_graphics("pictures/whiting_obs_miz.png")</span>
-<span id="cb14-169"><a href="#cb14-169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-170"><a href="#cb14-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-171"><a href="#cb14-171" aria-hidden="true" tabindex="-1"></a><span class="in">In @fig-historic-weights we show the size at age of whiting and compare it to weight at age inputs to SMS' key-run [@ICES2024]. Using the default mizer model `NS_params` we show that the weight at age of whiting changes over the simulation, with a similar pattern to the inputs to SMS, however, the scale and range are different.</span></span>
-<span id="cb14-172"><a href="#cb14-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-173"><a href="#cb14-173" aria-hidden="true" tabindex="-1"></a><span class="in">## Numbers at age {#sec:numatage}</span></span>
-<span id="cb14-174"><a href="#cb14-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-175"><a href="#cb14-175" aria-hidden="true" tabindex="-1"></a><span class="in">Given the IIs we can calculate the numbers at age. Suppose that at time $t$ the density of numbers at weight is shown below, with IIs aged one, $I_i(t-1,t)=0.2$, and two, $I_i(t-2,t)=5$, being shown.</span></span>
-<span id="cb14-176"><a href="#cb14-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-177"><a href="#cb14-177" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,eval=T,echo=F, fig.align='center'}</span></span>
-<span id="cb14-178"><a href="#cb14-178" aria-hidden="true" tabindex="-1"></a><span class="in">#| label: fig-weight-classes-1</span></span>
-<span id="cb14-179"><a href="#cb14-179" aria-hidden="true" tabindex="-1"></a><span class="in">plot(1,1,type="n",xlim=c(0,3),ylim=c(5^3,5^10),xlab="w(g)",ylab="n",axes=F,log="y")</span></span>
-<span id="cb14-180"><a href="#cb14-180" aria-hidden="true" tabindex="-1"></a><span class="in">rect(0,1,0.5,5^9,col="darkred")</span></span>
-<span id="cb14-181"><a href="#cb14-181" aria-hidden="true" tabindex="-1"></a><span class="in">rect(0.5,1,1,5^6,col="darkred")</span></span>
-<span id="cb14-182"><a href="#cb14-182" aria-hidden="true" tabindex="-1"></a><span class="in">rect(1,1,1.5,5^5,col="darkred")</span></span>
-<span id="cb14-183"><a href="#cb14-183" aria-hidden="true" tabindex="-1"></a><span class="in">rect(1.5,1,2,5^4.5,col="darkblue")</span></span>
-<span id="cb14-184"><a href="#cb14-184" aria-hidden="true" tabindex="-1"></a><span class="in">rect(2,1,2.5,5^4,col="darkblue")</span></span>
-<span id="cb14-185"><a href="#cb14-185" aria-hidden="true" tabindex="-1"></a><span class="in">rect(2.5,1,3,5^3.8,col="grey")</span></span>
-<span id="cb14-186"><a href="#cb14-186" aria-hidden="true" tabindex="-1"></a><span class="in">axis(2)</span></span>
-<span id="cb14-187"><a href="#cb14-187" aria-hidden="true" tabindex="-1"></a><span class="in">box()</span></span>
-<span id="cb14-188"><a href="#cb14-188" aria-hidden="true" tabindex="-1"></a><span class="in">axis(1,at=seq(0,3,0.5),label=c(0.001,5^(-3:2)))</span></span>
-<span id="cb14-189"><a href="#cb14-189" aria-hidden="true" tabindex="-1"></a><span class="in">abline(v=2.5,lwd=3,lty=3)</span></span>
-<span id="cb14-190"><a href="#cb14-190" aria-hidden="true" tabindex="-1"></a><span class="in">abline(v=1.5,lwd=3,lty=3)</span></span>
-<span id="cb14-191"><a href="#cb14-191" aria-hidden="true" tabindex="-1"></a><span class="in">text(x=2.75,y=5^6,labels=expression(l[i](t-2,t)))</span></span>
-<span id="cb14-192"><a href="#cb14-192" aria-hidden="true" tabindex="-1"></a><span class="in">text(x=1.75,y=5^6,labels=expression(l[i](t-1,t)))</span></span>
-<span id="cb14-193"><a href="#cb14-193" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-194"><a href="#cb14-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-195"><a href="#cb14-195" aria-hidden="true" tabindex="-1"></a>The numbers younger than age one are all of the individuals smaller than $I_i(t-1,t)=0.2$, which in the figure above is 14671.88. The number of individuals younger than two years old are  smaller than $I_i(t-2,t)=5$, which in the figure is 17671.88. Therefore, 14671.88 are in the youngest age class (less than one years old) and 3000 individuals are in the age class between one and two years old.</span>
-<span id="cb14-196"><a href="#cb14-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-197"><a href="#cb14-197" aria-hidden="true" tabindex="-1"></a>In this example the IIs were on the boundary of the weight-classes. However, in practice this will almost surely not happen. The IIs will fall between weight-classes, and so, to assign an age to individuals in that weight-class we describe how individuals are distributed within the weight class. The plot below is more likely:</span>
-<span id="cb14-198"><a href="#cb14-198" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-199"><a href="#cb14-199" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,eval=T,echo=F,fig.align='center'}</span></span>
-<span id="cb14-200"><a href="#cb14-200" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-weight-classes-2</span></span>
-<span id="cb14-201"><a href="#cb14-201" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="at">type=</span><span class="st">"n"</span>,<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">3</span>),<span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">5</span><span class="sc">^</span><span class="dv">3</span>,<span class="dv">5</span><span class="sc">^</span><span class="dv">10</span>),<span class="at">xlab=</span><span class="st">"w(g)"</span>,<span class="at">ylab=</span><span class="st">"n"</span>,<span class="at">axes=</span>F,<span class="at">log=</span><span class="st">"y"</span>)</span>
-<span id="cb14-202"><a href="#cb14-202" aria-hidden="true" tabindex="-1"></a><span class="fu">rect</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.5</span>,<span class="dv">5</span><span class="sc">^</span><span class="dv">9</span>,<span class="at">col=</span><span class="st">"darkred"</span>)</span>
-<span id="cb14-203"><a href="#cb14-203" aria-hidden="true" tabindex="-1"></a><span class="fu">rect</span>(<span class="fl">0.5</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span><span class="sc">^</span><span class="dv">6</span>,<span class="at">col=</span><span class="st">"darkred"</span>)</span>
-<span id="cb14-204"><a href="#cb14-204" aria-hidden="true" tabindex="-1"></a><span class="fu">rect</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="fl">1.5</span>,<span class="dv">5</span><span class="sc">^</span><span class="dv">5</span>)</span>
-<span id="cb14-205"><a href="#cb14-205" aria-hidden="true" tabindex="-1"></a><span class="fu">rect</span>(<span class="fl">1.5</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">5</span><span class="sc">^</span><span class="fl">4.5</span>,<span class="at">col=</span><span class="st">"darkblue"</span>)</span>
-<span id="cb14-206"><a href="#cb14-206" aria-hidden="true" tabindex="-1"></a><span class="fu">rect</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="fl">2.5</span>,<span class="dv">5</span><span class="sc">^</span><span class="dv">4</span>)</span>
-<span id="cb14-207"><a href="#cb14-207" aria-hidden="true" tabindex="-1"></a><span class="fu">rect</span>(<span class="fl">2.5</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span><span class="sc">^</span><span class="fl">3.8</span>,<span class="at">col=</span><span class="st">"grey"</span>)</span>
-<span id="cb14-208"><a href="#cb14-208" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>)</span>
-<span id="cb14-209"><a href="#cb14-209" aria-hidden="true" tabindex="-1"></a><span class="fu">box</span>()</span>
-<span id="cb14-210"><a href="#cb14-210" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>,<span class="at">at=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">3</span>,<span class="fl">0.5</span>),<span class="at">label=</span><span class="fu">c</span>(<span class="fl">0.001</span>,<span class="dv">5</span><span class="sc">^</span>(<span class="sc">-</span><span class="dv">3</span><span class="sc">:</span><span class="dv">2</span>)))</span>
-<span id="cb14-211"><a href="#cb14-211" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fl">2.3</span>,<span class="at">lwd=</span><span class="dv">3</span>,<span class="at">lty=</span><span class="dv">3</span>)</span>
-<span id="cb14-212"><a href="#cb14-212" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fl">1.1</span>,<span class="at">lwd=</span><span class="dv">3</span>,<span class="at">lty=</span><span class="dv">3</span>)</span>
-<span id="cb14-213"><a href="#cb14-213" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span><span class="fl">2.5</span>,<span class="at">y=</span><span class="dv">5</span><span class="sc">^</span><span class="dv">6</span>,<span class="at">labels=</span><span class="fu">expression</span>(l[i](t<span class="dv">-2</span>,t)))</span>
-<span id="cb14-214"><a href="#cb14-214" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span><span class="fl">1.3</span>,<span class="at">y=</span><span class="dv">5</span><span class="sc">^</span><span class="dv">6</span>,<span class="at">labels=</span><span class="fu">expression</span>(l[i](t<span class="dv">-1</span>,t)))</span>
-<span id="cb14-215"><a href="#cb14-215" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-216"><a href="#cb14-216" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-217"><a href="#cb14-217" aria-hidden="true" tabindex="-1"></a>It is clear that the individuals in the red bars are less than one, and the individuals in the blue bar are less than two but older than one, but it is not clear how old the individuals in the white bars are.</span>
-<span id="cb14-218"><a href="#cb14-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-219"><a href="#cb14-219" aria-hidden="true" tabindex="-1"></a>Defining how the individuals in the white bars are distributed is down to the user. In this work we defined it as following a power law. Specifically the density of individuals between sizes $w_0$ and $w_1$ was</span>
-<span id="cb14-220"><a href="#cb14-220" aria-hidden="true" tabindex="-1"></a>\begin{equation}</span>
-<span id="cb14-221"><a href="#cb14-221" aria-hidden="true" tabindex="-1"></a>\alpha{}w^{\beta}.</span>
-<span id="cb14-222"><a href="#cb14-222" aria-hidden="true" tabindex="-1"></a>\end{equation}</span>
-<span id="cb14-223"><a href="#cb14-223" aria-hidden="true" tabindex="-1"></a>We set</span>
-<span id="cb14-224"><a href="#cb14-224" aria-hidden="true" tabindex="-1"></a>\begin{equation}</span>
-<span id="cb14-225"><a href="#cb14-225" aria-hidden="true" tabindex="-1"></a>\beta=\frac{\log(n(w_1))-\log(n(w_0))}{\log(w_1)-\log(w_0)},</span>
-<span id="cb14-226"><a href="#cb14-226" aria-hidden="true" tabindex="-1"></a>\end{equation}</span>
-<span id="cb14-227"><a href="#cb14-227" aria-hidden="true" tabindex="-1"></a>and</span>
-<span id="cb14-228"><a href="#cb14-228" aria-hidden="true" tabindex="-1"></a>\begin{equation}</span>
-<span id="cb14-229"><a href="#cb14-229" aria-hidden="true" tabindex="-1"></a>\alpha=\frac{n(w_0)(w_1-w_0)(\beta+1)}{w_1^{\beta+1}-w_0^{\beta+1}},</span>
-<span id="cb14-230"><a href="#cb14-230" aria-hidden="true" tabindex="-1"></a>\end{equation}</span>
-<span id="cb14-231"><a href="#cb14-231" aria-hidden="true" tabindex="-1"></a>which ensures that the total number in the weight-class is constant in both cases.</span>
-<span id="cb14-232"><a href="#cb14-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-233"><a href="#cb14-233" aria-hidden="true" tabindex="-1"></a>The example above becomes:</span>
-<span id="cb14-234"><a href="#cb14-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-235"><a href="#cb14-235" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,echo=F,fig.align='center'}</span></span>
-<span id="cb14-236"><a href="#cb14-236" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="at">type=</span><span class="st">"n"</span>,<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">3</span>),<span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">5</span><span class="sc">^</span><span class="dv">3</span>,<span class="dv">5</span><span class="sc">^</span><span class="dv">10</span>),<span class="at">xlab=</span><span class="st">"w(g)"</span>,<span class="at">ylab=</span><span class="st">"n"</span>,<span class="at">axes=</span>F,<span class="at">log=</span><span class="st">"y"</span>)</span>
-<span id="cb14-237"><a href="#cb14-237" aria-hidden="true" tabindex="-1"></a><span class="fu">rect</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.5</span>,<span class="dv">5</span><span class="sc">^</span><span class="dv">9</span>,<span class="at">col=</span><span class="st">"darkred"</span>)</span>
-<span id="cb14-238"><a href="#cb14-238" aria-hidden="true" tabindex="-1"></a><span class="fu">rect</span>(<span class="fl">0.5</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span><span class="sc">^</span><span class="dv">6</span>,<span class="at">col=</span><span class="st">"darkred"</span>)</span>
-<span id="cb14-239"><a href="#cb14-239" aria-hidden="true" tabindex="-1"></a><span class="fu">rect</span>(<span class="fl">1.5</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">5</span><span class="sc">^</span><span class="fl">4.5</span>,<span class="at">col=</span><span class="st">"darkblue"</span>)</span>
-<span id="cb14-240"><a href="#cb14-240" aria-hidden="true" tabindex="-1"></a><span class="fu">rect</span>(<span class="fl">2.5</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span><span class="sc">^</span><span class="fl">3.8</span>,<span class="at">col=</span><span class="st">"grey"</span>)</span>
-<span id="cb14-241"><a href="#cb14-241" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>)</span>
-<span id="cb14-242"><a href="#cb14-242" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>,<span class="at">at=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">3</span>,<span class="fl">0.5</span>),<span class="at">label=</span><span class="fu">c</span>(<span class="fl">0.001</span>,<span class="dv">5</span><span class="sc">^</span>(<span class="sc">-</span><span class="dv">3</span><span class="sc">:</span><span class="dv">2</span>)))</span>
-<span id="cb14-243"><a href="#cb14-243" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-244"><a href="#cb14-244" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span><span class="fl">2.5</span>,<span class="at">y=</span><span class="dv">5</span><span class="sc">^</span><span class="dv">6</span>,<span class="at">labels=</span><span class="fu">expression</span>(l[i](t<span class="dv">-2</span>,t)))</span>
-<span id="cb14-245"><a href="#cb14-245" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span><span class="fl">1.3</span>,<span class="at">y=</span><span class="dv">5</span><span class="sc">^</span><span class="dv">6</span>,<span class="at">labels=</span><span class="fu">expression</span>(l[i](t<span class="dv">-1</span>,t)))</span>
-<span id="cb14-246"><a href="#cb14-246" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-247"><a href="#cb14-247" aria-hidden="true" tabindex="-1"></a>n_a <span class="ot">&lt;-</span> <span class="dv">5</span><span class="sc">^</span><span class="dv">4</span></span>
-<span id="cb14-248"><a href="#cb14-248" aria-hidden="true" tabindex="-1"></a>n_b <span class="ot">&lt;-</span> <span class="dv">5</span><span class="sc">^</span><span class="fl">3.8</span></span>
-<span id="cb14-249"><a href="#cb14-249" aria-hidden="true" tabindex="-1"></a>w_0 <span class="ot">&lt;-</span> <span class="dv">5</span><span class="sc">^</span><span class="dv">0</span></span>
-<span id="cb14-250"><a href="#cb14-250" aria-hidden="true" tabindex="-1"></a>w_1 <span class="ot">&lt;-</span> <span class="dv">5</span><span class="sc">^</span><span class="dv">1</span></span>
-<span id="cb14-251"><a href="#cb14-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-252"><a href="#cb14-252" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> (<span class="fu">log</span>(n_b) <span class="sc">-</span> <span class="fu">log</span>(n_a)) <span class="sc">/</span> (<span class="fu">log</span>(w_1)<span class="sc">-</span><span class="fu">log</span>(w_0))</span>
-<span id="cb14-253"><a href="#cb14-253" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> n_a <span class="sc">*</span> (w_1<span class="sc">-</span>w_0) <span class="sc">*</span> (beta <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> (w_1 <span class="sc">^</span> (beta <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">-</span> w_0<span class="sc">^</span>(beta <span class="sc">+</span> <span class="dv">1</span>))</span>
-<span id="cb14-254"><a href="#cb14-254" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-255"><a href="#cb14-255" aria-hidden="true" tabindex="-1"></a><span class="fu">polygon</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="fl">2.3</span>,<span class="fl">2.3</span>),<span class="at">y=</span><span class="fu">c</span>(<span class="dv">1</span>,alpha <span class="sc">*</span> w_0 <span class="sc">^</span> beta,alpha <span class="sc">*</span> (<span class="dv">5</span> <span class="sc">^</span>(<span class="dv">2</span> <span class="sc">*</span> <span class="fl">2.3</span> <span class="sc">-</span> <span class="dv">4</span>))<span class="sc">^</span> beta,<span class="dv">1</span>),<span class="at">col =</span> <span class="st">"darkred"</span>,<span class="at">border =</span> F)</span>
-<span id="cb14-256"><a href="#cb14-256" aria-hidden="true" tabindex="-1"></a><span class="fu">polygon</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="fl">2.3</span>,<span class="fl">2.3</span>,<span class="fl">2.5</span>,<span class="fl">2.5</span>),<span class="at">y=</span><span class="fu">c</span>(<span class="dv">1</span>,alpha <span class="sc">*</span> (<span class="dv">5</span> <span class="sc">^</span>(<span class="dv">2</span> <span class="sc">*</span> <span class="fl">2.3</span> <span class="sc">-</span> <span class="dv">4</span>)) <span class="sc">^</span> beta,alpha <span class="sc">*</span> (w_1)<span class="sc">^</span> beta,<span class="dv">1</span>),<span class="at">col =</span> <span class="st">"grey"</span>,<span class="at">border =</span> F)</span>
-<span id="cb14-257"><a href="#cb14-257" aria-hidden="true" tabindex="-1"></a><span class="fu">polygon</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="fl">2.5</span>,<span class="fl">2.5</span>),<span class="at">y=</span><span class="fu">c</span>(<span class="dv">1</span>,alpha <span class="sc">*</span> w_0 <span class="sc">^</span> beta,alpha <span class="sc">*</span> w_1 <span class="sc">^</span> beta,<span class="dv">1</span>))</span>
-<span id="cb14-258"><a href="#cb14-258" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fl">2.3</span>,<span class="at">lwd=</span><span class="dv">3</span>,<span class="at">lty=</span><span class="dv">3</span>)</span>
-<span id="cb14-259"><a href="#cb14-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-260"><a href="#cb14-260" aria-hidden="true" tabindex="-1"></a><span class="do">####</span></span>
-<span id="cb14-261"><a href="#cb14-261" aria-hidden="true" tabindex="-1"></a>n_a <span class="ot">&lt;-</span> <span class="dv">5</span><span class="sc">^</span><span class="dv">5</span></span>
-<span id="cb14-262"><a href="#cb14-262" aria-hidden="true" tabindex="-1"></a>n_b <span class="ot">&lt;-</span> <span class="dv">5</span><span class="sc">^</span><span class="fl">4.5</span></span>
-<span id="cb14-263"><a href="#cb14-263" aria-hidden="true" tabindex="-1"></a>w_0 <span class="ot">&lt;-</span> <span class="fl">0.04</span></span>
-<span id="cb14-264"><a href="#cb14-264" aria-hidden="true" tabindex="-1"></a>w_1 <span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
-<span id="cb14-265"><a href="#cb14-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-266"><a href="#cb14-266" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> (<span class="fu">log</span>(n_b) <span class="sc">-</span> <span class="fu">log</span>(n_a)) <span class="sc">/</span> (<span class="fu">log</span>(w_1)<span class="sc">-</span><span class="fu">log</span>(w_0))</span>
-<span id="cb14-267"><a href="#cb14-267" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> n_a <span class="sc">*</span> (w_1<span class="sc">-</span>w_0) <span class="sc">*</span> (beta <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> (w_1 <span class="sc">^</span> (beta <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">-</span> w_0<span class="sc">^</span>(beta <span class="sc">+</span> <span class="dv">1</span>))</span>
-<span id="cb14-268"><a href="#cb14-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-269"><a href="#cb14-269" aria-hidden="true" tabindex="-1"></a><span class="fu">polygon</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="fl">1.1</span>,<span class="fl">1.1</span>),<span class="at">y=</span><span class="fu">c</span>(<span class="dv">1</span>,alpha <span class="sc">*</span> w_0 <span class="sc">^</span> beta,alpha <span class="sc">*</span> (<span class="dv">5</span> <span class="sc">^</span>(<span class="dv">2</span> <span class="sc">*</span> <span class="fl">1.1</span> <span class="sc">-</span> <span class="dv">4</span>))<span class="sc">^</span> beta,<span class="dv">1</span>),<span class="at">col =</span> <span class="st">"darkred"</span>,<span class="at">border =</span> F)</span>
-<span id="cb14-270"><a href="#cb14-270" aria-hidden="true" tabindex="-1"></a><span class="fu">polygon</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="fl">1.1</span>,<span class="fl">1.1</span>,<span class="fl">1.5</span>,<span class="fl">1.5</span>),<span class="at">y=</span><span class="fu">c</span>(<span class="dv">1</span>,alpha <span class="sc">*</span> (<span class="dv">5</span> <span class="sc">^</span>(<span class="dv">2</span> <span class="sc">*</span> <span class="fl">1.1</span> <span class="sc">-</span> <span class="dv">4</span>)) <span class="sc">^</span> beta,alpha <span class="sc">*</span> (w_1)<span class="sc">^</span> beta,<span class="dv">1</span>),<span class="at">col =</span> <span class="st">"darkblue"</span>,<span class="at">border =</span> F)</span>
-<span id="cb14-271"><a href="#cb14-271" aria-hidden="true" tabindex="-1"></a><span class="fu">polygon</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="fl">1.5</span>,<span class="fl">1.5</span>),<span class="at">y=</span><span class="fu">c</span>(<span class="dv">1</span>,alpha <span class="sc">*</span> w_0 <span class="sc">^</span> beta,alpha <span class="sc">*</span> w_1 <span class="sc">^</span> beta,<span class="dv">1</span>))</span>
-<span id="cb14-272"><a href="#cb14-272" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fl">1.1</span>,<span class="at">lwd=</span><span class="dv">3</span>,<span class="at">lty=</span><span class="dv">3</span>)</span>
-<span id="cb14-273"><a href="#cb14-273" aria-hidden="true" tabindex="-1"></a><span class="fu">box</span>()</span>
-<span id="cb14-274"><a href="#cb14-274" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-275"><a href="#cb14-275" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-276"><a href="#cb14-276" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-277"><a href="#cb14-277" aria-hidden="true" tabindex="-1"></a><span class="in">```{r echo=FALSE, out.width="500px", out.height="700px", fig.align='center', fig.cap="The top plot shows the evolution of individual whiting cohorts through time. The lower plots shows the fishing mortality over time for whiting from @spence_prec"}</span></span>
-<span id="cb14-278"><a href="#cb14-278" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-cohort-plot</span></span>
-<span id="cb14-279"><a href="#cb14-279" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"pictures/cohort_plot.png"</span>)</span>
-<span id="cb14-280"><a href="#cb14-280" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-281"><a href="#cb14-281" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-282"><a href="#cb14-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-283"><a href="#cb14-283" aria-hidden="true" tabindex="-1"></a><span class="fu">## Mortality rates{#sec:Zatage}</span></span>
-<span id="cb14-284"><a href="#cb14-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-285"><a href="#cb14-285" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-286"><a href="#cb14-286" aria-hidden="true" tabindex="-1"></a>By calculating the numbers at age, as done in the section '<span class="co">[</span><span class="ot">Numbers at age</span><span class="co">](#sec:numatage)</span>', we can calculate how many individuals die in a cohort in a year. Consider that at time $t-1$ and $t$ we have calculated numbers age $a-1$ and $a$ respectively, then we can rearrange equation (<span class="co">[</span><span class="ot">-@eq-grow</span><span class="co">]</span>) to find</span>
-<span id="cb14-287"><a href="#cb14-287" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb14-288"><a href="#cb14-288" aria-hidden="true" tabindex="-1"></a>    Z_{a-1,t-1}=-\ln(N_{a,t})+\ln(N_{a-1,t-1}).</span>
-<span id="cb14-289"><a href="#cb14-289" aria-hidden="true" tabindex="-1"></a>$$ {#eq-getZ}</span>
-<span id="cb14-290"><a href="#cb14-290" aria-hidden="true" tabindex="-1"></a>This is the total mortality for age $a-1$ at time $t-1$. By calculating the numbers caught at age $a$ in time $t-1$, $C_{a-1,t-1}$, in a similar way to how we calculate the numbers at age, we can  calculate the fishing mortality</span>
-<span id="cb14-291"><a href="#cb14-291" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb14-292"><a href="#cb14-292" aria-hidden="true" tabindex="-1"></a>    F_{a-1,t-1}=\frac{Z_{a-1,t-1}C_{a-1,t-1}}{N_{a-1,t-1}(1-\exp(-Z_{a-1,t-1}))}</span>
-<span id="cb14-293"><a href="#cb14-293" aria-hidden="true" tabindex="-1"></a>$$ {#eq-getF}</span>
-<span id="cb14-294"><a href="#cb14-294" aria-hidden="true" tabindex="-1"></a>and the natural mortality</span>
-<span id="cb14-295"><a href="#cb14-295" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb14-296"><a href="#cb14-296" aria-hidden="true" tabindex="-1"></a>    M_{a-1,t-1}=Z_{a-1,t-1}-F_{a-1,t-1}.</span>
-<span id="cb14-297"><a href="#cb14-297" aria-hidden="true" tabindex="-1"></a>$$ {#eq-getM}</span>
-<span id="cb14-298"><a href="#cb14-298" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-299"><a href="#cb14-299" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-300"><a href="#cb14-300" aria-hidden="true" tabindex="-1"></a>After a simulation we get the numbers at age and the numbers caught at age</span>
-<span id="cb14-301"><a href="#cb14-301" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-302"><a href="#cb14-302" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE, include=TRUE}</span></span>
-<span id="cb14-303"><a href="#cb14-303" aria-hidden="true" tabindex="-1"></a>numbers <span class="ot">&lt;-</span> <span class="fu">get_num_by_year_by_age</span>(sim)</span>
-<span id="cb14-304"><a href="#cb14-304" aria-hidden="true" tabindex="-1"></a>catch <span class="ot">&lt;-</span> <span class="fu">get_catch_by_year_by_age</span>(sim)</span>
-<span id="cb14-305"><a href="#cb14-305" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-306"><a href="#cb14-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-307"><a href="#cb14-307" aria-hidden="true" tabindex="-1"></a>The <span class="in">`get_catch_by_year_by_age`</span> function works the same as <span class="in">`get_num_by_year_by_age`</span>, but prior to the numbers in size classes being summed over ages, they are multiplied by the size, species specific fishing mortality, acquired from <span class="in">`getFMort`</span>. The catch here is the same as in mizer's <span class="in">`getYield`</span>.</span>
-<span id="cb14-308"><a href="#cb14-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-309"><a href="#cb14-309" aria-hidden="true" tabindex="-1"></a>We calculate equations (<span class="co">[</span><span class="ot">-@eq-getZ</span><span class="co">]</span>) and (<span class="co">[</span><span class="ot">-@eq-getF</span><span class="co">]</span>) for the <span class="in">`i`</span>th year, <span class="in">`j`</span>th species and <span class="in">`k`</span>th age class to get $Z_{i,k}$ and $F_{i,k}$</span>
-<span id="cb14-310"><a href="#cb14-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-311"><a href="#cb14-311" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE, include=TRUE}</span></span>
-<span id="cb14-312"><a href="#cb14-312" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log</span>(numbers[i<span class="sc">+</span><span class="dv">1</span>,j,k<span class="sc">+</span><span class="dv">1</span>]) <span class="sc">+</span> <span class="fu">log</span>(numbers[i,j,k])</span>
-<span id="cb14-313"><a href="#cb14-313" aria-hidden="true" tabindex="-1"></a>F_m <span class="ot">&lt;-</span> catch[i<span class="dv">-1</span>,j,k]<span class="sc">*</span>z<span class="er">)</span><span class="sc">/</span>(numbers[i,j,k]<span class="sc">-</span>next_alive) <span class="do">### F_m rather than F as F is protected</span></span>
-<span id="cb14-314"><a href="#cb14-314" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-315"><a href="#cb14-315" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-316"><a href="#cb14-316" aria-hidden="true" tabindex="-1"></a>and equation (<span class="co">[</span><span class="ot">-@eq-getM</span><span class="co">]</span>) to get $M_{i,k}$</span>
-<span id="cb14-317"><a href="#cb14-317" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-318"><a href="#cb14-318" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,eval=FALSE}  </span></span>
-<span id="cb14-319"><a href="#cb14-319" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> z <span class="sc">-</span> F_m</span>
-<span id="cb14-320"><a href="#cb14-320" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-321"><a href="#cb14-321" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-322"><a href="#cb14-322" aria-hidden="true" tabindex="-1"></a>@fig-Z-plot is the emergent $Z$, $F$ and $M$ over time using the historical fishing mortality.</span>
-<span id="cb14-323"><a href="#cb14-323" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-324"><a href="#cb14-324" aria-hidden="true" tabindex="-1"></a><span class="in">```{r echo=FALSE, out.width="80%", fig.align='center', fig.cap="Plots depict the $Z$, $F$ and $M$ rates for whiting of different ages over time"}</span></span>
-<span id="cb14-325"><a href="#cb14-325" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-Z-plot</span></span>
-<span id="cb14-326"><a href="#cb14-326" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"pictures/Zs_plot_whiting.png"</span>)</span>
-<span id="cb14-327"><a href="#cb14-327" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-328"><a href="#cb14-328" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-329"><a href="#cb14-329" aria-hidden="true" tabindex="-1"></a><span class="fu"># Sensitivity to `no_w` and `dt` {#sec:Sens}</span></span>
-<span id="cb14-330"><a href="#cb14-330" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-331"><a href="#cb14-331" aria-hidden="true" tabindex="-1"></a>Due to the numerical integration of the partial differential equation (pde) in mizer, the II do not follow the distribution of fish density exactly and this sometimes results in negative $M$. To investigate this we followed one individual and their growth for different values of <span class="in">`dt`</span> and <span class="in">`no_w`</span>. We initialised the <span class="in">`params`</span> object for <span class="in">`no_w`</span> equal to 100, 1000 and 10000</span>
-<span id="cb14-332"><a href="#cb14-332" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-333"><a href="#cb14-333" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,eval=F}</span></span>
-<span id="cb14-334"><a href="#cb14-334" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">newMultispeciesParams</span>(NS_params<span class="sc">@</span>species_params, <span class="at">no_w =</span> no_w)</span>
-<span id="cb14-335"><a href="#cb14-335" aria-hidden="true" tabindex="-1"></a>allgrow <span class="ot">&lt;-</span> <span class="fu">getEGrowth</span>(params)</span>
-<span id="cb14-336"><a href="#cb14-336" aria-hidden="true" tabindex="-1"></a>gs <span class="ot">&lt;-</span> allgrow[<span class="dv">6</span>,]</span>
-<span id="cb14-337"><a href="#cb14-337" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-338"><a href="#cb14-338" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-339"><a href="#cb14-339" aria-hidden="true" tabindex="-1"></a>and assumed a constant growth rate <span class="in">`gs`</span> for a whiting individual. We initialised the population at zero except in the first size class where we set it so that there was only one individual.</span>
-<span id="cb14-340"><a href="#cb14-340" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-341"><a href="#cb14-341" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,eval=F}</span></span>
-<span id="cb14-342"><a href="#cb14-342" aria-hidden="true" tabindex="-1"></a>num <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>,<span class="fu">length</span>(params<span class="sc">@</span>w))</span>
-<span id="cb14-343"><a href="#cb14-343" aria-hidden="true" tabindex="-1"></a>num[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> params<span class="sc">@</span>dw[<span class="dv">1</span>]</span>
-<span id="cb14-344"><a href="#cb14-344" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-345"><a href="#cb14-345" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-346"><a href="#cb14-346" aria-hidden="true" tabindex="-1"></a>Assuming no mortality and no recruitment we updated the numbers at size for 10 years using the numerical pde solver in mizer (see supplementary for the code) and compared the size distribution with the size of an II at the same age.</span>
-<span id="cb14-347"><a href="#cb14-347" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-348"><a href="#cb14-348" aria-hidden="true" tabindex="-1"></a>``<span class="in">`{r echo=FALSE, out.width="500px",out.height="500px", fig.align='center', fig.cap="Comparison of II size prediction to mizer's numerical solution. The grid cell value is the proportion of individuals in the numerical solution that are smaller than the II. Each simulation has a different `</span>dt<span class="in">` and `</span>no_w`."}</span>
-<span id="cb14-349"><a href="#cb14-349" aria-hidden="true" tabindex="-1"></a>#| label: fig-quantiles</span>
-<span id="cb14-350"><a href="#cb14-350" aria-hidden="true" tabindex="-1"></a>knitr::include_graphics("pictures/quantiles.png")</span>
-<span id="cb14-351"><a href="#cb14-351" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-352"><a href="#cb14-352" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-353"><a href="#cb14-353" aria-hidden="true" tabindex="-1"></a><span class="in">```{r echo=FALSE, out.width="600px",out.height="600px",  fig.align='center', fig.cap="The numerical solution of the growth with different `dt` and `no_w`. Each plot contains 3 lines, indicating a different value of `dt` - black is 0.1, blue is 0.01 and red is 0.001. Each row of plots indicates that the example's `no_w`, increasing from top to bottom. The left columns shows age 1 and right age 4."}</span></span>
-<span id="cb14-354"><a href="#cb14-354" aria-hidden="true" tabindex="-1"></a><span class="in">#| label: fig-sensitive</span></span>
-<span id="cb14-355"><a href="#cb14-355" aria-hidden="true" tabindex="-1"></a><span class="in">knitr::include_graphics("pictures/SENSITIVEGRID.png")</span></span>
-<span id="cb14-356"><a href="#cb14-356" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-357"><a href="#cb14-357" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-358"><a href="#cb14-358" aria-hidden="true" tabindex="-1"></a>We compared the proportion of individuals that are smaller than the II and found that as <span class="in">`dt`</span> got smaller and <span class="in">`no_w`</span> got bigger the proportion approached 50%, @fig-quantiles. Further, as <span class="in">`dt`</span> got smaller and <span class="in">`no_w`</span>got bigger the range of sizes at age decreased @fig-sensitive.</span>
-<span id="cb14-359"><a href="#cb14-359" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-360"><a href="#cb14-360" aria-hidden="true" tabindex="-1"></a>Therefore for more accurate age-based information we are required to choose a finer resolution for the numerical solver in mizer. We demonstrate this on the North Sea model for values of <span class="in">`dt`</span> equal to 0.1, 0.01 and 0.001, and <span class="in">`no_w`</span> equal to 100, 1000 and 2000.</span>
-<span id="cb14-361"><a href="#cb14-361" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-362"><a href="#cb14-362" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, echo=FALSE, results='asis'}</span></span>
-<span id="cb14-363"><a href="#cb14-363" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb14-364"><a href="#cb14-364" aria-hidden="true" tabindex="-1"></a>neg_Ms <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fl">0.10158730</span>, <span class="fl">0.009920635</span>, <span class="fl">0.002380952</span>,</span>
-<span id="cb14-365"><a href="#cb14-365" aria-hidden="true" tabindex="-1"></a>                    <span class="fl">0.07460317</span>, <span class="fl">0.000000000</span>, <span class="fl">0.000000000</span>,</span>
-<span id="cb14-366"><a href="#cb14-366" aria-hidden="true" tabindex="-1"></a>                    <span class="fl">0.07261905</span>, <span class="fl">0.000000000</span>, <span class="cn">NA</span>), <span class="at">nrow =</span> <span class="dv">3</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb14-367"><a href="#cb14-367" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(neg_Ms) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"100"</span>, <span class="st">"1000"</span>, <span class="st">"2000"</span>)</span>
-<span id="cb14-368"><a href="#cb14-368" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(neg_Ms) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"0.1"</span>, <span class="st">"0.01"</span>, <span class="st">"0.001"</span>)</span>
-<span id="cb14-369"><a href="#cb14-369" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(neg_Ms, <span class="at">caption =</span> <span class="st">"Proportion of Negative Ms in ages 1 to 6 for all species. The rows represent different `dt`s and the columns different `no_w`. We did not run it for `dt=0.001` and `no_w=2000` as the file was too large."</span>, <span class="at">row.names =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb14-370"><a href="#cb14-370" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-371"><a href="#cb14-371" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-372"><a href="#cb14-372" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-373"><a href="#cb14-373" aria-hidden="true" tabindex="-1"></a>Decreasing <span class="in">`dt`</span> and increasing <span class="in">`no_w`</span> makes the numerial integration more accurate and stablises the results. This comes at a cost, as the <span class="in">`MizerSim`</span> object gets very large.</span>
-<span id="cb14-374"><a href="#cb14-374" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-375"><a href="#cb14-375" aria-hidden="true" tabindex="-1"></a><span class="fu"># Discussion</span></span>
-<span id="cb14-376"><a href="#cb14-376" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-377"><a href="#cb14-377" aria-hidden="true" tabindex="-1"></a>Most models used in advice are age-based. In this blog post, we have introduced a way of calculating emergent age in mizer, potentially increasing the utility of mizer when it comes to giving management advice.</span>
-<span id="cb14-378"><a href="#cb14-378" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-379"><a href="#cb14-379" aria-hidden="true" tabindex="-1"></a>For example, mizer could be used as an operating model for MSEs. A common MSE framework is to use an operating model to test management actions. The operating model stands in for reality and management actions, such as harvest control rules, are run <span class="co">[</span><span class="ot">@punt_MSE</span><span class="co">]</span>. This process involves the operating model generating data, which assessment models are fitted to. As data for assessment models is age resolved, the operating model has to be able to sample age resolved data. By introducing emergent age in mizer, mizer can now generate age-based data, meaning that it can be used as an operating model in the MSE frameworks.</span>
-<span id="cb14-380"><a href="#cb14-380" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-381"><a href="#cb14-381" aria-hidden="true" tabindex="-1"></a>Some category 1 assessments, those that have full analytical assessments, use natural mortality at age from fitted multispecies models as inputs to the assessment. For example, many North Sea stocks use natural mortality estimates from the stochastic multispecies model <span class="co">[</span><span class="ot">@sms</span><span class="co">]</span>. Typically, assessment models require natural mortality at age rather than size. In the section '<span class="co">[</span><span class="ot">Mortality rates</span><span class="co">](#sec:Zatage)</span>' we showed that we can calculate emergent natural mortality at age. Therefore, coupled with dynamical fitting, <span class="co">[</span><span class="ot">@spence_cs</span><span class="co">]</span>, mizer could be used to provide natural mortality estimates as inputs to single-species assessments.</span>
-<span id="cb14-382"><a href="#cb14-382" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-383"><a href="#cb14-383" aria-hidden="true" tabindex="-1"></a>Many data collection schemes are designed to be fit to age-based models, for example, length stratified sample is used on surveys to calculate age-length keys. For these reasons, it can be difficult to incorporate age-based data when calibrating mizer. Furthermore, the data collected are not in a steady state (e.g., see @fig-historic-weights). Using the ages process described here, we can compare these data with mizer. For example, growth could be tuned by looking at emergent growth rates rather than steady states.</span>
-<span id="cb14-384"><a href="#cb14-384" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-385"><a href="#cb14-385" aria-hidden="true" tabindex="-1"></a>In many cases, fishing mortality from stock assessments has been used to drive the dynamics of the mizer model <span class="co">[</span><span class="ot">@blanchard; @spence_ns; @spence_prec</span><span class="co">]</span>. Typically fishing mortality from stock assessments is age-based. In previous studies, the fishing mortality inputs were some kind of average, for example Fbar, or some steady-state assumption about age <span class="co">[</span><span class="ot">@spence_prec</span><span class="co">]</span>. Using this approach, age-based fishing mortality can be implemented in age classes as they change size throughout the simulation as done in the assessment. However, how selectivity occurs within an age can be difficult to calculate <span class="co">[</span><span class="ot">@spence_prec</span><span class="co">]</span>, particularly at lower ages.</span>
-<span id="cb14-386"><a href="#cb14-386" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-387"><a href="#cb14-387" aria-hidden="true" tabindex="-1"></a>The work presented here is exact in the limit when <span class="in">`dt`</span> and <span class="in">`dw`</span> are 0, however practically this is not possible. We showed that as <span class="in">`dt`</span> and <span class="in">`dw`</span> get smaller the age estimation becomes more accurate, however, inaccuracies in the ageing process can lead to some strange behaviour. For example, we found that for the default values of <span class="in">`dt`</span> and <span class="in">`dw`</span> some cohorts natural mortality was less than 0, i.e. $M&lt;0$, which could cause difficulties when comparing mizer to age-based models. This could be caused by the numerical integration and/or how we say the lengths of fish within an age class are distributed. More research is required, although we suspect these problems occur due to how the emergent catch is calculated.</span>
-<span id="cb14-388"><a href="#cb14-388" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-389"><a href="#cb14-389" aria-hidden="true" tabindex="-1"></a>In this blog post, we introduced an extension that allows you to calculate dynamic growth curves and ages at size in mizer. This addition will improve how mizer is calibrated to data and also allows it to be interpreted and compared to age-based models, potentially increasing the utility of mizer in the assessment and advice process.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
-</div></div></div></div></div>
+  </script>
 </div> <!-- /content -->
 
 
