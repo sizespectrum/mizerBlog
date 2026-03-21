@@ -126,3 +126,41 @@ h1.posts-list-caption {
   content: url("images/mizer.png");
   width: 66%;
 }
+
+/* Quarto specific styles to match distill */
+.quarto-title-block .quarto-title-banner {
+  background-color: #317eac !important;
+  color: #ffffff !important;
+}
+
+#quarto-header .navbar {
+  background-color: #30bbed !important;
+}
+
+#quarto-header .navbar-brand, #quarto-header .nav-link {
+  color: #ffffff !important;
+}
+
+#quarto-header .nav-link:hover {
+  background-color: #178acc !important;
+}
+
+main.content a, .quarto-post .quarto-post-link {
+  color: #2fa4e7 !important;
+  text-decoration: none;
+}
+
+main.content a:hover, .quarto-post .quarto-post-link:hover {
+  color: #157ab5 !important;
+  text-decoration: underline;
+}
+
+code {
+  color: #c7254e !important;
+  background-color: #f9f2f4 !important;
+}
+
+.quarto-post-title a {
+  color: #317eac !important;
+  font-weight: bold;
+}

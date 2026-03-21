@@ -1,0 +1,13 @@
+---
+title: "About this blog"
+description: |
+  Some additional details about the blog
+---
+
+This blog is to keeps the mizer community informed of what we are all up to and share our experiences and our best practices.
+
+The blog is for anything related to mizer: new applications, 
+new features, technical details, plans and ideas. 
+Contributions welcome.
+
+You can find more information about the mizer package on the [mizer home page](https://sizespectrum.org/mizer/).

@@ -1,0 +1,11 @@
+# Metadata for all posts in this directory
+include-after-body: ../disqus.html
+
+# Standard blog post settings
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: show
+    code-summary: "Show the code"
+    code-tools: true

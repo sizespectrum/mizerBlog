@@ -1,0 +1,41 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "mizer blog"
+  description: |
+    Blog for anything related to mizer size-spectrum models: new applications, 
+    new features, technical details, plans and ideas. Contributions welcome.
+  site-url: https://blog.mizer.sizespectrum.org
+  repo-url: https://github.com/sizespectrum/mizerBlog
+  favicon: images/favicon-16x16.png
+  twitter-card:
+    site: "@mizer_model"
+  open-graph: true
+  navbar:
+    right:
+      - text: "mizer home"
+        href: https://sizespectrum.org/mizer/
+      - icon: twitter
+        href: https://twitter.com/mizer_model
+      - icon: rss
+        href: index.xml
+      - icon: github
+        href: https://github.com/sizespectrum/mizerBlog
+
+
+format:
+  html:
+    theme: cosmo
+    css: mizer.css
+    toc: true
+    toc-depth: 2
+    code-link: true
+    code-copy: true
+    anchor-sections: true
+
+execute:
+  freeze: auto
+
+editor: visual

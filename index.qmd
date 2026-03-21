@@ -1,0 +1,17 @@
+---
+title: "mizer blog"
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+  categories: true
+  sort-ui: false
+  filter-ui: false
+  feed: true
+page-layout: full
+title-block-banner: true
+sidebar: false
+---
+mizer is an R package to help you build and run multi-species size-spectrum models of fish communities.
+This blog is for anything related to mizer: new applications, new features, technical details, plans and ideas. 
+Contributions welcome.
