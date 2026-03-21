@@ -193,7 +193,7 @@ window.Quarto = {
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Change model parameters without using @</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<h1 class="title">Change model parameters without using @</h1>
 </div>
 
 <div>
@@ -235,92 +235,87 @@ window.Quarto = {
 <p>There are often two ways of accessing these slots. One involves the use of the <code>@</code> symbol, the other uses a dedicated mizer function. If you look at the mizer code, you will see a lot of <code>@</code> symbols. However I will discuss the potential pitfalls when using the <code>@</code> symbol and advocate for the use of dedicated functions that mizer provides for the purpose of changing model parameters.</p>
 <p>This blog post was written with mizer version 2.2.1.9001</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://sizespectrum.org/mizer/">mizer</a></span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://sizespectrum.org/mizer/">mizer</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html">packageVersion</a></span><span class="op">(</span><span class="st">"mizer"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="cell-output cell-output-stdout">
 <pre><code>[1] '2.5.4.9011'</code></pre>
 </div>
 </div>
 <p>Throughout this post we will use the <code>NS_params</code> MizerParams object that comes as an example with the mizer package.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="va">NS_params</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="va">NS_params</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section><section id="species-parameters" class="level1"><h1>Species parameters</h1>
 <p>Let’s start with the <code>species_params</code> data frame. This holds species-specific parameters that are used by mizer to calculate physiological rates according to specific assumptions about the size-dependence of these rates. (The details do not concern us here, but you can find all the information on the <a href="https://sizespectrum.org/mizer/reference/species_params.html">help page</a> of <code><a href="https://sizespectrum.org/mizer/reference/species_params.html">species_params()</a></code>. These size-dependent rates are then stored as large arrays in the slots of the MizerParams object, to be efficiently used during model projections. But also the species parameters are stored, and can therefore be used to recalculate the rates when some species parameters change.</p>
 <p>You can get the species parameters out of a MizerParams object in two ways, both giving identical results:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Using function</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Using function</span></span>
 <span><span class="va">sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/species_params.html">species_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
 <span><span class="co"># Using @</span></span>
 <span><span class="va">spa</span> <span class="op">&lt;-</span> <span class="va">params</span><span class="op">@</span><span class="va">species_params</span></span>
 <span><span class="co"># These are identical</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/identical.html">identical</a></span><span class="op">(</span><span class="va">sp</span>, <span class="va">spa</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
 </div>
 <p>The fact that these are identical is not surprising if you look at the code for the <code><a href="https://sizespectrum.org/mizer/reference/species_params.html">species_params()</a></code> function:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">species_params</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>function (params) 
-{
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">species_params</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>function(params) {
     UseMethod("species_params")
 }
-&lt;bytecode: 0x5567d5c7f8a8&gt;
+&lt;bytecode: 0x5722b5b9c700&gt;
 &lt;environment: namespace:mizer&gt;</code></pre>
 </div>
 </div>
 <p>The function actually only contains one statement, which accesses the <code>species_params</code> slot using the <code>@</code> notation.</p>
 <p>The difference between the two notations becomes apparent only when you want to make a change to the species parameters. Let’s assume we want to change the <code>h</code> parameter for the first species in our example model. It currently has the value</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/species_params.html">species_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">$</span><span class="va">h</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/species_params.html">species_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">$</span><span class="va">h</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
 <pre><code>[1] 18.20276</code></pre>
 </div>
 </div>
 <p>As you know, this parameter <code>h</code> is used to calculate the maximum intake rate <span class="math inline">\(h(w)\)</span> as a power-law function of size: <span class="math inline">\(h(w) = h w^n\)</span>. So for example the maximum intake rate at the smallest size is</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.1820276</code></pre>
 </div>
 </div>
 <p>Now let’s increase the value of the <code>h</code> parameter using the <code>@</code> notation:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span><span class="op">$</span><span class="va">h</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">20</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span><span class="op">$</span><span class="va">h</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">20</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>If we look at the maximum intake rate, we see that it has not changed:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.1820276</code></pre>
 </div>
 </div>
 <p>All we have done is change the value in the species parameter data frame, but this did not trigger a recalculation of the maximum intake rate. We should instead have used</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/species_params.html">species_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">$</span><span class="va">h</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">20</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/species_params.html">species_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">$</span><span class="va">h</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">20</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Take a look at the syntax, which is really a bit weird when compared to other programming languages. If you want to dig deeper into this, a good place to look is https://adv-r.hadley.nz/functions.html#replacement-functions.</p>
 <p>This way of changing <span class="math inline">\(h\)</span> does indeed change the maximum intake rate:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.2</code></pre>
 </div>
 </div>
 <p>The reason is clear if we look at the code:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">`species_params&lt;-`</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>function (params, value) 
-{
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">`species_params&lt;-`</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>function(params, value) {
     UseMethod("species_params&lt;-")
 }
-&lt;bytecode: 0x5567d5eb30a8&gt;
+&lt;bytecode: 0x5722b62aceb0&gt;
 &lt;environment: namespace:mizer&gt;</code></pre>
 </div>
 </div>
@@ -332,20 +327,20 @@ window.Quarto = {
 </ol></section><section id="gear-parameters" class="level1"><h1>Gear parameters</h1>
 <p>Similar comments apply to the gear parameters. The gear parameters are used by mizer to set up the catchability and selectivity arrays. You can find more details on the <a href="https://sizespectrum.org/mizer/reference/setFishing.html#setting-fishing">help page for setting fishing</a>. You can get the current gear parameters in two equivalent ways:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Using function</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Using function</span></span>
 <span><span class="va">gp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/gear_params.html">gear_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
 <span><span class="co"># Using @</span></span>
 <span><span class="va">gpa</span> <span class="op">&lt;-</span> <span class="va">params</span><span class="op">@</span><span class="va">gear_params</span></span>
 <span><span class="co"># These are identical</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/identical.html">identical</a></span><span class="op">(</span><span class="va">gp</span>, <span class="va">gpa</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
 </div>
 <p>But if you want to actually change the selectivity or catchability by changing the gear parameters you need to use the functional form. Here is the current <code>gear_params</code> data frame in the example model:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/gear_params.html">gear_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/gear_params.html">gear_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
 <pre><code>                          gear species   sel_func knife_edge_size catchability
 Sprat, Industrial   Industrial   Sprat knife_edge              13            1
 Sandeel, Industrial Industrial Sandeel knife_edge               4            1
@@ -363,15 +358,14 @@ Saithe, Otter            Otter  Saithe knife_edge            1076            1</
 </div>
 <p>If, for example, we want to reduce the catchability of Sprat with the Industrial gear to 0.8 we would do</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/gear_params.html">gear_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">$</span><span class="va">catchability</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.8</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/gear_params.html">gear_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">$</span><span class="va">catchability</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.8</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Note that changing gear parameters in the <code>species_params</code> data frame will <strong>not</strong> have the desired effect. You need to change them in the <code>gear_params</code> data frame.</p>
 </section><section id="resource-parameters" class="level1"><h1>Resource parameters</h1>
 <p>Not surprisingly, the same applies to the resource parameters. These are used to set up the size-dependent carrying capacity and replenishment rate for the resource. You should access them with</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/resource_params.html">resource_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/resource_params.html">resource_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
 <pre><code>$kappa
 [1] 1e+11
 
@@ -390,33 +384,29 @@ $w_pp_cutoff
 </div>
 <p>and change them with, for example,</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/resource_params.html">resource_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">$</span><span class="va">r_pp</span> <span class="op">&lt;-</span> <span class="fl">4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/resource_params.html">resource_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">$</span><span class="va">r_pp</span> <span class="op">&lt;-</span> <span class="fl">4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section><section id="rate-arrays" class="level1"><h1>Rate arrays</h1>
 <p>When you call <code><a href="https://sizespectrum.org/mizer/reference/newMultispeciesParams.html">newMultispeciesParams()</a></code>, then mizer uses the information in <code>species_params</code>, <code>gear_params</code> and <code>resource_params</code> to set up various arrays that will later make it much faster to run simulations of the model. If you are not happy with how mizer fills these arrays, you can also change them directly. And again you can do that either with <code>@</code> notation or without.</p>
 <p>Let’s take the example of the maximum intake rate <span class="math inline">\(h(w)\)</span> that we already discussed earlier. This is stored in the <code>intake_max</code> slot of the MizerParams object, as a two-dimensional array, with one row for each species and one column for each size bin. You can get at this way in the two equivalent ways:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html">identical</a></span><span class="op">(</span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span>, <span class="va">params</span><span class="op">@</span><span class="va">intake_max</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html">identical</a></span><span class="op">(</span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span>, <span class="va">params</span><span class="op">@</span><span class="va">intake_max</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
 </div>
 <p>You may wonder, why the function is called <code><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate()</a></code> rather than <code><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">intake_max()</a></code>, and I am wondering too. Naming things is difficult, and I now think that I made a bad choice when choosing those names. It gets worse when we now look at the syntax for changing <code>intake_max</code>.</p>
 <p>We can either do it with the <code>@</code> notation, for example</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">intake_max</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">params</span><span class="op">@</span><span class="va">intake_max</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">intake_max</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">params</span><span class="op">@</span><span class="va">intake_max</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>or we can do it without <code>@</code> notation</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">setMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span>, intake_max <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">setMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span>, intake_max <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This is ugly, and in future versions of mizer I think we will also allow</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">intake_max</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">intake_max</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">intake_max</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">intake_max</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>But for now we are stuck with the functions that are all listed on the [help page] for <code><a href="https://sizespectrum.org/mizer/reference/setParams.html">setParams()</a></code>. Note that these functions do not modify the params object in place, but create a new MizerParams object, which we then have to assign to a variable.</p>
 <p>Again there are benefits in avoiding directly accessing the slot with <code>@</code>. These are:</p>
@@ -426,59 +416,56 @@ $w_pp_cutoff
 </ol>
 <p>We illustrate the second point with a simple example. Let’s set one entry in the <code>metab</code> slot, which holds the size-dependent metabolic rates, to a particular value.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">metab</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">metab</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
 <span><span class="va">params</span><span class="op">@</span><span class="va">metab</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="cell-output cell-output-stdout">
 <pre><code>[1] 2</code></pre>
 </div>
 </div>
 <p>Let us then make a totally unrelated change, say by changing the reproductive efficiency of the 5th species and look again at our entry in <code>metab</code>.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/species_params.html">species_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">$</span><span class="va">erepro</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/species_params.html">species_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">$</span><span class="va">erepro</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span>
 <span><span class="va">params</span><span class="op">@</span><span class="va">metab</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.02891793</code></pre>
 </div>
 </div>
 <p>The reason for this is that the change in the species parameter has triggered a recalculation of the rate arrays from the species parameters, overwriting our manual change.</p>
 <p>Now let’s try the same with the proper way of changing the metabolic rate.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">metab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMetabolicRate.html">getMetabolicRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">metab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMetabolicRate.html">getMetabolicRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
 <span><span class="va">metab</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
 <span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMetabolicRate.html">setMetabolicRate</a></span><span class="op">(</span><span class="va">params</span>, metab <span class="op">=</span> <span class="va">metab</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 <p>Now this will not get overwritten when some other parameter changes.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/species_params.html">species_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">$</span><span class="va">erepro</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/species_params.html">species_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">$</span><span class="va">erepro</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span>
 <span><span class="va">params</span><span class="op">@</span><span class="va">metab</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="cell-output cell-output-stdout">
 <pre><code>[1] 2</code></pre>
 </div>
 </div>
 <p>The way that was done internally is by attaching a comment to the <code>metab</code> slot.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/comment.html">comment</a></span><span class="op">(</span><span class="va">params</span><span class="op">@</span><span class="va">metab</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/comment.html">comment</a></span><span class="op">(</span><span class="va">params</span><span class="op">@</span><span class="va">metab</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
 <pre><code>[1] "set manually"</code></pre>
 </div>
 </div>
 <p>You could have chosen a more informative comment, for example</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">comment</span> <span class="op">&lt;-</span> <span class="st">"Just changed the [1, 1] entry for test purposes."</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">comment</span> <span class="op">&lt;-</span> <span class="st">"Just changed the [1, 1] entry for test purposes."</span></span>
 <span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMetabolicRate.html">setMetabolicRate</a></span><span class="op">(</span><span class="va">params</span>, metab <span class="op">=</span> <span class="va">metab</span>,</span>
 <span>                           comment_metab <span class="op">=</span> <span class="va">comment</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 <p>All that matters is that there is a comment. This also tells us how we can un-protect a slot so that it can be auto-computed from the species parameters again:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/comment.html">comment</a></span><span class="op">(</span><span class="va">params</span><span class="op">@</span><span class="va">metab</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/comment.html">comment</a></span><span class="op">(</span><span class="va">params</span><span class="op">@</span><span class="va">metab</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/species_params.html">species_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">$</span><span class="va">erepro</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/species_params.html">species_params</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">$</span><span class="va">erepro</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span>
 <span><span class="va">params</span><span class="op">@</span><span class="va">metab</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.02891793</code></pre>
 </div>
 </div>
@@ -486,8 +473,6 @@ $w_pp_cutoff
 <p>We have seen how to change species parameters, gear parameters, resource parameters or other slots in a MizerParams object by using the appropriate functions. You can find a complete <a href="https://sizespectrum.org/mizer/reference/index.html#section-model-parameters">list of these functions</a> in the mizer reference pages. We discussed how this avoids the pitfalls that arise when accessing slots directly with the <code>@</code> notation. I hope this will be useful to you when you explore your own mizer model.</p>
 <p>This blog post was motivated by a question by <a href="https://www.researchgate.net/profile/Leslie-Garay-Narvaez">Leslie Garay-Narváez</a>. Please keep the questions coming.</p>
 
-
-<!-- -->
 
 </section></main><!-- /main --><div id="disqus_thread"></div>
 <script>
@@ -573,57 +558,6 @@ $w_pp_cutoff
         container: window.document.getElementById('quarto-embedded-source-code-modal')
       });
       clipboardModal.on('success', onCopySuccess);
-    }
-    const viewSource = window.document.getElementById('quarto-view-source') ||
-                       window.document.getElementById('quarto-code-tools-source');
-    if (viewSource) {
-      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
-      viewSource.addEventListener("click", function(e) {
-        if (sourceUrl) {
-          // rstudio viewer pane
-          if (/\bcapabilities=\b/.test(window.location)) {
-            window.open(sourceUrl);
-          } else {
-            window.location.href = sourceUrl;
-          }
-        } else {
-          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
-          modal.show();
-        }
-        return false;
-      });
-    }
-    function toggleCodeHandler(show) {
-      return function(e) {
-        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-        for (let i=0; i<detailsSrc.length; i++) {
-          const details = detailsSrc[i].parentElement;
-          if (show) {
-            details.open = true;
-          } else {
-            details.removeAttribute("open");
-          }
-        }
-        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
-        const fromCls = show ? "hidden" : "unhidden";
-        const toCls = show ? "unhidden" : "hidden";
-        for (let i=0; i<cellCodeDivs.length; i++) {
-          const codeDiv = cellCodeDivs[i];
-          if (codeDiv.classList.contains(fromCls)) {
-            codeDiv.classList.remove(fromCls);
-            codeDiv.classList.add(toCls);
-          } 
-        }
-        return false;
-      }
-    }
-    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
-    if (hideAllCode) {
-      hideAllCode.addEventListener("click", toggleCodeHandler(false));
-    }
-    const showAllCode = window.document.getElementById("quarto-show-all-code");
-    if (showAllCode) {
-      showAllCode.addEventListener("click", toggleCodeHandler(true));
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
@@ -953,356 +887,7 @@ $w_pp_cutoff
       }
     }
   });
-  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Change model parameters without using @"</span></span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> |</span></span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="co">  Mizer provides dedicated functions for changing model parameters. Using them</span></span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co">  protects you from pitfalls arising from manipulations with the `@` symbol.</span></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span></span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="co">  - name: Gustav Delius</span></span>
-<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="co">    url: {}</span></span>
-<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 08-08-2021</span></span>
-<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a><span class="an">twitter:</span></span>
-<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a><span class="co">  site: "@mizer_model"</span></span>
-<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a><span class="co">  creator: "@gustavdelius"</span></span>
-<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a><span class="an">preview:</span><span class="co"> change.jpg</span></span>
-<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span></span>
-<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a><span class="co">  distill::distill_article:</span></span>
-<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a><span class="co">    self_contained: false</span></span>
-<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE}</span></span>
-<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">echo =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a><span class="fu"># Introduction</span></span>
-<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a>Often, after creating a mizer model, you will want to make changes to the model</span>
-<span id="cb46-28"><a href="#cb46-28" aria-hidden="true" tabindex="-1"></a>parameters, either to improve the model or to investigate the effect of changes.</span>
-<span id="cb46-29"><a href="#cb46-29" aria-hidden="true" tabindex="-1"></a>For example you might want to study the community consequence of changes in the</span>
-<span id="cb46-30"><a href="#cb46-30" aria-hidden="true" tabindex="-1"></a>physiology due to warmer waters, or whatever your research question is.</span>
-<span id="cb46-31"><a href="#cb46-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-32"><a href="#cb46-32" aria-hidden="true" tabindex="-1"></a>Mizer makes this very easy. However, it is important to use the right syntax. In</span>
-<span id="cb46-33"><a href="#cb46-33" aria-hidden="true" tabindex="-1"></a>particular, one should avoid the use of the <span class="in">`@`</span> symbol, as I will explain in</span>
-<span id="cb46-34"><a href="#cb46-34" aria-hidden="true" tabindex="-1"></a>this blog post. So this post serves as a reminder of how one can make changes to</span>
-<span id="cb46-35"><a href="#cb46-35" aria-hidden="true" tabindex="-1"></a>a model after it has been created.</span>
-<span id="cb46-36"><a href="#cb46-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-37"><a href="#cb46-37" aria-hidden="true" tabindex="-1"></a><span class="al">![change](change.jpg)</span></span>
-<span id="cb46-38"><a href="#cb46-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-39"><a href="#cb46-39" aria-hidden="true" tabindex="-1"></a>As you will know, all the parameters describing a mizer model are contained in</span>
-<span id="cb46-40"><a href="#cb46-40" aria-hidden="true" tabindex="-1"></a>an object of class MizerParams. You may either have created this object</span>
-<span id="cb46-41"><a href="#cb46-41" aria-hidden="true" tabindex="-1"></a>yourself, for example with the <span class="in">`newMultispeciesParams()`</span> function, or received</span>
-<span id="cb46-42"><a href="#cb46-42" aria-hidden="true" tabindex="-1"></a>it from a colleague. Such an object has many slots holding the various pieces of</span>
-<span id="cb46-43"><a href="#cb46-43" aria-hidden="true" tabindex="-1"></a>information about the model.</span>
-<span id="cb46-44"><a href="#cb46-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-45"><a href="#cb46-45" aria-hidden="true" tabindex="-1"></a>There are often two ways of accessing these slots. One involves the use of the</span>
-<span id="cb46-46"><a href="#cb46-46" aria-hidden="true" tabindex="-1"></a><span class="in">`@`</span> symbol, the other uses a dedicated mizer function. If you look at the mizer</span>
-<span id="cb46-47"><a href="#cb46-47" aria-hidden="true" tabindex="-1"></a>code, you will see a lot of <span class="in">`@`</span> symbols. However I will discuss the potential</span>
-<span id="cb46-48"><a href="#cb46-48" aria-hidden="true" tabindex="-1"></a>pitfalls when using the <span class="in">`@`</span> symbol and advocate for the use of dedicated</span>
-<span id="cb46-49"><a href="#cb46-49" aria-hidden="true" tabindex="-1"></a>functions that mizer provides for the purpose of changing model parameters.</span>
-<span id="cb46-50"><a href="#cb46-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-51"><a href="#cb46-51" aria-hidden="true" tabindex="-1"></a>This blog post was written with mizer version 2.2.1.9001</span>
-<span id="cb46-52"><a href="#cb46-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-53"><a href="#cb46-53" aria-hidden="true" tabindex="-1"></a><span class="in">```{r warning=FALSE}</span></span>
-<span id="cb46-54"><a href="#cb46-54" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mizer)</span>
-<span id="cb46-55"><a href="#cb46-55" aria-hidden="true" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">"mizer"</span>)</span>
-<span id="cb46-56"><a href="#cb46-56" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-57"><a href="#cb46-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-58"><a href="#cb46-58" aria-hidden="true" tabindex="-1"></a>Throughout this post we will use the <span class="in">`NS_params`</span> MizerParams object that comes</span>
-<span id="cb46-59"><a href="#cb46-59" aria-hidden="true" tabindex="-1"></a>as an example with the mizer package.</span>
-<span id="cb46-60"><a href="#cb46-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-63"><a href="#cb46-63" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-64"><a href="#cb46-64" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> NS_params</span>
-<span id="cb46-65"><a href="#cb46-65" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-66"><a href="#cb46-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-67"><a href="#cb46-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-68"><a href="#cb46-68" aria-hidden="true" tabindex="-1"></a><span class="fu"># Species parameters</span></span>
-<span id="cb46-69"><a href="#cb46-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-70"><a href="#cb46-70" aria-hidden="true" tabindex="-1"></a>Let's start with the <span class="in">`species_params`</span> data frame. This holds species-specific</span>
-<span id="cb46-71"><a href="#cb46-71" aria-hidden="true" tabindex="-1"></a>parameters that are used by mizer to calculate physiological rates according</span>
-<span id="cb46-72"><a href="#cb46-72" aria-hidden="true" tabindex="-1"></a>to specific assumptions about the size-dependence of these rates. (The details</span>
-<span id="cb46-73"><a href="#cb46-73" aria-hidden="true" tabindex="-1"></a>do not concern us here, but you can find all the information on the </span>
-<span id="cb46-74"><a href="#cb46-74" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">help page</span><span class="co">](https://sizespectrum.org/mizer/reference/species_params.html)</span> </span>
-<span id="cb46-75"><a href="#cb46-75" aria-hidden="true" tabindex="-1"></a>of <span class="in">`species_params()`</span>. These size-dependent rates are then stored as large</span>
-<span id="cb46-76"><a href="#cb46-76" aria-hidden="true" tabindex="-1"></a>arrays in the slots of the MizerParams object, to be efficiently used during</span>
-<span id="cb46-77"><a href="#cb46-77" aria-hidden="true" tabindex="-1"></a>model projections. But also the species parameters are stored, and can therefore</span>
-<span id="cb46-78"><a href="#cb46-78" aria-hidden="true" tabindex="-1"></a>be used to recalculate the rates when some species parameters change.</span>
-<span id="cb46-79"><a href="#cb46-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-80"><a href="#cb46-80" aria-hidden="true" tabindex="-1"></a>You can get the species parameters out of a MizerParams object in two ways,</span>
-<span id="cb46-81"><a href="#cb46-81" aria-hidden="true" tabindex="-1"></a>both giving identical results:</span>
-<span id="cb46-82"><a href="#cb46-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-85"><a href="#cb46-85" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-86"><a href="#cb46-86" aria-hidden="true" tabindex="-1"></a><span class="co"># Using function</span></span>
-<span id="cb46-87"><a href="#cb46-87" aria-hidden="true" tabindex="-1"></a>sp <span class="ot">&lt;-</span> <span class="fu">species_params</span>(params)</span>
-<span id="cb46-88"><a href="#cb46-88" aria-hidden="true" tabindex="-1"></a><span class="co"># Using @</span></span>
-<span id="cb46-89"><a href="#cb46-89" aria-hidden="true" tabindex="-1"></a>spa <span class="ot">&lt;-</span> params<span class="sc">@</span>species_params</span>
-<span id="cb46-90"><a href="#cb46-90" aria-hidden="true" tabindex="-1"></a><span class="co"># These are identical</span></span>
-<span id="cb46-91"><a href="#cb46-91" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(sp, spa)</span>
-<span id="cb46-92"><a href="#cb46-92" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-93"><a href="#cb46-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-94"><a href="#cb46-94" aria-hidden="true" tabindex="-1"></a>The fact that these are identical is not surprising if you look at the code</span>
-<span id="cb46-95"><a href="#cb46-95" aria-hidden="true" tabindex="-1"></a>for the <span class="in">`species_params()`</span> function:</span>
-<span id="cb46-96"><a href="#cb46-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-99"><a href="#cb46-99" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-100"><a href="#cb46-100" aria-hidden="true" tabindex="-1"></a>species_params</span>
-<span id="cb46-101"><a href="#cb46-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-102"><a href="#cb46-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-103"><a href="#cb46-103" aria-hidden="true" tabindex="-1"></a>The function actually only contains one statement, which accesses the</span>
-<span id="cb46-104"><a href="#cb46-104" aria-hidden="true" tabindex="-1"></a><span class="in">`species_params`</span> slot using the <span class="in">`@`</span> notation.</span>
-<span id="cb46-105"><a href="#cb46-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-106"><a href="#cb46-106" aria-hidden="true" tabindex="-1"></a>The difference between the two notations becomes apparent only when you want to</span>
-<span id="cb46-107"><a href="#cb46-107" aria-hidden="true" tabindex="-1"></a>make a change to the species parameters. Let's assume we want to change the <span class="in">`h`</span></span>
-<span id="cb46-108"><a href="#cb46-108" aria-hidden="true" tabindex="-1"></a>parameter for the first species in our example model. It currently has the value</span>
-<span id="cb46-109"><a href="#cb46-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-112"><a href="#cb46-112" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-113"><a href="#cb46-113" aria-hidden="true" tabindex="-1"></a><span class="fu">species_params</span>(params)<span class="sc">$</span>h[<span class="dv">1</span>]</span>
-<span id="cb46-114"><a href="#cb46-114" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-115"><a href="#cb46-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-116"><a href="#cb46-116" aria-hidden="true" tabindex="-1"></a>As you know, this parameter <span class="in">`h`</span> is used to calculate the maximum intake rate</span>
-<span id="cb46-117"><a href="#cb46-117" aria-hidden="true" tabindex="-1"></a>$h(w)$ as a power-law function of size: $h(w) = h w^n$. So for example the</span>
-<span id="cb46-118"><a href="#cb46-118" aria-hidden="true" tabindex="-1"></a>maximum intake rate at the smallest size is</span>
-<span id="cb46-119"><a href="#cb46-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-122"><a href="#cb46-122" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-123"><a href="#cb46-123" aria-hidden="true" tabindex="-1"></a><span class="fu">getMaxIntakeRate</span>(params)[<span class="dv">1</span>, <span class="dv">1</span>]</span>
-<span id="cb46-124"><a href="#cb46-124" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-125"><a href="#cb46-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-126"><a href="#cb46-126" aria-hidden="true" tabindex="-1"></a>Now let's increase the value of the <span class="in">`h`</span> parameter using the <span class="in">`@`</span> notation:</span>
-<span id="cb46-127"><a href="#cb46-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-130"><a href="#cb46-130" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-131"><a href="#cb46-131" aria-hidden="true" tabindex="-1"></a>params<span class="sc">@</span>species_params<span class="sc">$</span>h[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">20</span></span>
-<span id="cb46-132"><a href="#cb46-132" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-133"><a href="#cb46-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-134"><a href="#cb46-134" aria-hidden="true" tabindex="-1"></a>If we look at the maximum intake rate, we see that it has not changed:</span>
-<span id="cb46-135"><a href="#cb46-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-138"><a href="#cb46-138" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-139"><a href="#cb46-139" aria-hidden="true" tabindex="-1"></a><span class="fu">getMaxIntakeRate</span>(params)[<span class="dv">1</span>, <span class="dv">1</span>]</span>
-<span id="cb46-140"><a href="#cb46-140" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-141"><a href="#cb46-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-142"><a href="#cb46-142" aria-hidden="true" tabindex="-1"></a>All we have done is change the value in the species parameter data frame, but</span>
-<span id="cb46-143"><a href="#cb46-143" aria-hidden="true" tabindex="-1"></a>this did not trigger a recalculation of the maximum intake rate. We should </span>
-<span id="cb46-144"><a href="#cb46-144" aria-hidden="true" tabindex="-1"></a>instead have used</span>
-<span id="cb46-145"><a href="#cb46-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-148"><a href="#cb46-148" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-149"><a href="#cb46-149" aria-hidden="true" tabindex="-1"></a><span class="fu">species_params</span>(params)<span class="sc">$</span>h[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">20</span></span>
-<span id="cb46-150"><a href="#cb46-150" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-151"><a href="#cb46-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-152"><a href="#cb46-152" aria-hidden="true" tabindex="-1"></a>Take a look at the syntax, which is really a bit weird when compared to other programming </span>
-<span id="cb46-153"><a href="#cb46-153" aria-hidden="true" tabindex="-1"></a>languages. If you want to dig deeper into this, a good place to look is</span>
-<span id="cb46-154"><a href="#cb46-154" aria-hidden="true" tabindex="-1"></a>https://adv-r.hadley.nz/functions.html#replacement-functions.</span>
-<span id="cb46-155"><a href="#cb46-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-156"><a href="#cb46-156" aria-hidden="true" tabindex="-1"></a>This way of changing $h$ does indeed change the maximum intake rate:</span>
-<span id="cb46-157"><a href="#cb46-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-160"><a href="#cb46-160" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-161"><a href="#cb46-161" aria-hidden="true" tabindex="-1"></a><span class="fu">getMaxIntakeRate</span>(params)[<span class="dv">1</span>, <span class="dv">1</span>]</span>
-<span id="cb46-162"><a href="#cb46-162" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-163"><a href="#cb46-163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-164"><a href="#cb46-164" aria-hidden="true" tabindex="-1"></a>The reason is clear if we look at the code:</span>
-<span id="cb46-165"><a href="#cb46-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-168"><a href="#cb46-168" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-169"><a href="#cb46-169" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">species_params&lt;-</span><span class="st">`</span></span>
-<span id="cb46-170"><a href="#cb46-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-171"><a href="#cb46-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-172"><a href="#cb46-172" aria-hidden="true" tabindex="-1"></a>So three things actually happen when you change a species parameter via the</span>
-<span id="cb46-173"><a href="#cb46-173" aria-hidden="true" tabindex="-1"></a>setter function: </span>
-<span id="cb46-174"><a href="#cb46-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-175"><a href="#cb46-175" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Your new value is checked for validity</span>
-<span id="cb46-176"><a href="#cb46-176" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Your new value is saved in the <span class="in">`species_params`</span> slot</span>
-<span id="cb46-177"><a href="#cb46-177" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>The other slots in the MizerParams object are updated by calling <span class="in">`setParams()`</span>.</span>
-<span id="cb46-178"><a href="#cb46-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-179"><a href="#cb46-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-180"><a href="#cb46-180" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-181"><a href="#cb46-181" aria-hidden="true" tabindex="-1"></a><span class="fu"># Gear parameters</span></span>
-<span id="cb46-182"><a href="#cb46-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-183"><a href="#cb46-183" aria-hidden="true" tabindex="-1"></a>Similar comments apply to the gear parameters. The gear parameters are used by</span>
-<span id="cb46-184"><a href="#cb46-184" aria-hidden="true" tabindex="-1"></a>mizer to set up the catchability and selectivity arrays. You can find more</span>
-<span id="cb46-185"><a href="#cb46-185" aria-hidden="true" tabindex="-1"></a>details on the </span>
-<span id="cb46-186"><a href="#cb46-186" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">help page for setting fishing</span><span class="co">](https://sizespectrum.org/mizer/reference/setFishing.html#setting-fishing)</span>.</span>
-<span id="cb46-187"><a href="#cb46-187" aria-hidden="true" tabindex="-1"></a>You can get the current gear parameters in two equivalent ways:</span>
-<span id="cb46-188"><a href="#cb46-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-191"><a href="#cb46-191" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-192"><a href="#cb46-192" aria-hidden="true" tabindex="-1"></a><span class="co"># Using function</span></span>
-<span id="cb46-193"><a href="#cb46-193" aria-hidden="true" tabindex="-1"></a>gp <span class="ot">&lt;-</span> <span class="fu">gear_params</span>(params)</span>
-<span id="cb46-194"><a href="#cb46-194" aria-hidden="true" tabindex="-1"></a><span class="co"># Using @</span></span>
-<span id="cb46-195"><a href="#cb46-195" aria-hidden="true" tabindex="-1"></a>gpa <span class="ot">&lt;-</span> params<span class="sc">@</span>gear_params</span>
-<span id="cb46-196"><a href="#cb46-196" aria-hidden="true" tabindex="-1"></a><span class="co"># These are identical</span></span>
-<span id="cb46-197"><a href="#cb46-197" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(gp, gpa)</span>
-<span id="cb46-198"><a href="#cb46-198" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-199"><a href="#cb46-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-200"><a href="#cb46-200" aria-hidden="true" tabindex="-1"></a>But if you want to actually change the selectivity or catchability by</span>
-<span id="cb46-201"><a href="#cb46-201" aria-hidden="true" tabindex="-1"></a>changing the gear parameters you need to use the functional form. </span>
-<span id="cb46-202"><a href="#cb46-202" aria-hidden="true" tabindex="-1"></a>Here is the current <span class="in">`gear_params`</span> data frame in the example model:</span>
-<span id="cb46-203"><a href="#cb46-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-206"><a href="#cb46-206" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-207"><a href="#cb46-207" aria-hidden="true" tabindex="-1"></a><span class="fu">gear_params</span>(params)</span>
-<span id="cb46-208"><a href="#cb46-208" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-209"><a href="#cb46-209" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-210"><a href="#cb46-210" aria-hidden="true" tabindex="-1"></a>If, for example, we want to reduce the catchability of Sprat with the Industrial</span>
-<span id="cb46-211"><a href="#cb46-211" aria-hidden="true" tabindex="-1"></a>gear to 0.8 we would do</span>
-<span id="cb46-212"><a href="#cb46-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-215"><a href="#cb46-215" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-216"><a href="#cb46-216" aria-hidden="true" tabindex="-1"></a><span class="fu">gear_params</span>(params)<span class="sc">$</span>catchability[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fl">0.8</span></span>
-<span id="cb46-217"><a href="#cb46-217" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-218"><a href="#cb46-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-219"><a href="#cb46-219" aria-hidden="true" tabindex="-1"></a>Note that changing gear parameters in the <span class="in">`species_params`</span> data frame will</span>
-<span id="cb46-220"><a href="#cb46-220" aria-hidden="true" tabindex="-1"></a>__not__ have the desired effect. You need to change them in the <span class="in">`gear_params`</span></span>
-<span id="cb46-221"><a href="#cb46-221" aria-hidden="true" tabindex="-1"></a>data frame.</span>
-<span id="cb46-222"><a href="#cb46-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-223"><a href="#cb46-223" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-224"><a href="#cb46-224" aria-hidden="true" tabindex="-1"></a><span class="fu"># Resource parameters</span></span>
-<span id="cb46-225"><a href="#cb46-225" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-226"><a href="#cb46-226" aria-hidden="true" tabindex="-1"></a>Not surprisingly, the same applies to the resource parameters. These are used to</span>
-<span id="cb46-227"><a href="#cb46-227" aria-hidden="true" tabindex="-1"></a>set up the size-dependent carrying capacity and replenishment rate for the</span>
-<span id="cb46-228"><a href="#cb46-228" aria-hidden="true" tabindex="-1"></a>resource. You should access them with</span>
-<span id="cb46-229"><a href="#cb46-229" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-232"><a href="#cb46-232" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-233"><a href="#cb46-233" aria-hidden="true" tabindex="-1"></a><span class="fu">resource_params</span>(params)</span>
-<span id="cb46-234"><a href="#cb46-234" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-235"><a href="#cb46-235" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-236"><a href="#cb46-236" aria-hidden="true" tabindex="-1"></a>and change them with, for example,</span>
-<span id="cb46-237"><a href="#cb46-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-240"><a href="#cb46-240" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-241"><a href="#cb46-241" aria-hidden="true" tabindex="-1"></a><span class="fu">resource_params</span>(params)<span class="sc">$</span>r_pp <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb46-242"><a href="#cb46-242" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-243"><a href="#cb46-243" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-244"><a href="#cb46-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-245"><a href="#cb46-245" aria-hidden="true" tabindex="-1"></a><span class="fu"># Rate arrays</span></span>
-<span id="cb46-246"><a href="#cb46-246" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-247"><a href="#cb46-247" aria-hidden="true" tabindex="-1"></a>When you call <span class="in">`newMultispeciesParams()`</span>, then mizer uses the information in</span>
-<span id="cb46-248"><a href="#cb46-248" aria-hidden="true" tabindex="-1"></a><span class="in">`species_params`</span>, <span class="in">`gear_params`</span> and <span class="in">`resource_params`</span> to set up various</span>
-<span id="cb46-249"><a href="#cb46-249" aria-hidden="true" tabindex="-1"></a>arrays that will later make it much faster to run simulations of the model.</span>
-<span id="cb46-250"><a href="#cb46-250" aria-hidden="true" tabindex="-1"></a>If you are not happy with how mizer fills these arrays, you can also</span>
-<span id="cb46-251"><a href="#cb46-251" aria-hidden="true" tabindex="-1"></a>change them directly. And again you can do that either with <span class="in">`@`</span> notation or</span>
-<span id="cb46-252"><a href="#cb46-252" aria-hidden="true" tabindex="-1"></a>without.</span>
-<span id="cb46-253"><a href="#cb46-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-254"><a href="#cb46-254" aria-hidden="true" tabindex="-1"></a>Let's take the example of the maximum intake rate $h(w)$ that we already</span>
-<span id="cb46-255"><a href="#cb46-255" aria-hidden="true" tabindex="-1"></a>discussed earlier. This is stored in the <span class="in">`intake_max`</span> slot of the MizerParams</span>
-<span id="cb46-256"><a href="#cb46-256" aria-hidden="true" tabindex="-1"></a>object, as a two-dimensional array, with one row for each species and one column</span>
-<span id="cb46-257"><a href="#cb46-257" aria-hidden="true" tabindex="-1"></a>for each size bin. You can get at this way in the two equivalent ways:</span>
-<span id="cb46-258"><a href="#cb46-258" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-261"><a href="#cb46-261" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-262"><a href="#cb46-262" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(<span class="fu">getMaxIntakeRate</span>(params), params<span class="sc">@</span>intake_max)</span>
-<span id="cb46-263"><a href="#cb46-263" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-264"><a href="#cb46-264" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-265"><a href="#cb46-265" aria-hidden="true" tabindex="-1"></a>You may wonder, why the function is called <span class="in">`getMaxIntakeRate()`</span> rather than</span>
-<span id="cb46-266"><a href="#cb46-266" aria-hidden="true" tabindex="-1"></a><span class="in">`intake_max()`</span>, and I am wondering too. Naming things is difficult, and I now</span>
-<span id="cb46-267"><a href="#cb46-267" aria-hidden="true" tabindex="-1"></a>think that I made a bad choice when choosing those names. It gets worse when</span>
-<span id="cb46-268"><a href="#cb46-268" aria-hidden="true" tabindex="-1"></a>we now look at the syntax for changing <span class="in">`intake_max`</span>. </span>
-<span id="cb46-269"><a href="#cb46-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-270"><a href="#cb46-270" aria-hidden="true" tabindex="-1"></a>We can either do it with</span>
-<span id="cb46-271"><a href="#cb46-271" aria-hidden="true" tabindex="-1"></a>the <span class="in">`@`</span> notation, for example</span>
-<span id="cb46-272"><a href="#cb46-272" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-275"><a href="#cb46-275" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-276"><a href="#cb46-276" aria-hidden="true" tabindex="-1"></a>params<span class="sc">@</span>intake_max <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> params<span class="sc">@</span>intake_max</span>
-<span id="cb46-277"><a href="#cb46-277" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-278"><a href="#cb46-278" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-279"><a href="#cb46-279" aria-hidden="true" tabindex="-1"></a>or we can do it without <span class="in">`@`</span> notation</span>
-<span id="cb46-280"><a href="#cb46-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-283"><a href="#cb46-283" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-284"><a href="#cb46-284" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">setMaxIntakeRate</span>(params, <span class="at">intake_max =</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">getMaxIntakeRate</span>(params))</span>
-<span id="cb46-285"><a href="#cb46-285" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-286"><a href="#cb46-286" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-287"><a href="#cb46-287" aria-hidden="true" tabindex="-1"></a>This is ugly, and in future versions of mizer I think we will also allow</span>
-<span id="cb46-288"><a href="#cb46-288" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-289"><a href="#cb46-289" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval=FALSE}</span></span>
-<span id="cb46-290"><a href="#cb46-290" aria-hidden="true" tabindex="-1"></a><span class="fu">intake_max</span>(params) <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">intake_max</span>(params)</span>
-<span id="cb46-291"><a href="#cb46-291" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-292"><a href="#cb46-292" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-293"><a href="#cb46-293" aria-hidden="true" tabindex="-1"></a>But for now we are stuck with the functions that are all listed on the </span>
-<span id="cb46-294"><a href="#cb46-294" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">help page</span><span class="co">]</span> for <span class="in">`setParams()`</span>. Note that these functions do not modify the</span>
-<span id="cb46-295"><a href="#cb46-295" aria-hidden="true" tabindex="-1"></a>params object in place, but create a new MizerParams object, which we then</span>
-<span id="cb46-296"><a href="#cb46-296" aria-hidden="true" tabindex="-1"></a>have to assign to a variable. </span>
-<span id="cb46-297"><a href="#cb46-297" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-298"><a href="#cb46-298" aria-hidden="true" tabindex="-1"></a>Again there are benefits in avoiding directly accessing the slot with <span class="in">`@`</span>.</span>
-<span id="cb46-299"><a href="#cb46-299" aria-hidden="true" tabindex="-1"></a>These are:</span>
-<span id="cb46-300"><a href="#cb46-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-301"><a href="#cb46-301" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>The new value you assign is checked for validity. If you make a mistake in</span>
-<span id="cb46-302"><a href="#cb46-302" aria-hidden="true" tabindex="-1"></a>an assignment using <span class="in">`@`</span> you will not get any warning and instead will run</span>
-<span id="cb46-303"><a href="#cb46-303" aria-hidden="true" tabindex="-1"></a>into mysterious and cryptic error messages later.</span>
-<span id="cb46-304"><a href="#cb46-304" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-305"><a href="#cb46-305" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>The new value gets protected from automatically being overwritten when you</span>
-<span id="cb46-306"><a href="#cb46-306" aria-hidden="true" tabindex="-1"></a>make changes to other parameters.</span>
-<span id="cb46-307"><a href="#cb46-307" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-308"><a href="#cb46-308" aria-hidden="true" tabindex="-1"></a>We illustrate the second point with a simple example. Let's set one entry in the</span>
-<span id="cb46-309"><a href="#cb46-309" aria-hidden="true" tabindex="-1"></a><span class="in">`metab`</span> slot, which holds the size-dependent metabolic rates, to a particular</span>
-<span id="cb46-310"><a href="#cb46-310" aria-hidden="true" tabindex="-1"></a>value.</span>
-<span id="cb46-311"><a href="#cb46-311" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-314"><a href="#cb46-314" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-315"><a href="#cb46-315" aria-hidden="true" tabindex="-1"></a>params<span class="sc">@</span>metab[<span class="dv">1</span>, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb46-316"><a href="#cb46-316" aria-hidden="true" tabindex="-1"></a>params<span class="sc">@</span>metab[<span class="dv">1</span>, <span class="dv">1</span>]</span>
-<span id="cb46-317"><a href="#cb46-317" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-318"><a href="#cb46-318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-319"><a href="#cb46-319" aria-hidden="true" tabindex="-1"></a>Let us then make a totally unrelated change, say by changing the reproductive</span>
-<span id="cb46-320"><a href="#cb46-320" aria-hidden="true" tabindex="-1"></a>efficiency of the 5th species and look again at our entry in <span class="in">`metab`</span>.</span>
-<span id="cb46-321"><a href="#cb46-321" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-324"><a href="#cb46-324" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-325"><a href="#cb46-325" aria-hidden="true" tabindex="-1"></a><span class="fu">species_params</span>(params)<span class="sc">$</span>erepro[<span class="dv">5</span>] <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
-<span id="cb46-326"><a href="#cb46-326" aria-hidden="true" tabindex="-1"></a>params<span class="sc">@</span>metab[<span class="dv">1</span>, <span class="dv">1</span>]</span>
-<span id="cb46-327"><a href="#cb46-327" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-328"><a href="#cb46-328" aria-hidden="true" tabindex="-1"></a>The reason for this is that the change in the species parameter has triggered</span>
-<span id="cb46-329"><a href="#cb46-329" aria-hidden="true" tabindex="-1"></a>a recalculation of the rate arrays from the species parameters, overwriting</span>
-<span id="cb46-330"><a href="#cb46-330" aria-hidden="true" tabindex="-1"></a>our manual change.</span>
-<span id="cb46-331"><a href="#cb46-331" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-332"><a href="#cb46-332" aria-hidden="true" tabindex="-1"></a>Now let's try the same with the proper way of changing the metabolic rate.</span>
-<span id="cb46-333"><a href="#cb46-333" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-336"><a href="#cb46-336" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-337"><a href="#cb46-337" aria-hidden="true" tabindex="-1"></a>metab <span class="ot">&lt;-</span> <span class="fu">getMetabolicRate</span>(params)</span>
-<span id="cb46-338"><a href="#cb46-338" aria-hidden="true" tabindex="-1"></a>metab[<span class="dv">1</span>, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb46-339"><a href="#cb46-339" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">setMetabolicRate</span>(params, <span class="at">metab =</span> metab)</span>
-<span id="cb46-340"><a href="#cb46-340" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-341"><a href="#cb46-341" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-342"><a href="#cb46-342" aria-hidden="true" tabindex="-1"></a>Now this will not get overwritten when some other parameter changes.</span>
-<span id="cb46-343"><a href="#cb46-343" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-346"><a href="#cb46-346" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-347"><a href="#cb46-347" aria-hidden="true" tabindex="-1"></a><span class="fu">species_params</span>(params)<span class="sc">$</span>erepro[<span class="dv">5</span>] <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
-<span id="cb46-348"><a href="#cb46-348" aria-hidden="true" tabindex="-1"></a>params<span class="sc">@</span>metab[<span class="dv">1</span>, <span class="dv">1</span>]</span>
-<span id="cb46-349"><a href="#cb46-349" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-350"><a href="#cb46-350" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-351"><a href="#cb46-351" aria-hidden="true" tabindex="-1"></a>The way that was done internally is by attaching a comment to the <span class="in">`metab`</span></span>
-<span id="cb46-352"><a href="#cb46-352" aria-hidden="true" tabindex="-1"></a>slot.</span>
-<span id="cb46-353"><a href="#cb46-353" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-356"><a href="#cb46-356" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-357"><a href="#cb46-357" aria-hidden="true" tabindex="-1"></a><span class="fu">comment</span>(params<span class="sc">@</span>metab)</span>
-<span id="cb46-358"><a href="#cb46-358" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-359"><a href="#cb46-359" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-360"><a href="#cb46-360" aria-hidden="true" tabindex="-1"></a>You could have chosen a more informative comment, for example</span>
-<span id="cb46-361"><a href="#cb46-361" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-364"><a href="#cb46-364" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-365"><a href="#cb46-365" aria-hidden="true" tabindex="-1"></a>comment <span class="ot">&lt;-</span> <span class="st">"Just changed the [1, 1] entry for test purposes."</span></span>
-<span id="cb46-366"><a href="#cb46-366" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">setMetabolicRate</span>(params, <span class="at">metab =</span> metab,</span>
-<span id="cb46-367"><a href="#cb46-367" aria-hidden="true" tabindex="-1"></a>                           <span class="at">comment_metab =</span> comment)</span>
-<span id="cb46-368"><a href="#cb46-368" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-369"><a href="#cb46-369" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-370"><a href="#cb46-370" aria-hidden="true" tabindex="-1"></a>All that matters is that there is a comment. This also tells us how we can</span>
-<span id="cb46-371"><a href="#cb46-371" aria-hidden="true" tabindex="-1"></a>un-protect a slot so that it can be auto-computed from the species parameters</span>
-<span id="cb46-372"><a href="#cb46-372" aria-hidden="true" tabindex="-1"></a>again:</span>
-<span id="cb46-373"><a href="#cb46-373" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-376"><a href="#cb46-376" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-377"><a href="#cb46-377" aria-hidden="true" tabindex="-1"></a><span class="fu">comment</span>(params<span class="sc">@</span>metab) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb46-378"><a href="#cb46-378" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-379"><a href="#cb46-379" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-382"><a href="#cb46-382" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb46-383"><a href="#cb46-383" aria-hidden="true" tabindex="-1"></a><span class="fu">species_params</span>(params)<span class="sc">$</span>erepro[<span class="dv">5</span>] <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
-<span id="cb46-384"><a href="#cb46-384" aria-hidden="true" tabindex="-1"></a>params<span class="sc">@</span>metab[<span class="dv">1</span>, <span class="dv">1</span>]</span>
-<span id="cb46-385"><a href="#cb46-385" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb46-386"><a href="#cb46-386" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-387"><a href="#cb46-387" aria-hidden="true" tabindex="-1"></a><span class="fu"># Summary</span></span>
-<span id="cb46-388"><a href="#cb46-388" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-389"><a href="#cb46-389" aria-hidden="true" tabindex="-1"></a>We have seen how to change species parameters, gear parameters, resource</span>
-<span id="cb46-390"><a href="#cb46-390" aria-hidden="true" tabindex="-1"></a>parameters or other slots in a MizerParams object by using the appropriate</span>
-<span id="cb46-391"><a href="#cb46-391" aria-hidden="true" tabindex="-1"></a>functions. You can find a complete </span>
-<span id="cb46-392"><a href="#cb46-392" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">list of these functions</span><span class="co">](https://sizespectrum.org/mizer/reference/index.html#section-model-parameters)</span> </span>
-<span id="cb46-393"><a href="#cb46-393" aria-hidden="true" tabindex="-1"></a>in the mizer reference pages. We discussed how this avoids the pitfalls that</span>
-<span id="cb46-394"><a href="#cb46-394" aria-hidden="true" tabindex="-1"></a>arise when accessing slots directly with the <span class="in">`@`</span> notation. I hope this will be</span>
-<span id="cb46-395"><a href="#cb46-395" aria-hidden="true" tabindex="-1"></a>useful to you when you explore your own mizer model.</span>
-<span id="cb46-396"><a href="#cb46-396" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-397"><a href="#cb46-397" aria-hidden="true" tabindex="-1"></a>This blog post was motivated by a question by </span>
-<span id="cb46-398"><a href="#cb46-398" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Leslie Garay-Narváez</span><span class="co">](https://www.researchgate.net/profile/Leslie-Garay-Narvaez)</span>.</span>
-<span id="cb46-399"><a href="#cb46-399" aria-hidden="true" tabindex="-1"></a>Please keep the questions coming.</span>
-</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
-</div></div></div></div></div>
+  </script>
 </div> <!-- /content -->
 
 
