@@ -115,7 +115,8 @@ To make this concrete, we'll look at an example. I have written a function for
 the purpose of this blog post called `plotBevertonHolt()` which we can use to
 look at the Beverton-Holt curve for a given species in a model.
 
-```{r warning=FALSE, code_folding=TRUE}
+```{r warning=FALSE}
+#| code-fold: true
 library(ggplot2)
 plotBevertonHolt <- function(params, species) {
   select <- species_params(params)$species == species
@@ -250,7 +251,9 @@ To see more clearly what has happened, we extend our `plotBevertonHolt()`
 function to show both the old and the new Beverton-Holt curve in the
 same graph.
 
-```{r, code_folding=TRUE}
+```{r}
+#| code-fold: true
+#| warning: false
 plotBevertonHolt2 <- function(params, params2, species) {
   select <- species_params(params)$species == species
   erepro <- species_params(params)$erepro[select]
@@ -353,6 +356,7 @@ For the new model, with a reproduction level of 1/2, the curve looks more
 realistic:
 
 ```{r}
+#| message=FALSE
 plotYieldVsF(params2, "Cod")
 ```
 

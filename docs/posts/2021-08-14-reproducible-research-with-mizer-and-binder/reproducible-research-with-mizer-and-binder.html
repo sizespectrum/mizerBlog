@@ -121,7 +121,32 @@ div.csl-indent {
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><link rel="stylesheet" href="../../mizer.css">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="../../mizer.css">
 <meta property="og:title" content="Reproducible research with mizer, GitHub, RPubs and binder – mizer blog">
 <meta property="og:description" content="Share your code in 5 easy steps, so that others can easily reproduce your results and build on your work.">
 <meta property="og:image" content="https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/rstudio.png">
@@ -255,7 +280,7 @@ fig_height: 4
 </details>
 </div>
 <p>The first line ensures that your code in the R chunks will be included when the notebook is typeset.</p>
-<p>The explanatory text between the R chunks is using Markdown syntax. So for example you create section headers with <code>#</code>, headers of subsections with <code>##</code> and so on. You can include LaTeX equations with the usual syntax. So <code>\(x^2\)</code> produces the inline expression (x^2) and <code>\[x^2\]</code> produces the displayed equation [x^2] For more information see the <a href="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">R Markdown Reference Guide</a> and the <a href="https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf">R Markdown Cheat Sheet</a>, both of which are accessible via ’Help -&gt; Cheat Sheets` in RStudio.</p>
+<p>The explanatory text between the R chunks is using Markdown syntax. So for example you create section headers with <code>#</code>, headers of subsections with <code>##</code> and so on. You can include LaTeX equations with the usual syntax. So <code>$x^2$</code> produces the inline expression <span class="math inline">\(x^2\)</span> and <code>$$x^2$$</code> produces the displayed equation <span class="math display">\[x^2\]</span> For more information see the <a href="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">R Markdown Reference Guide</a> and the <a href="https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf">R Markdown Cheat Sheet</a>, both of which are accessible via ’Help -&gt; Cheat Sheets` in RStudio.</p>
 <p>If you have a rather large chunk of code, it may be a good idea to split it into smaller chunks, with more explanation in between. Just put your cursor at the place where you want to split the chunk and hit ‘Ctrl-Alt-I’.</p>
 <p>The advice is to not be too perfectionist. Just put in enough explanations so that you yourself will still be able to remember in a year’s time what you were doing. You can always add more explanations for others later if there are requests. The point is that just by having your code out there, people will be more encouraged to engage with you if they are interested.</p>
 </section><section id="put-your-notebook-on-github" class="level1"><h1>Put your notebook on GitHub</h1>
@@ -865,8 +890,8 @@ Canales, T. Mariella, Gustav W. Delius, and Richard Law. 2020. <span>“Regulati
 <span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a>The explanatory text between the R chunks is using Markdown syntax. So for</span>
 <span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>example you create section headers with <span class="in">`#`</span>, headers of subsections with <span class="in">`##`</span></span>
 <span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>and so on. You can include LaTeX equations with the usual syntax. So</span>
-<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a><span class="in">`\(x^2\)`</span> produces the inline expression <span class="sc">\(</span>x^2<span class="sc">\)</span> and <span class="in">`\[x^2\]`</span> produces the</span>
-<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>displayed equation <span class="sc">\[</span>x^2<span class="sc">\]</span></span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a><span class="in">`$x^2$`</span> produces the inline expression $x^2$ and <span class="in">`$$x^2$$`</span> produces the</span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>displayed equation $$x^2$$</span>
 <span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>For more information see the </span>
 <span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">R Markdown Reference Guide</span><span class="co">](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf)</span></span>
 <span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>and the</span>

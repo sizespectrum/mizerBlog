@@ -239,7 +239,7 @@ plotBiomass(sim)
 But how do these biomasses compare to our observed biomasses?
 
 ```{r}
-plotBiomassObservedVsModel(params)
+plotBiomassObservedVsModel(params, ratio = FALSE)
 ```
 They don't agree at all, but that is no surprise. It would actually have been 
 quite a coincidence if they did agree, because the `newMultispeciesParams()`
@@ -252,7 +252,7 @@ with the total observed biomass.
 
 ```{r, preview=TRUE}
 params <- calibrateBiomass(params) 
-plotBiomassObservedVsModel(params)
+plotBiomassObservedVsModel(params, ratio = FALSE)
 ```
 
 So now the total biomass is correct, but for some species the biomass in the
@@ -277,7 +277,7 @@ In fact, it has raised and lowered the spectra by exactly the factor needed
 to get the model biomasses to match the observed biomasses.
 
 ```{r}
-plotBiomassObservedVsModel(params)
+plotBiomassObservedVsModel(params, ratio = FALSE)
 ```
 
 Of course this is not the end of the story, because just rescaling the size
@@ -288,7 +288,7 @@ steady state.
 
 ```{r}
 params <- steady(params)
-plotBiomassObservedVsModel(params)
+plotBiomassObservedVsModel(params, ratio = FALSE)
 ```
 
 This has now spoiled the agreement between observed and model biomasses. But
@@ -296,7 +296,7 @@ we can simply calibrate and match again and run to steady state again.
 
 ```{r}
 params <- params |> calibrateBiomass() |> matchBiomasses() |> steady()
-plotBiomassObservedVsModel(params)
+plotBiomassObservedVsModel(params, ratio = FALSE)
 ```
 
 The discrepancies are now quite small. We could iterate to get them even
@@ -305,7 +305,7 @@ smaller:
 ```{r}
 params <- params |> calibrateBiomass() |> matchBiomasses() |> steady() |>
     calibrateBiomass() |> matchBiomasses() |> steady()
-plotBiomassObservedVsModel(params)
+plotBiomassObservedVsModel(params, ratio = FALSE)
 ```
 
 So here is the picture of the steady state that matches the observed biomasses:

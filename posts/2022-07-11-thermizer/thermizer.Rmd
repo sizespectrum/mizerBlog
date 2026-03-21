@@ -55,6 +55,7 @@ That's it. That's all you need.
 Let's do a simple simulation with two fictional fish species. We'll need to invent some parameters for them:
 
 ```{r message=FALSE, results='hide'}
+#| warning: false
 library(mizer)
 
 species_params <- 

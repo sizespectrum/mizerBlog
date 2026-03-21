@@ -98,8 +98,8 @@ the notebook is typeset.
 The explanatory text between the R chunks is using Markdown syntax. So for
 example you create section headers with `#`, headers of subsections with `##`
 and so on. You can include LaTeX equations with the usual syntax. So
-`\(x^2\)` produces the inline expression \(x^2\) and `\[x^2\]` produces the
-displayed equation \[x^2\]
+`$x^2$` produces the inline expression $x^2$ and `$$x^2$$` produces the
+displayed equation $$x^2$$
 For more information see the 
 [R Markdown Reference Guide](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf)
 and the

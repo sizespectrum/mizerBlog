@@ -164,3 +164,11 @@ code {
   color: #317eac !important;
   font-weight: bold;
 }
+
+.quarto-post .listing-description a,
+.quarto-post .metadata a {
+  color: inherit !important;
+  text-decoration: none !important;
+  pointer-events: none;
+  cursor: default;
+}

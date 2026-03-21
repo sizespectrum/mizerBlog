@@ -149,16 +149,15 @@ plotGrowthCurves(params, species = "Saithe")
 ```
 
 That helped, but is not enough. So we can try again, increasing `gamma`
-a bit further. With a little trial and error I determined that an extra factor
-of 1.4 would do the trick.
+a bit further. 
 
 ```{r}
 species_params(params)[["Saithe", "gamma"]] <- 
-    1.4 * species_params(params)[["Saithe", "gamma"]]
+    1.2 * species_params(params)[["Saithe", "gamma"]]
 plotGrowthCurves(params, species = "Saithe")
 ```
 
-Unfortunately, while we have fixed the growth curve by changing `gamma`, we have
+Unfortunately, while we have improved the growth curve by changing `gamma`, we have
 at the same time messed up other aspects of the model. For one thing, our
 initial spectra don't represent a steady state any more. So we have to use
 `steady()` again:
@@ -168,14 +167,13 @@ params <- steady(params)
 ```
 
 Now this has allowed the full effect of multi-species interaction to take hold
-and, due to increased competition, the growth curve of Saithe is again trailling
-behind observations.
+and, due to increased competition.
 
 ```{r}
 plotGrowthCurves(params, species = "Saithe")
 ```
 
-But not only that. We have also messed up the biomasses of some of the species,
+We have also messed up the biomasses of some of the species,
 in particular Gurnard and Haddock, as it turns out:
 
 ```{r}

@@ -6,6 +6,5 @@ format:
   html:
     toc: true
     toc-depth: 3
-    code-fold: show
+    code-fold: false
     code-summary: "Show the code"
-    code-tools: true
