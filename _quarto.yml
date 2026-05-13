@@ -38,6 +38,6 @@ format:
     anchor-sections: true
 
 execute:
-  freeze: auto
+  freeze: true
 
 editor: visual

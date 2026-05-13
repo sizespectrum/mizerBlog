@@ -30,7 +30,7 @@ inline-code link filter:
 
 ```r
 install.packages(c(
-  "mizer", "downlit", "distill", "knitr", "rmarkdown", "tidyverse",
+  "mizer", "downlit", "knitr", "rmarkdown", "tidyverse",
   "plotly", "magrittr", "patchwork", "assertthat", "Rcpp", "remotes"
 ))
 remotes::install_github("sizespectrum/mizerExperimental")
@@ -58,17 +58,21 @@ To build the full site into `docs/`, run:
 quarto render
 ```
 
-The project has `execute.freeze: auto` in `_quarto.yml`, so Quarto uses the
-top-level `_freeze/` cache and should only re-execute changed documents. Commit
-the source changes, the generated changes under `docs/`, and any corresponding
-changes under the top-level `_freeze/` directory. Do not commit `.quarto/`, even
-though it may contain its own local `.quarto/_freeze/` copy.
+The project has `execute.freeze: true` in `_quarto.yml`, so a full project
+render uses the top-level `_freeze/` cache and does not re-execute code blocks.
+Commit the source changes, the generated changes under `docs/`, and any
+corresponding changes under the top-level `_freeze/` directory. Do not commit
+`.quarto/`, even though it may contain its own local `.quarto/_freeze/` copy.
 
-If you only want to render one post while working on it, run for example:
+If you intentionally want to refresh the computations for one post, render that
+post directly, for example:
 
 ```bash
 quarto render posts/2025-04-02-age-in-mizer/age-in-mizer.Rmd
 ```
+
+Directly rendering a single post always executes its code and updates the frozen
+results for that post.
 
 Run `quarto render` before publishing so that the index, feed, search data and
 site map in `docs/` are also updated.
@@ -97,7 +101,16 @@ preview: images/preview.png
 
 The `preview` field is optional. If you use it, the path is relative to the post
 directory. For posts with R code, use a setup chunk to load the packages needed
-by that post.
+by that post. Do not use the old R Markdown `output: distill::distill_article`
+block in new posts. Shared Quarto options live in
+`posts/_metadata.yml`; add a post-level `format: html:` block only for settings
+that differ from those defaults, for example:
+
+```yaml
+format:
+  html:
+    number-sections: true
+```
 
 ## Publish
 
