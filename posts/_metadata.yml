@@ -8,3 +8,4 @@ format:
     toc-depth: 3
     code-fold: false
     code-summary: "Show the code"
+    df-print: paged

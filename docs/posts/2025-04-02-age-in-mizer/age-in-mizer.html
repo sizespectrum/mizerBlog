@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.36">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Luke Broadbent">
 <meta name="author" content="Michael A. Spence">
@@ -10,6 +10,9 @@
 <meta name="description" content="In this blog post, we introduce an extension that allows you to calculate dynamic growth curves and ages at size in mizer. This addition will improve how mizer is calibrated to data and also allows it to be interpreted and compared to age-based models, potentially increasing the utility of mizer in the assessment and advice process.">
 <title>Age in mizer – mizer blog</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -60,7 +63,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -88,15 +90,14 @@ div.csl-indent {
 <link href="../../images/favicon-16x16.png" rel="icon" type="image/png">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-bf7159ace269b2b3b075486ca5abd542.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../../site_libs/bootstrap/bootstrap-1d4ab30d7b042ad80aa203d2f9b2bdb2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -122,7 +123,8 @@ div.csl-indent {
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -208,16 +210,16 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
   <li>
-<a href="#calculating-age-in-mizer" id="toc-calculating-age-in-mizer" class="nav-link" data-scroll-target="#calculating-age-in-mizer">Calculating age in mizer</a>
+<a href="#calculating-age-in-mizer" id="toc-calculating-age-in-mizer" class="nav-link" data-scroll-target="#calculating-age-in-mizer"><span class="header-section-number">2</span> Calculating age in mizer</a>
   <ul class="collapse">
-<li><a href="#sec:numatage" id="toc-sec:numatage" class="nav-link" data-scroll-target="#sec\:numatage">Numbers at age</a></li>
-  <li><a href="#sec:Zatage" id="toc-sec:Zatage" class="nav-link" data-scroll-target="#sec\:Zatage">Mortality rates</a></li>
+<li><a href="#sec:numatage" id="toc-sec:numatage" class="nav-link" data-scroll-target="#sec\:numatage"><span class="header-section-number">2.1</span> Numbers at age</a></li>
+  <li><a href="#sec:Zatage" id="toc-sec:Zatage" class="nav-link" data-scroll-target="#sec\:Zatage"><span class="header-section-number">2.2</span> Mortality rates</a></li>
   </ul>
 </li>
-  <li><a href="#sec:Sens" id="toc-sec:Sens" class="nav-link" data-scroll-target="#sec\:Sens">Sensitivity to <code>no_w</code> and <code>dt</code></a></li>
-  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  <li><a href="#sec:Sens" id="toc-sec:Sens" class="nav-link" data-scroll-target="#sec\:Sens"><span class="header-section-number">3</span> Sensitivity to <code>no_w</code> and <code>dt</code></a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">4</span> Discussion</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -268,7 +270,8 @@ window.Quarto = {
   
 
 
-</header><section id="introduction" class="level1"><h1>Introduction</h1>
+</header><section id="introduction" class="level1" data-number="1"><h1 data-number="1">
+<span class="header-section-number">1</span> Introduction</h1>
 <p>The majority of assessment models for category 1 stocks in the International Council for Exploration of the Seas (ICES) are age based. This is a natural way of thinking about population dynamics as in a closed system, the number of individuals in a cohort, <span class="math inline">\(N\)</span>, can only go down as they die. The dynamics of a cohort are <span id="eq-dummy11"><span class="math display">\[
     \frac{dN}{dt}=-ZN
 \tag{1}\]</span></span> where <span class="math inline">\(Z=F+M\)</span>, with <span class="math inline">\(F\)</span> being the fishing mortality and <span class="math inline">\(M\)</span> being the natural mortality. Fishing mortality and natural mortality can vary in time. For an age-based model this has the solution that the numbers at time <span class="math inline">\(t\)</span> in age-class <span class="math inline">\(a\)</span> is <span id="eq-grow"><span class="math display">\[
@@ -280,10 +283,11 @@ window.Quarto = {
 \tag{4}\]</span></span> with <span class="math inline">\(Z_{a,t}=M_{a,t}+F_{a,t}\)</span> for <span class="math inline">\(a=0,\ldots{},A\)</span> and all times. Note that these are age classes that have the interval one year and not the ages of the fish. Some stocks have the first age class being age 0 (e.g.&nbsp;North Sea whiting), where as other have the first age class being older (e.g.&nbsp;age 3 for North Sea saithe).</p>
 <p>Most category 1 assessments are based on equations (<a href="#eq-grow" class="quarto-xref">2</a>)–(<a href="#eq-plus" class="quarto-xref">4</a>), with additional features <span class="citation" data-cites="sam">(e.g., process error in <a href="#ref-sam" role="doc-biblioref">Nielsen and Berg 2014</a>)</span>. The same equations are commonly the basis to give catch advice, calculate reference points (e.g.&nbsp;MSY) and perform management strategy evaluations (MSE).</p>
 <p>A lot of data studies are specifically designed to collect data for age-based models. For example, fish that are aged on surveys using a length-stratified design. This design is good for finding the age at length, so that fish can be aged just by knowing their length and numbers at age can be calculated. However, the design is not as good at finding length from age, which means that growth curves can be difficult to calculate.</p>
-<p>There are also many multispecies models that are age-based <span class="citation" data-cites="Trijoulet_19 Trijoulet_20 sms">(<a href="#ref-Trijoulet_19" role="doc-biblioref">Trijoulet et al. 2019</a>; <a href="#ref-Trijoulet_20" role="doc-biblioref">Trijoulet, Fay, and Miller 2020</a>; <a href="#ref-sms" role="doc-biblioref">Lewy and Vinther 2004</a>)</span>. In some cases, emergent natural mortality from age-based multispecies models are used as inputs to single-species assessments <span class="citation" data-cites="ICES2024">(e.g., <a href="#ref-ICES2024" role="doc-biblioref">ICES 2024</a>)</span>.</p>
-<p>Despite strong arguments for adopting size-based models over age-based models <span class="citation" data-cites="Andersen_book">(<a href="#ref-Andersen_book" role="doc-biblioref">Andersen 2019</a>)</span> , we are unaware of any data-rich assessments that use size-based models. This work was motivated by the aim to use the multispecies size spectrum model, mizer <span class="citation" data-cites="hartvig blanchard mizer">(<a href="#ref-hartvig" role="doc-biblioref">Hartvig, Andersen, and Beyer 2011</a>; <a href="#ref-blanchard" role="doc-biblioref">Blanchard et al. 2014</a>; <a href="#ref-mizer" role="doc-biblioref">Scott, Blanchard, and Andersen 2014</a>)</span> as an age-based model to fit with current assessment and MSE frameworks. This will take advantage of the mechanistic dynamics of the mizer model, while keeping to the age-structured frameworks used in ICES.</p>
+<p>There are also many multispecies models that are age-based <span class="citation" data-cites="Trijoulet_19 Trijoulet_20 sms">(<a href="#ref-Trijoulet_19" role="doc-biblioref">Trijoulet et al. 2019</a>, <a href="#ref-Trijoulet_20" role="doc-biblioref">2020</a>; <a href="#ref-sms" role="doc-biblioref">Lewy and Vinther 2004</a>)</span>. In some cases, emergent natural mortality from age-based multispecies models are used as inputs to single-species assessments <span class="citation" data-cites="ICES2024">(e.g., <a href="#ref-ICES2024" role="doc-biblioref">ICES 2024</a>)</span>.</p>
+<p>Despite strong arguments for adopting size-based models over age-based models <span class="citation" data-cites="Andersen_book">(<a href="#ref-Andersen_book" role="doc-biblioref">Andersen 2019</a>)</span> , we are unaware of any data-rich assessments that use size-based models. This work was motivated by the aim to use the multispecies size spectrum model, mizer <span class="citation" data-cites="hartvig blanchard mizer">(<a href="#ref-hartvig" role="doc-biblioref">Hartvig et al. 2011</a>; <a href="#ref-blanchard" role="doc-biblioref">Blanchard et al. 2014</a>; <a href="#ref-mizer" role="doc-biblioref">Scott et al. 2014</a>)</span> as an age-based model to fit with current assessment and MSE frameworks. This will take advantage of the mechanistic dynamics of the mizer model, while keeping to the age-structured frameworks used in ICES.</p>
 <p>In this blog we will explain and demonstrate how we calculate emergent age in mizer.</p>
-</section><section id="calculating-age-in-mizer" class="level1"><h1>Calculating age in mizer</h1>
+</section><section id="calculating-age-in-mizer" class="level1" data-number="2"><h1 data-number="2">
+<span class="header-section-number">2</span> Calculating age in mizer</h1>
 <p>Growth is an emergent property of feeding <span class="citation" data-cites="Andersen_book">(<a href="#ref-Andersen_book" role="doc-biblioref">Andersen 2019</a>)</span> and so is size-at-age. To calculate the emergent size at age in mizer at time <span class="math inline">\(t_0\)</span>, we introduce an <em>immortal individual</em> (II) of species <span class="math inline">\(i\)</span> and track the size of that individual. At time <span class="math inline">\(t\)</span>, the size of the II will be <span class="math inline">\(I_i(t_0,t)\)</span>, with <span id="eq-IIpde"><span class="math display">\[
 \frac{\partial I_i}{\partial t} \;=\; g_i\bigl(I_i(t_0,t),t\bigr).
 \tag{5}\]</span></span> Solving this from <span class="math inline">\(t_0\)</span> to time <span class="math inline">\(T\)</span> with boundary condition <span class="math inline">\(I_i(t_0, t_0) = w_{0,i}\)</span>, we know that an individual of species <span class="math inline">\(i\)</span> and age <span class="math inline">\(T - t_0\)</span> will be size <span class="math inline">\(I_i(t_0, T)\)</span>. In mizer, fish cannot overtake each other in size, therefore we know that fish smaller than <span class="math inline">\(I_i(T)\)</span> will be younger, and larger fish will be older. If we introduce such IIs at annual increments, then we can follow different age classes throughout the model. <a href="#fig-ageingmizer" class="quarto-xref">Figure&nbsp;1</a> demonstrates the process, showing how, for a given species, age is calculated.</p>
@@ -380,11 +384,12 @@ Figure&nbsp;3: The black line shows the weight at age inputs to SMS’ key-run <
 </div>
 </div>
 <p>In <a href="#fig-historic-weights" class="quarto-xref">Figure&nbsp;3</a> we show the size at age of whiting and compare it to weight at age inputs to SMS’ key-run <span class="citation" data-cites="ICES2024">(<a href="#ref-ICES2024" role="doc-biblioref">ICES 2024</a>)</span>. Using the default mizer model <code>NS_params</code> we show that the weight at age of whiting changes over the simulation, with a similar pattern to the inputs to SMS, however, the scale and range are different.</p>
-<section id="sec:numatage" class="level2"><h2 class="anchored" data-anchor-id="sec:numatage">Numbers at age</h2>
+<section id="sec:numatage" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="sec:numatage">
+<span class="header-section-number">2.1</span> Numbers at age</h2>
 <p>Given the IIs we can calculate the numbers at age. Suppose that at time <span class="math inline">\(t\)</span> the density of numbers at weight is shown below, with IIs aged one, <span class="math inline">\(I_i(t-1,t)=0.2\)</span>, and two, <span class="math inline">\(I_i(t-2,t)=5\)</span>, being shown.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-weight-classes-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="672">
+<div id="fig-weight-classes-1" class="quarto-float quarto-figure quarto-figure-center anchored" width="672" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-weight-classes-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="age-in-mizer_files/figure-html/fig-weight-classes-1-1.png" id="fig-weight-classes-1" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="672">
 </div>
@@ -398,7 +403,7 @@ Figure&nbsp;4
 <p>In this example the IIs were on the boundary of the weight-classes. However, in practice this will almost surely not happen. The IIs will fall between weight-classes, and so, to assign an age to individuals in that weight-class we describe how individuals are distributed within the weight class. The plot below is more likely:</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-weight-classes-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="672">
+<div id="fig-weight-classes-2" class="quarto-float quarto-figure quarto-figure-center anchored" width="672" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-weight-classes-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="age-in-mizer_files/figure-html/fig-weight-classes-2-1.png" id="fig-weight-classes-2" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="672">
 </div>
@@ -437,7 +442,8 @@ Figure&nbsp;6: The top plot shows the evolution of individual whiting cohorts th
 </div>
 </div>
 </div>
-</section><section id="sec:Zatage" class="level2"><h2 class="anchored" data-anchor-id="sec:Zatage">Mortality rates</h2>
+</section><section id="sec:Zatage" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="sec:Zatage">
+<span class="header-section-number">2.2</span> Mortality rates</h2>
 <p>By calculating the numbers at age, as done in the section ‘<a href="#sec:numatage">Numbers at age</a>’, we can calculate how many individuals die in a cohort in a year. Consider that at time <span class="math inline">\(t-1\)</span> and <span class="math inline">\(t\)</span> we have calculated numbers age <span class="math inline">\(a-1\)</span> and <span class="math inline">\(a\)</span> respectively, then we can rearrange equation (<a href="#eq-grow" class="quarto-xref">2</a>) to find <span id="eq-getZ"><span class="math display">\[
     Z_{a-1,t-1}=-\ln(N_{a,t})+\ln(N_{a-1,t-1}).
 \tag{6}\]</span></span> This is the total mortality for age <span class="math inline">\(a-1\)</span> at time <span class="math inline">\(t-1\)</span>. By calculating the numbers caught at age <span class="math inline">\(a\)</span> in time <span class="math inline">\(t-1\)</span>, <span class="math inline">\(C_{a-1,t-1}\)</span>, in a similar way to how we calculate the numbers at age, we can calculate the fishing mortality <span id="eq-getF"><span class="math display">\[
@@ -473,7 +479,8 @@ Figure&nbsp;7: Plots depict the <span class="math inline">\(Z\)</span>, <span cl
 </div>
 </div>
 </div>
-</section></section><section id="sec:Sens" class="level1"><h1>Sensitivity to <code>no_w</code> and <code>dt</code>
+</section></section><section id="sec:Sens" class="level1" data-number="3"><h1 data-number="3">
+<span class="header-section-number">3</span> Sensitivity to <code>no_w</code> and <code>dt</code>
 </h1>
 <p>Due to the numerical integration of the partial differential equation (pde) in mizer, the II do not follow the distribution of fish density exactly and this sometimes results in negative <span class="math inline">\(M\)</span>. To investigate this we followed one individual and their growth for different values of <code>dt</code> and <code>no_w</code>. We initialised the <code>params</code> object for <code>no_w</code> equal to 100, 1000 and 10000</p>
 <div class="cell">
@@ -543,18 +550,19 @@ Figure&nbsp;9: The numerical solution of the growth with different <code>dt</cod
 </tbody>
 </table>
 <p>Decreasing <code>dt</code> and increasing <code>no_w</code> makes the numerial integration more accurate and stablises the results. This comes at a cost, as the <code>MizerSim</code> object gets very large.</p>
-</section><section id="discussion" class="level1"><h1>Discussion</h1>
+</section><section id="discussion" class="level1" data-number="4"><h1 data-number="4">
+<span class="header-section-number">4</span> Discussion</h1>
 <p>Most models used in advice are age-based. In this blog post, we have introduced a way of calculating emergent age in mizer, potentially increasing the utility of mizer when it comes to giving management advice.</p>
 <p>For example, mizer could be used as an operating model for MSEs. A common MSE framework is to use an operating model to test management actions. The operating model stands in for reality and management actions, such as harvest control rules, are run <span class="citation" data-cites="punt_MSE">(<a href="#ref-punt_MSE" role="doc-biblioref">Punt et al. 2016</a>)</span>. This process involves the operating model generating data, which assessment models are fitted to. As data for assessment models is age resolved, the operating model has to be able to sample age resolved data. By introducing emergent age in mizer, mizer can now generate age-based data, meaning that it can be used as an operating model in the MSE frameworks.</p>
 <p>Some category 1 assessments, those that have full analytical assessments, use natural mortality at age from fitted multispecies models as inputs to the assessment. For example, many North Sea stocks use natural mortality estimates from the stochastic multispecies model <span class="citation" data-cites="sms">(<a href="#ref-sms" role="doc-biblioref">Lewy and Vinther 2004</a>)</span>. Typically, assessment models require natural mortality at age rather than size. In the section ‘<a href="#sec:Zatage">Mortality rates</a>’ we showed that we can calculate emergent natural mortality at age. Therefore, coupled with dynamical fitting, <span class="citation" data-cites="spence_cs">(<a href="#ref-spence_cs" role="doc-biblioref">Spence et al. 2021</a>)</span>, mizer could be used to provide natural mortality estimates as inputs to single-species assessments.</p>
 <p>Many data collection schemes are designed to be fit to age-based models, for example, length stratified sample is used on surveys to calculate age-length keys. For these reasons, it can be difficult to incorporate age-based data when calibrating mizer. Furthermore, the data collected are not in a steady state (e.g., see <a href="#fig-historic-weights" class="quarto-xref">Figure&nbsp;3</a>). Using the ages process described here, we can compare these data with mizer. For example, growth could be tuned by looking at emergent growth rates rather than steady states.</p>
-<p>In many cases, fishing mortality from stock assessments has been used to drive the dynamics of the mizer model <span class="citation" data-cites="blanchard spence_ns spence_prec">(<a href="#ref-blanchard" role="doc-biblioref">Blanchard et al. 2014</a>; <a href="#ref-spence_ns" role="doc-biblioref">Spence, Blackwell, and Blanchard 2016</a>; <a href="#ref-spence_prec" role="doc-biblioref">Spence et al. 2024</a>)</span>. Typically fishing mortality from stock assessments is age-based. In previous studies, the fishing mortality inputs were some kind of average, for example Fbar, or some steady-state assumption about age <span class="citation" data-cites="spence_prec">(<a href="#ref-spence_prec" role="doc-biblioref">Spence et al. 2024</a>)</span>. Using this approach, age-based fishing mortality can be implemented in age classes as they change size throughout the simulation as done in the assessment. However, how selectivity occurs within an age can be difficult to calculate <span class="citation" data-cites="spence_prec">(<a href="#ref-spence_prec" role="doc-biblioref">Spence et al. 2024</a>)</span>, particularly at lower ages.</p>
+<p>In many cases, fishing mortality from stock assessments has been used to drive the dynamics of the mizer model <span class="citation" data-cites="blanchard spence_ns spence_prec">(<a href="#ref-blanchard" role="doc-biblioref">Blanchard et al. 2014</a>; <a href="#ref-spence_ns" role="doc-biblioref">Spence et al. 2016</a>, <a href="#ref-spence_prec" role="doc-biblioref">2024</a>)</span>. Typically fishing mortality from stock assessments is age-based. In previous studies, the fishing mortality inputs were some kind of average, for example Fbar, or some steady-state assumption about age <span class="citation" data-cites="spence_prec">(<a href="#ref-spence_prec" role="doc-biblioref">Spence et al. 2024</a>)</span>. Using this approach, age-based fishing mortality can be implemented in age classes as they change size throughout the simulation as done in the assessment. However, how selectivity occurs within an age can be difficult to calculate <span class="citation" data-cites="spence_prec">(<a href="#ref-spence_prec" role="doc-biblioref">Spence et al. 2024</a>)</span>, particularly at lower ages.</p>
 <p>The work presented here is exact in the limit when <code>dt</code> and <code>dw</code> are 0, however practically this is not possible. We showed that as <code>dt</code> and <code>dw</code> get smaller the age estimation becomes more accurate, however, inaccuracies in the ageing process can lead to some strange behaviour. For example, we found that for the default values of <code>dt</code> and <code>dw</code> some cohorts natural mortality was less than 0, i.e.&nbsp;<span class="math inline">\(M&lt;0\)</span>, which could cause difficulties when comparing mizer to age-based models. This could be caused by the numerical integration and/or how we say the lengths of fish within an age class are distributed. More research is required, although we suspect these problems occur due to how the emergent catch is calculated.</p>
 <p>In this blog post, we introduced an extension that allows you to calculate dynamic growth curves and ages at size in mizer. This addition will improve how mizer is calibrated to data and also allows it to be interpreted and compared to age-based models, potentially increasing the utility of mizer in the assessment and advice process.</p>
 
 
 
-</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-Andersen_book" class="csl-entry" role="listitem">
 Andersen, Ken H. 2019. <em>Fish Ecology, Evolution, and Exploitation: A New Theoretical Synthesis</em>. Princeton University Press.
 </div>
@@ -565,10 +573,10 @@ Blanchard, Julia L., Ken H. Andersen, Finlay Scott, Niels T. Hintzen, Gerjan Pie
 Hartvig, Martin, Ken H. Andersen, and Jan E. Beyer. 2011. <span>“Food Web Framework for Size-Structured Populations.”</span> <em>Journal of Theoretical Biology</em> 272 (1): 113–22. <a href="https://doi.org/10.1016/j.jtbi.2010.12.006">https://doi.org/10.1016/j.jtbi.2010.12.006</a>.
 </div>
 <div id="ref-ICES2024" class="csl-entry" role="listitem">
-ICES. 2024. <span>“Working Group on Multispecies Assessment Methods (WGSAM; Outputs from 2023 Meeting).”</span> <a href="https://doi.org/10.17895/ices.pub.25020968.v3">https://doi.org/10.17895/ices.pub.25020968.v3</a>.
+ICES. 2024. <em>Working Group on Multispecies Assessment Methods (WGSAM; Outputs from 2023 Meeting)</em>. <a href="https://doi.org/10.17895/ices.pub.25020968.v3">https://doi.org/10.17895/ices.pub.25020968.v3</a>.
 </div>
 <div id="ref-sms" class="csl-entry" role="listitem">
-Lewy, Peter, and Morten Vinther. 2004. <span>“A Stochastic Age-Length-Structured Multispecies Model Applied to North Sea Stocks.”</span> ICES.
+Lewy, Peter, and Morten Vinther. 2004. <em>A Stochastic Age-Length-Structured Multispecies Model Applied to North Sea Stocks</em>. ICES.
 </div>
 <div id="ref-sam" class="csl-entry" role="listitem">
 Nielsen, Anders, and Casper W. Berg. 2014. <span>“Estimation of Time-Varying Selectivity in Stock Assessments Using State-Space Models.”</span> <em>Fisheries Research</em> 158: 96–101. <a href="https://doi.org/10.1016/j.fishres.2014.01.014">https://doi.org/10.1016/j.fishres.2014.01.014</a>.
@@ -583,7 +591,7 @@ Scott, Finlay, Julia L. Blanchard, and Ken H. Andersen. 2014. <span>“Mizer: An
 Spence, Michael A., Paul G. Blackwell, and Julia L. Blanchard. 2016. <span>“Parameter Uncertainty of a Dynamic Multispecies Size Spectrum Model.”</span> <em>Canadian Journal of Fisheries and Aquatic Sciences</em> 73 (4): 589–97. <a href="https://doi.org/10.1139/cjfas-2015-0022">https://doi.org/10.1139/cjfas-2015-0022</a>.
 </div>
 <div id="ref-spence_prec" class="csl-entry" role="listitem">
-Spence, Michael A., James A. Martindale, Khatija Alliji, Hayley J. Bannister, Robert B. Thorpe, Nicola D. Walker, Peter J. Mitchell, Matthew R. Kerr, and Paul J. Dolder. 2024. <span>“Assessing the Effect of Multispecies Interactions on Precautionary Reference Points Using an Ensemble Modelling Approach: A North Sea Case Study.”</span> <em>Fisheries Research</em> 280: 107160. <a href="https://doi.org/10.1016/j.fishres.2024.107160">https://doi.org/10.1016/j.fishres.2024.107160</a>.
+Spence, Michael A., James A. Martindale, Khatija Alliji, et al. 2024. <span>“Assessing the Effect of Multispecies Interactions on Precautionary Reference Points Using an Ensemble Modelling Approach: A North Sea Case Study.”</span> <em>Fisheries Research</em> 280: 107160. <a href="https://doi.org/10.1016/j.fishres.2024.107160">https://doi.org/10.1016/j.fishres.2024.107160</a>.
 </div>
 <div id="ref-spence_cs" class="csl-entry" role="listitem">
 Spence, Michael A., Robert B. Thorpe, Paul G. Blackwell, Finlay Scott, Richard Southwell, and Julia L. Blanchard. 2021. <span>“Quantifying Uncertainty and Dynamical Changes in Multi-Species Fishing Mortality Rates, Catches and Biomass by Combining State-Space and Size-Based Multi-Species Models.”</span> <em>Fish and Fisheries</em> 22 (4): 667–81. <a href="https://doi.org/10.1111/faf.12543">https://doi.org/10.1111/faf.12543</a>.

@@ -14,12 +14,9 @@ author:
   affiliation: Centre for Environment, Fisheries and Aquaculture Science, Pakefield Road, Lowestoft, Suffolk NR33 0HT, UK
   email: michael.spence@cefas.gov.uk
 date: 2025-04-02
-output:
-  distill::distill_article:
-    self_contained: false
-    number_sections: true
-    toc: true
-    df_print: paged
+format:
+  html:
+    number-sections: true
 bibliography: bibliography.bib
 ---
 
@@ -387,4 +384,3 @@ In many cases, fishing mortality from stock assessments has been used to drive t
 The work presented here is exact in the limit when `dt` and `dw` are 0, however practically this is not possible. We showed that as `dt` and `dw` get smaller the age estimation becomes more accurate, however, inaccuracies in the ageing process can lead to some strange behaviour. For example, we found that for the default values of `dt` and `dw` some cohorts natural mortality was less than 0, i.e. $M<0$, which could cause difficulties when comparing mizer to age-based models. This could be caused by the numerical integration and/or how we say the lengths of fish within an age class are distributed. More research is required, although we suspect these problems occur due to how the emergent catch is calculated.
 
 In this blog post, we introduced an extension that allows you to calculate dynamic growth curves and ages at size in mizer. This addition will improve how mizer is calibrated to data and also allows it to be interpreted and compared to age-based models, potentially increasing the utility of mizer in the assessment and advice process.
-

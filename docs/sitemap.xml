@@ -2,50 +2,54 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://blog.mizer.sizespectrum.org/index.html</loc>
-    <lastmod>2026-03-21T17:40:28.546Z</lastmod>
+    <lastmod>2026-05-13T21:45:07.745Z</lastmod>
   </url>
   <url>
     <loc>https://blog.mizer.sizespectrum.org/posts/2021-08-03-density-dependence-in-reproduction/density-dependence-in-reproduction.html</loc>
-    <lastmod>2026-03-21T17:40:28.547Z</lastmod>
+    <lastmod>2026-05-13T21:30:27.994Z</lastmod>
   </url>
   <url>
     <loc>https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer/thermizer.html</loc>
-    <lastmod>2026-03-21T17:40:28.663Z</lastmod>
+    <lastmod>2026-05-13T21:24:22.051Z</lastmod>
   </url>
   <url>
     <loc>https://blog.mizer.sizespectrum.org/posts/2021-09-07-tuning-growth-curves-with-a-shiny-gadget/how-to-tune-the-growth-curves.html</loc>
-    <lastmod>2026-03-21T17:40:28.620Z</lastmod>
+    <lastmod>2026-05-13T21:29:12.696Z</lastmod>
   </url>
   <url>
-    <loc>https://blog.mizer.sizespectrum.org/posts/welcome/welcome.html</loc>
-    <lastmod>2026-03-21T17:40:28.684Z</lastmod>
+    <loc>https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/reproducible-research-with-mizer-and-binder.html</loc>
+    <lastmod>2026-05-13T21:30:28.000Z</lastmod>
   </url>
   <url>
-    <loc>https://blog.mizer.sizespectrum.org/posts/2025-04-02-age-in-mizer/age-in-mizer.html</loc>
-    <lastmod>2026-03-21T17:40:28.670Z</lastmod>
+    <loc>https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/dont-use-von-bertalanffy-growth-parameters.html</loc>
+    <lastmod>2026-05-13T21:24:35.943Z</lastmod>
   </url>
   <url>
     <loc>https://blog.mizer.sizespectrum.org/about.html</loc>
     <lastmod>2026-03-21T17:40:28.460Z</lastmod>
   </url>
   <url>
-    <loc>https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/dont-use-von-bertalanffy-growth-parameters.html</loc>
-    <lastmod>2026-03-21T17:40:28.669Z</lastmod>
+    <loc>https://blog.mizer.sizespectrum.org/posts/2025-04-02-age-in-mizer/age-in-mizer.html</loc>
+    <lastmod>2026-05-13T21:12:21.769Z</lastmod>
   </url>
   <url>
-    <loc>https://blog.mizer.sizespectrum.org/posts/2021-08-14-reproducible-research-with-mizer-and-binder/reproducible-research-with-mizer-and-binder.html</loc>
-    <lastmod>2026-03-21T17:40:28.581Z</lastmod>
+    <loc>https://blog.mizer.sizespectrum.org/posts/welcome/welcome.html</loc>
+    <lastmod>2026-05-13T21:25:13.161Z</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.mizer.sizespectrum.org/posts/2026-05-13-mizer-3-0-announcement/mizer-3-0-announcement.html</loc>
+    <lastmod>2026-05-13T22:19:32.104Z</lastmod>
   </url>
   <url>
     <loc>https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/drawbacks-of-using.html</loc>
-    <lastmod>2026-03-21T17:40:28.581Z</lastmod>
+    <lastmod>2026-05-13T21:30:27.994Z</lastmod>
   </url>
   <url>
     <loc>https://blog.mizer.sizespectrum.org/posts/2022-12-23-mizer-240/mizer-240.html</loc>
-    <lastmod>2026-03-21T17:40:28.670Z</lastmod>
+    <lastmod>2026-05-13T21:24:30.839Z</lastmod>
   </url>
   <url>
     <loc>https://blog.mizer.sizespectrum.org/posts/2021-08-20-a-5-step-recipe-for-tuning-the-model-steady-state/the-constant-reproduction-trick.html</loc>
-    <lastmod>2026-03-21T17:40:28.583Z</lastmod>
+    <lastmod>2026-05-13T21:29:07.159Z</lastmod>
   </url>
 </urlset>
