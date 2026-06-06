@@ -1,0 +1,119 @@
+---
+title: "Helping AI coding agents with mizer"
+description: |
+  mizerAgents is a small R package that bootstraps AI coding agents (Claude
+  Code, Gemini CLI, Codex) with the mizer documentation they need to be
+  genuinely useful in your project — with a single function call.
+author:
+  - name: Gustav Delius
+date: 2026-05-23
+image: preview.png
+---
+
+AI coding agents — Claude Code, Gemini CLI, GitHub Copilot, OpenAI Codex — can do more than write boilerplate. Given enough context, they can read your data, diagnose calibration problems, scaffold custom rate functions, and write scenario comparison code. The bottleneck is not the agent's capability; it is the context. An agent that does not know the mizer API will invent plausible- sounding but non-existent functions, or give advice that is correct for a generic R workflow but wrong for mizer.
+
+The [**mizerAgents**](https://sizespectrum.github.io/mizerAgents/) package solves this with one function:
+
+``` r
+pak::pak("sizespectrum/mizerAgents")
+mizerAgents::setup_mizer_agent()
+```
+
+Run that once in your R project and any agent CLI you open there will immediately have the full mizer context it needs.
+
+## What the package does
+
+`setup_mizer_agent()` creates four files in your project directory:
+
+- **`MIZER-AGENTS.md`** — a concise mizer reference card: the six-step core workflow, the `MizerParams` and `MizerSim` object model, a species parameter table, units, the standard plotting functions, and pointers to the full documentation. This file is package-managed and refreshed every time you call `setup_mizer_agent()`.
+- **`AGENTS.md`** — your project-level instruction file, initially containing just `@MIZER-AGENTS.md` to pull in the reference card. You extend it with notes about your specific model (see below).
+- **`CLAUDE.md`** and **`GEMINI.md`** — one-line shims (`@AGENTS.md`) so that agent tools that look for a tool-specific file also pick up the shared context.
+
+The package also bundles two larger documentation files, `llms.txt` (a full API index, \~45 KB) and `llms-full.txt` (complete prose documentation for every exported function, \~205 KB). `MIZER-AGENTS.md` instructs the agent to grep these rather than reading them end-to-end.
+
+The design is deliberately non-invasive. `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md` are only written on the first call — re-running `setup_mizer_agent()` will not overwrite project notes you have added to those files.
+
+## Starting an agent
+
+Once the files are in place, open a terminal in your project directory (the **Terminal** tab in RStudio works well) and start the agent of your choice:
+
+```         
+claude    # Claude Code CLI
+agy       # Antigravity CLI
+codex     # OpenAI Codex CLI
+copilot   # GitHub Copilot CLI
+```
+
+The agent reads `CLAUDE.md` (or `GEMINI.md`), which chains to `AGENTS.md`, which chains to `MIZER-AGENTS.md`. By the time you type your first question the agent already knows the mizer workflow, the key parameters, and where to look for function documentation.
+
+## What agents can help with
+
+Here are the kinds of task where a context-aware agent saves real time.
+
+**Getting a model started.** If you have a species parameter spreadsheet but are not sure how to turn it into a `newMultispeciesParams()` call, the agent can read your CSV, identify missing required columns such as `w_max`, suggest ecologically sensible defaults, and produce a ready-to-run setup script.
+
+**Calibration diagnosis.** Describe your problem specifically:
+
+> "I've run `steady(params)` and Whiting biomass is about 4× too high compared to `biomass_observed`. I've already tried reducing `gamma`. What should I try next?"
+
+The agent will walk through the relevant parameters and explain which ones are most likely to be responsible — rather than giving generic advice.
+
+**Writing scenario code.** Ask for an R script that runs three fishing scenarios, projects for 50 years, and plots yield through time on the same axes. The agent knows `project()`, `plotYield()`, and the `effort` argument — it produces something you can paste and run rather than a sketch you have to complete yourself.
+
+**Understanding the API.** For less familiar parts of mizer — `setBevertonHolt()`, `setRateFunction()`, `setComponent()` — asking the agent to explain a function and when to use it often gives a clearer answer than hunting through the reference manual.
+
+**Extending mizer.** Suppose you want growth rates to scale with water temperature via a Q10 relationship. Rather than reading through the entire [extending mizer](https://sizespectrum.org/mizer/articles/extending-mizer.html) article, you can ask:
+
+> "Show me how to replace the encounter rate with a function that reads temperature from `params@other_params$temp` and applies a Q10 scaling."
+
+The agent will produce a custom function and the `setRateFunction()` call to register it.
+
+**Debugging.** Paste the exact text of a warning or error. The agent can usually identify whether it is a near-extinction event, a numerical instability from too large a time step, or a parameter inconsistency — and suggest a fix.
+
+## Adding your own project context
+
+After running `setup_mizer_agent()` you have an `AGENTS.md` that starts with `@MIZER-AGENTS.md`. Open it and add a short description of your model below:
+
+``` markdown
+@MIZER-AGENTS.md
+
+# Celtic Sea model
+
+Six species: Cod, Haddock, Whiting, Herring, Sprat, Mackerel.
+Calibrated to ICES survey biomass estimates for 2010–2020.
+
+## Key files
+- `species_params.csv` — species parameter table
+- `celtic_model.R` — builds and saves the MizerParams object
+- `scenarios.R` — runs and compares fishing scenarios
+
+## Workflow
+1. Run `celtic_model.R` to produce `celtic_params.rds`
+2. Load with `params <- readRDS("celtic_params.rds")`
+3. Run scenarios in `scenarios.R`
+```
+
+This costs ten minutes to write and saves re-explaining your setup at the start of every session.
+
+A useful habit: when you have explained something to the agent that turned out to be important, end by saying *"Add what I just told you to `AGENTS.md` so you know this in future sessions."* The agent will update the file and the knowledge persists.
+
+## Tips for effective use
+
+**Be specific.** "My model doesn't work" is hard to help with. "Cod biomass is 10× too high after `steady()` and I've already tried reducing `gamma`" gives the agent something to work with.
+
+**Share actual files.** CLI agents can read your `.rds`, CSV and R script files directly. Give them your real data and they produce targeted suggestions rather than generic advice.
+
+**Iterate.** If the first answer misses the mark, say so. Agents improve substantially with clarifying feedback within a session.
+
+**Verify numerical results.** The agent knows the mizer API well but it does not know whether a particular parameter value is ecologically plausible for your system. Apply your domain knowledge to its suggestions.
+
+**Keep sessions focused.** One task per session tends to produce better results than a long chain of unrelated questions.
+
+## Get it
+
+``` r
+pak::pak("sizespectrum/mizerAgents")
+mizerAgents::setup_mizer_agent()
+```
+
+The package is on GitHub at [sizespectrum/mizerAgents](https://github.com/sizespectrum/mizerAgents). Feedback and contributions are welcome via the issue tracker.

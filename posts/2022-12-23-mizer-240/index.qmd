@@ -1,0 +1,193 @@
+---
+title: "Mizer 2.4.0"
+description: |
+  Celebrating Christmas with a new mizer release that makes building 
+  realistic multispecies models even simpler.
+preview: images/Christmas_tree_mizer.png
+author:
+  - name: Gustav Delius
+    url: {}
+date: 2022-12-23
+twitter:
+  site: "@mizer_model"
+  creator: "@gustavdelius"
+output:
+  distill::distill_article:
+    self_contained: false
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(mizer)
+library(mizerExperimental)
+library(dplyr)
+```
+
+In time for Christmas I have a new mizer release for you. The new mizer version brings you three big changes and many small improvements.
+
+![](images/Christmas_tree_mizer.png){width="50%"}
+
+The new version is already on CRAN, so you can update your installation with
+
+```{r eval=FALSE}
+install.packages("mizer")
+```
+
+However it may take a few days until binaries are available for all platforms, so if you are not set up to compile R packages from source you may want to try the above again after Christmas.
+
+After you have updated to mizer 2.4.0 you will also want to update the mizerExperimental package with
+
+```{r eval = FALSE}
+remotes::install_github("sizespectrum/mizerExperimental")
+```
+
+This release introduces a change that requires you to upgrade your old MizerParams and MizerSim objects with `upgradeParams()` or `upgradeSim()`. Let's assume that you have an existing MizerParams object named `params`. Then to use it with the new version of mizer you would do
+
+```{r eval=FALSE}
+params <- upgradeParams(params)
+```
+
+Similarly, if you have a MizerSim object called `sim` you would do
+
+```{r eval=FALSE}
+sim <- upgradeSim(sim)
+```
+
+Nothing bad will happen if you forget to do this, but mizer will keep reminding you. Also, you need to
+
+I'll now discuss the three big changes. You can always see the smaller changes in the [Changelog](https://sizespectrum.org/mizer/news/index.html) on the mizer website.
+
+## Avoid confusion between maximum size and von Bertalanffy asymptotic size
+
+As I explained in the previous blog post [Don't use von Bertalanffy growth parameters](https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/), in the past mizer confused the von Bertalanffy growth curve and the mizer growth curve, even though they are very different things. In particular, the mizer documentation advised you to use the asymptotic size parameter of the von Bertalanffy curve as the size at which a species invests 100% of its income into reproduction. The new version finally fixes this.
+
+The species parameter that specifies the size at which also the largest fish stop growing is renamed from `w_inf` to `w_max`. The parameter `w_inf` is now reserved for the von Bertalanffy asymptotic size parameter. If you upgrade your existing MizerParams object with `upgradeParams()` the `w_inf` column is copied over to the `w_max` column automatically, but you may want to change the values yourself if they do not currently reflect the maximum size of the species. Otherwise the size distributions predicted by mizer will not match observations.
+
+## Separate tuning of steady state and tuning of dynamics
+
+Already mizer 2.0 introduced the idea that building a new mizer model should be done in two stages. In the first stage one adjusts the species parameters so that the model has steady state spectra and steady state yields that roughly agree with averaged observations. Only in the second stage one adjusts the density dependence in the model, i.e., one tunes the sensitivity of the model to changes. This separation between these two stages is similar to the separation between Ecopath and Ecosim.
+
+There are three tunable sources of density dependence in mizer:
+
+-   The **reproduction level**. This is the ratio between the actual rate of reproduction and the maximal rate of reproduction `R_max`. The higher the reproduction level, the less sensitive the species is to changes in its spawning stock biomass.
+
+-   The **resource level**. This is the ratio between the actual resource abundance and the resource carrying capacity. The higher the resource level the less sensitive the model is to competition among the larvae of the fish species for the limited resource.
+
+-   The **feeding level**. This is the ration between the rate at which individuals take in food and their maximum intake rate. The higher the feeding level, the less sensitive a species is to competition for prey. We'll discuss this below when we talk about growth rates.
+
+Ideally one would like to be able to tune each of these in the second stage of model calibration without spoiling the steady state calibration from the first stage of the process. Mizer 2.0 already introduced the `setBevertonHolt()` function that allows one to tune the reproduction level without changing the steady state. Now in mizer 2.4 the `setResource()` function allows you to also tune the resource level without changing the steady state. While you still can't change the feeding level without changing the steady state, at least the new `matchGrowth()` function allows you to keep reasonable growth rates after changing the feeding level.
+
+## `setResource()`
+
+While tuning the steady state using the `steady()` function the resource abundance is now being kept fixed at the chosen value. Then, once the steady state is to your satisfaction, you can turn on the resource dynamics with `setResource()` without changing the steady state.
+
+Ler's assume we are happy with the steady state of the `NS_params` model that comes with mizer (there are many reasons not to be happy with it yet and mizer 2.5 whould definitely ship with a better example model, but let's ignore that for now).
+
+```{r}
+params <- steady(NS_params, tol = 1e-10)
+plotlySpectra(params, power = 2)
+
+```
+
+Then
+
+```{r}
+params2 <- setResource(params, resource_level = 0.5)
+```
+
+will set the carrying capacity to twice the resource abundance at all sizes and at the same time it will set the resource replenishment rate so that the replenishment balances the consumption of the resource.
+
+Let us verify that in spite of changing the resource level we are still at steady state:
+
+```{r}
+sim2 <- project(params2, t_max = 10)
+plotlyBiomass(sim2)
+```
+
+So, given that changing the resource level does not actually change any abundances and leaves us at the same steady state as before, what is the point?
+
+The point is that the system will react differently to changes. As an example, we will investigate the effect of an industrial fishery targeting the small pelagics in the North Sea. The North Sea model is currently set up with an effort of 0 for the industrial gear:
+
+```{r}
+effort <- params@initial_effort
+effort
+```
+
+The target species of the industrial gear are Sprat, Sandeel and N.pout:
+
+```{r}
+gear_params(params) |> filter(gear == "Industrial") |>
+    select(catchability)
+```
+
+We can now turn on the industrial gear, setting its effort to 1, and see how that impacts the biomasses of the different species in the future:
+
+```{r}
+effort["Industrial"] <- 1
+sim <- project(params, effort = effort, t_max = 15)
+plotlyBiomassRelative(sim)
+```
+
+Not surprisingly, the target species are suffering. But there are also impacts on the other species. For example Gurnard increases by about 17%, presumably due to decreased competition with the small pelagics. It is of course these multi-species effects that we are particularly interested in being able to model in mizer. So it is important to explore how these effects are affected by the resource dynamics. So now we run exactly the same simulation but with the `params` object in which we had set the resource level to 0.5 while keeping exactly the same steady state.
+
+```{r}
+sim2 <- project(params2, effort = effort, t_max = 15)
+plotlyBiomassRelative(sim2)
+```
+
+By decreasing the resource level we have increased the competition for resource among the species. Fishing the small pelagics has decreased their biomasses and they thus consume less resource. Some species like Herring profit enormously from this.
+
+If you want to keep the old behaviour and switch off this automatic balancing you have to add the `balance = FALSE` argument when calling `setResource()`.
+
+The arguments `kappa` and `lambda` in `newMultispeciesParams()` are now used to set the abundance of the resource in the steady state rather than the carrying capacity. This is in any case more useful because you may have observations about the resource abundance whereas the resource carrying capacity is unobservable.
+
+Another addition in mizer 2.4.0 is that you can choose between semichemostat dynamics `resource_semichemostat()` or logistic dynamics `resource_logistic()`. To switch to logistc dynamics you would do
+
+```{r}
+params3 <- setResource(params, 
+                       resource_dynamics = "resource_logistic", 
+                       resource_level = 0.3)
+```
+
+You can of course choose any value between 0 and 1 for the resource level.
+
+Investigating resource dynamics other than semichemostat is interesting because semichemostat dynamics are particularly stable and the real world may not be as accommodating. For example in logistic dynamics, if the resource level drops below 1/2, the replenishment rate decreases as the abundance decreases, which is of course destabilising. Take a look:
+
+```{r}
+sim3 <- project(params3, effort = effort, t_max = 60)
+plotlyBiomassRelative(sim3)
+```
+
+Of course you can also still write your own function implementing more sophisticated resource dynamics.
+
+## `matchGrowth()`
+
+In the previous blog post [Don't use von Bertalanffy growth parameters](https://blog.mizer.sizespectrum.org/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/), I discussed that the von Bertalanffy curves fitted to size-at-age data are not suitable for estimating the size-dependent growth rates in mizer. I therefore now recommended that instead of von Bertalanffy parameters you supply the age at maturity in the `age_mat` column of the species parameter data frame. Mizer will then use that to calculate a default for the maximum intake rate parameter `h` if you do not supply this.
+
+In the past, whenever you changed any model parameters, you needed to re-tune other parameters to keep the growth rates in line with observations. There is now a new function `matchGrowth()` that automatically scales the search volume, the maximum consumption rate and the metabolic rate all by the same factor in order to achieve a growth rate that allows individuals to reach their maturity size by their maturity age while keeping the feeding level and the critical feeding level unchanged. This function does not however preserve the steady state, so you will need to also call `steady()` after matching the growth rates.
+
+This allows us for example to change the feeding level without spoiling the growth rates. Let's do an example. We double the maximum intake rate for Cod, and this of course gives it a lower feeding level:
+
+```{r}
+params4 <- params
+species_params(params4)["Cod", "h"] <- species_params(params)["Cod", "h"] * 2
+plotlyFeedingLevel(params4)
+```
+
+However this also spoiled the growth rate for Cod. We can fix that with `matchGrowth()` followed by `steady()`.
+
+```{r}
+params4 <- params4 |> matchGrowth() |> steady()
+plotlyFeedingLevel(params4)
+```
+
+Normally you will want to also keep biomasses at the observed level, for which already mizer 2.3.0 provided the `matchBiomasses()` function. So often you will run all three in a row. So the pattern is:
+
+```{r eval=FALSE}
+# make some changes to the model parameters and then find a new steady state
+# with the correct growth rates and abundances with
+params <- params |> matchGrowth() |> matchBiomasses() |> steady()
+```
+
+There is of course a lot more to say. But first there is Christmas to celebrate. Even if your cultural background does not dictate that you celebrate Christmas, I hope you will have some quality time to spend with your friends and family.

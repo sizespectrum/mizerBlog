@@ -2,18 +2,18 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/2026-05-23-mizer-agents/mizer-agents.html",
-      "/posts/2026-05-13-mizer-3-0-announcement/mizer-3-0-announcement.html",
-      "/posts/2025-04-02-age-in-mizer/age-in-mizer.html",
-      "/posts/2022-12-23-mizer-240/mizer-240.html",
-      "/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/dont-use-von-bertalanffy-growth-parameters.html",
-      "/posts/2022-07-11-thermizer/thermizer.html",
-      "/posts/2021-09-07-tuning-growth-curves-with-a-shiny-gadget/how-to-tune-the-growth-curves.html",
-      "/posts/2021-08-20-a-5-step-recipe-for-tuning-the-model-steady-state/the-constant-reproduction-trick.html",
-      "/posts/2021-08-14-reproducible-research-with-mizer-and-binder/reproducible-research-with-mizer-and-binder.html",
-      "/posts/2021-08-08-change-model-parameters-without-using/drawbacks-of-using.html",
-      "/posts/2021-08-03-density-dependence-in-reproduction/density-dependence-in-reproduction.html",
-      "/posts/welcome/welcome.html"
+      "/posts/2026-05-23-mizer-agents/index.html",
+      "/posts/2026-05-13-mizer-3-0-announcement/index.html",
+      "/posts/2025-04-02-age-in-mizer/index.html",
+      "/posts/2022-12-23-mizer-240/index.html",
+      "/posts/2022-11-30-dont-use-von-bertalanffy-growth-parameters/index.html",
+      "/posts/2022-07-11-thermizer/index.html",
+      "/posts/2021-09-07-tuning-growth-curves-with-a-shiny-gadget/index.html",
+      "/posts/2021-08-20-a-5-step-recipe-for-tuning-the-model-steady-state/index.html",
+      "/posts/2021-08-14-reproducible-research-with-mizer-and-binder/index.html",
+      "/posts/2021-08-08-change-model-parameters-without-using/index.html",
+      "/posts/2021-08-03-density-dependence-in-reproduction/index.html",
+      "/posts/welcome/index.html"
     ]
   }
 ]

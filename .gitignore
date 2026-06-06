@@ -11,3 +11,6 @@
 
 /.quarto/
 **/*.quarto_ipynb
+.positai
+
+posts/**/index_files/

@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Luke Broadbent">
+<meta name="author" content="Michael A. Spence">
+<meta name="dcterms.date" content="2025-04-02">
+<meta name="description" content="In this blog post, we introduce an extension that allows you to calculate dynamic growth curves and ages at size in mizer. This addition will improve how mizer is calibrated to data and also allows it to be interpreted and compared to age-based models, potentially increasing the utility of mizer in the assessment and advice process.">
+<title>Age in mizer – mizer blog</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/favicon-16x16.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-1d4ab30d7b042ad80aa203d2f9b2bdb2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="../../mizer.css">
+<meta property="og:title" content="Age in mizer – mizer blog">
+<meta property="og:description" content="In this blog post, we introduce an extension that allows you to calculate dynamic growth curves and ages at size in mizer. This addition will improve how mizer is calibrated to data and also allows it to be interpreted and compared to age-based models, potentially increasing the utility of mizer in the assessment and advice process.">
+<meta property="og:image" content="https://blog.mizer.sizespectrum.org/posts/2025-04-02-age-in-mizer/pictures/aging_mizer_toy.png">
+<meta property="og:site_name" content="mizer blog">
+<meta property="og:image:height" content="480">
+<meta property="og:image:width" content="528">
+<meta name="twitter:title" content="Age in mizer – mizer blog">
+<meta name="twitter:description" content="In this blog post, we introduce an extension that allows you to calculate dynamic growth curves and ages at size in mizer. This addition will improve how mizer is calibrated to data and also allows it to be interpreted and compared to age-based models, potentially increasing the utility of mizer in the assessment and advice process.">
+<meta name="twitter:image" content="https://blog.mizer.sizespectrum.org/posts/2025-04-02-age-in-mizer/pictures/aging_mizer_toy.png">
+<meta name="twitter:site" content="@mizer_model">
+<meta name="twitter:image-height" content="480">
+<meta name="twitter:image-width" content="528">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">mizer blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link" href="https://sizespectrum.org/mizer/"> 
+<span class="menu-text">mizer home</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/mizer_model"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/sizespectrum/mizerBlog"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li>
+<a href="#calculating-age-in-mizer" id="toc-calculating-age-in-mizer" class="nav-link" data-scroll-target="#calculating-age-in-mizer"><span class="header-section-number">2</span> Calculating age in mizer</a>
+  <ul class="collapse">
+<li><a href="#sec:numatage" id="toc-sec:numatage" class="nav-link" data-scroll-target="#sec\:numatage"><span class="header-section-number">2.1</span> Numbers at age</a></li>
+  <li><a href="#sec:Zatage" id="toc-sec:Zatage" class="nav-link" data-scroll-target="#sec\:Zatage"><span class="header-section-number">2.2</span> Mortality rates</a></li>
+  </ul>
+</li>
+  <li><a href="#sec:Sens" id="toc-sec:Sens" class="nav-link" data-scroll-target="#sec\:Sens"><span class="header-section-number">3</span> Sensitivity to <code>no_w</code> and <code>dt</code></a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">4</span> Discussion</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">Age in mizer</h1>
+</div>
+
+<div>
+  <div class="description">
+    <p>In this blog post, we introduce an extension that allows you to calculate dynamic growth curves and ages at size in mizer. This addition will improve how mizer is calibrated to data and also allows it to be interpreted and compared to age-based models, potentially increasing the utility of mizer in the assessment and advice process.</p>
+  </div>
+</div>
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Authors</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Luke Broadbent <a href="mailto:luke.broadbent@cefas.gov.uk" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Centre for Environment, Fisheries and Aquaculture Science, Pakefield Road, Lowestoft, Suffolk NR33 0HT, UK
+          </p>
+      </div>
+    <div class="quarto-title-meta-contents">
+    <p class="author">Michael A. Spence <a href="mailto:michael.spence@cefas.gov.uk" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Centre for Environment, Fisheries and Aquaculture Science, Pakefield Road, Lowestoft, Suffolk NR33 0HT, UK
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 2, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header><section id="introduction" class="level1" data-number="1"><h1 data-number="1">
+<span class="header-section-number">1</span> Introduction</h1>
+<p>The majority of assessment models for category 1 stocks in the International Council for Exploration of the Seas (ICES) are age based. This is a natural way of thinking about population dynamics as in a closed system, the number of individuals in a cohort, <span class="math inline">\(N\)</span>, can only go down as they die. The dynamics of a cohort are <span id="eq-dummy11"><span class="math display">\[
+    \frac{dN}{dt}=-ZN
+\tag{1}\]</span></span> where <span class="math inline">\(Z=F+M\)</span>, with <span class="math inline">\(F\)</span> being the fishing mortality and <span class="math inline">\(M\)</span> being the natural mortality. Fishing mortality and natural mortality can vary in time. For an age-based model this has the solution that the numbers at time <span class="math inline">\(t\)</span> in age-class <span class="math inline">\(a\)</span> is <span id="eq-grow"><span class="math display">\[
+    N_{a,t}=N_{a-1,t-1}\exp(-Z_{a-1,t})
+\tag{2}\]</span></span> for <span class="math inline">\(a=2,\ldots{},A-1\)</span> and <span class="math inline">\(t=1,\ldots\)</span>. For the first age-class, the number in the new cohort is the recruits <span id="eq-dummy"><span class="math display">\[
+    N_{1,t}=R_{t}\exp(-Z_{0,t})
+\tag{3}\]</span></span> for all <span class="math inline">\(t\)</span>. Often <span class="math inline">\(Z_{0,t}\)</span> is zero if there are no catches of age-class one in the data. The final age class, <span class="math inline">\(A\)</span>, is a plus group, which means there is no maximum age of a fish, <span id="eq-plus"><span class="math display">\[
+    N_{A,t}=N_{A-1,t-1}\exp(-Z_{A-1,t}) + N_{A,t-1}\exp(-Z_{A,t}),
+\tag{4}\]</span></span> with <span class="math inline">\(Z_{a,t}=M_{a,t}+F_{a,t}\)</span> for <span class="math inline">\(a=0,\ldots{},A\)</span> and all times. Note that these are age classes that have the interval one year and not the ages of the fish. Some stocks have the first age class being age 0 (e.g.&nbsp;North Sea whiting), where as other have the first age class being older (e.g.&nbsp;age 3 for North Sea saithe).</p>
+<p>Most category 1 assessments are based on equations (<a href="#eq-grow" class="quarto-xref">2</a>)–(<a href="#eq-plus" class="quarto-xref">4</a>), with additional features <span class="citation" data-cites="sam">(e.g., process error in <a href="#ref-sam" role="doc-biblioref">Nielsen and Berg 2014</a>)</span>. The same equations are commonly the basis to give catch advice, calculate reference points (e.g.&nbsp;MSY) and perform management strategy evaluations (MSE).</p>
+<p>A lot of data studies are specifically designed to collect data for age-based models. For example, fish that are aged on surveys using a length-stratified design. This design is good for finding the age at length, so that fish can be aged just by knowing their length and numbers at age can be calculated. However, the design is not as good at finding length from age, which means that growth curves can be difficult to calculate.</p>
+<p>There are also many multispecies models that are age-based <span class="citation" data-cites="Trijoulet_19 Trijoulet_20 sms">(<a href="#ref-Trijoulet_19" role="doc-biblioref">Trijoulet et al. 2019</a>, <a href="#ref-Trijoulet_20" role="doc-biblioref">2020</a>; <a href="#ref-sms" role="doc-biblioref">Lewy and Vinther 2004</a>)</span>. In some cases, emergent natural mortality from age-based multispecies models are used as inputs to single-species assessments <span class="citation" data-cites="ICES2024">(e.g., <a href="#ref-ICES2024" role="doc-biblioref">ICES 2024</a>)</span>.</p>
+<p>Despite strong arguments for adopting size-based models over age-based models <span class="citation" data-cites="Andersen_book">(<a href="#ref-Andersen_book" role="doc-biblioref">Andersen 2019</a>)</span> , we are unaware of any data-rich assessments that use size-based models. This work was motivated by the aim to use the multispecies size spectrum model, mizer <span class="citation" data-cites="hartvig blanchard mizer">(<a href="#ref-hartvig" role="doc-biblioref">Hartvig et al. 2011</a>; <a href="#ref-blanchard" role="doc-biblioref">Blanchard et al. 2014</a>; <a href="#ref-mizer" role="doc-biblioref">Scott et al. 2014</a>)</span> as an age-based model to fit with current assessment and MSE frameworks. This will take advantage of the mechanistic dynamics of the mizer model, while keeping to the age-structured frameworks used in ICES.</p>
+<p>In this blog we will explain and demonstrate how we calculate emergent age in mizer.</p>
+</section><section id="calculating-age-in-mizer" class="level1" data-number="2"><h1 data-number="2">
+<span class="header-section-number">2</span> Calculating age in mizer</h1>
+<p>Growth is an emergent property of feeding <span class="citation" data-cites="Andersen_book">(<a href="#ref-Andersen_book" role="doc-biblioref">Andersen 2019</a>)</span> and so is size-at-age. To calculate the emergent size at age in mizer at time <span class="math inline">\(t_0\)</span>, we introduce an <em>immortal individual</em> (II) of species <span class="math inline">\(i\)</span> and track the size of that individual. At time <span class="math inline">\(t\)</span>, the size of the II will be <span class="math inline">\(I_i(t_0,t)\)</span>, with <span id="eq-IIpde"><span class="math display">\[
+\frac{\partial I_i}{\partial t} \;=\; g_i\bigl(I_i(t_0,t),t\bigr).
+\tag{5}\]</span></span> Solving this from <span class="math inline">\(t_0\)</span> to time <span class="math inline">\(T\)</span> with boundary condition <span class="math inline">\(I_i(t_0, t_0) = w_{0,i}\)</span>, we know that an individual of species <span class="math inline">\(i\)</span> and age <span class="math inline">\(T - t_0\)</span> will be size <span class="math inline">\(I_i(t_0, T)\)</span>. In mizer, fish cannot overtake each other in size, therefore we know that fish smaller than <span class="math inline">\(I_i(T)\)</span> will be younger, and larger fish will be older. If we introduce such IIs at annual increments, then we can follow different age classes throughout the model. <a href="#fig-ageingmizer" class="quarto-xref">Figure&nbsp;1</a> demonstrates the process, showing how, for a given species, age is calculated.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ageingmizer" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-ageingmizer-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="pictures/aging_mizer_toy.png" class="quarto-figure quarto-figure-center figure-img" width="500" height="500">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ageingmizer-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Demonstration of how we calculate weights for immortal individuals across time. Each line represents the weight of one II, each introduced annually.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>We solve equation (<a href="#eq-IIpde" class="quarto-xref">5</a>) in mizer for time <code>dt</code> numerically given weight classes <code>w</code>, with differences <code>dw</code>. If at the current time the II is size <code>cur_waa</code> then it will be in size class</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cur_idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">cur_waa</span> <span class="op">&gt;=</span> <span class="va">params</span><span class="op">@</span><span class="va">w</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>and will grow at rate</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="va">grow</span><span class="op">[</span><span class="va">cur_idx</span><span class="op">]</span></span>
+<span><span class="va">time_to_end</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">togro</span> <span class="op">-</span> <span class="va">cur_waa</span><span class="op">)</span> <span class="op">/</span> <span class="va">g</span> <span class="co"># how far is next size class, can i grow it in dt?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>It will grow at this rate until it reaches the next size class</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">togro</span> <span class="op">&lt;-</span> <span class="va">params</span><span class="op">@</span><span class="va">w</span><span class="op">[</span><span class="va">cur_idx</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>which will take time</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">time_to_end</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">togro</span> <span class="op">-</span> <span class="va">cur_waa</span><span class="op">)</span> <span class="op">/</span> <span class="va">g</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Initially the II will grow for time <code>dt</code> but will move through weight classes. We monitor how long is left to grow with variable <code>time_left</code> intially setting it to <code>dt</code>. If <code>time_to_end&lt;=time_left</code> then the II’s weight will be</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cur_waa</span> <span class="op">&lt;-</span> <span class="va">cur_waa</span> <span class="op">+</span> <span class="va">g</span> <span class="op">*</span> <span class="va">time_left</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>otherwise it will grow to the next size class for <code>time_to_end</code> and we update the time remaining</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cur_waa</span> <span class="op">&lt;-</span> <span class="va">cur_waa</span> <span class="op">+</span> <span class="va">g</span> <span class="op">*</span> <span class="va">time_to_end</span></span>
+<span><span class="va">time_left</span> <span class="op">&lt;-</span> <span class="va">time_left</span> <span class="op">-</span> <span class="va">time_to_end</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The process is repeated until <code>time_to_end&lt;=time_left</code>.</p>
+<p><a href="#fig-aging-weights" class="quarto-xref">Figure&nbsp;2</a> shows the emergent weight at age for whiting in mizer.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-aging-weights" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-aging-weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="pictures/growth_curve.png" class="quarto-figure quarto-figure-center figure-img" width="500" height="500">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-aging-weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Emergent growth curve for whiting.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>We added the above to the <code>project</code> and <code>project_simple</code> functions so that it updates the size of the IIs each <code>dt</code>. In addition we added a new slot to the <code>MizerSim</code> objects so that we can store the weight at age for all ages, time steps and species, <code>waa</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#the mizerSim object - now with a waa section</span></span>
+<span><span class="kw">setClass</span><span class="op">(</span> </span>
+<span>    <span class="st">"MizerSim"</span>,</span>
+<span>    slots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
+<span>        params <span class="op">=</span> <span class="st">"MizerParams"</span>,</span>
+<span>        n <span class="op">=</span> <span class="st">"array"</span>,</span>
+<span>        effort <span class="op">=</span> <span class="st">"array"</span>,</span>
+<span>        n_pp <span class="op">=</span> <span class="st">"array"</span>,</span>
+<span>        n_other <span class="op">=</span> <span class="st">"array"</span>,</span>
+<span>        waa <span class="op">=</span> <span class="st">"array"</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Each year we add a new II, and also remove the oldest II at the same time. We give an argument to <code>project</code> to input the initial weights at age (<code>waa_initial</code>), a matrix with dimensions number of species and maximum age (defaulted to 20), <code>nages</code>. If absent the initial weights at age are calculated from the <code>getGrowthCurves</code> function.</p>
+<p>The <code>project</code> function will now return a <code>mizerSim</code> object with a <code>waa</code> slot which contains an <code>array</code> with the dimensions <code>t_max*t_save</code>, number of species and <code>nages</code>.</p>
+<p>We demonstrate the weight at age using the North Sea model with fishing mortality from stock assessments (<code>historicfishingM</code> see <span class="citation" data-cites="spence_prec">Spence et al. (<a href="#ref-spence_prec" role="doc-biblioref">2024</a>)</span>) from 1984 to 2019. We ran the model to the steady state by running it for 100 years using 1984 fishing and then projected it to 2019.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#project to steady state - so that we can use the waa generated here as initial_waa</span></span>
+<span><span class="co">#fishing array is the historicfishingM remade for mizer</span></span>
+<span><span class="va">tosteady</span> <span class="op">&lt;-</span> <span class="fu">project</span><span class="op">(</span><span class="va">params</span>, effort <span class="op">=</span> <span class="va">fishing_array</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>,t_max <span class="op">=</span><span class="fl">100</span>, initial_n <span class="op">=</span> <span class="va">params</span><span class="op">@</span><span class="va">initial_n</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#projecting, using the values from the end of the steady state run for n, npp and waa</span></span>
+<span><span class="va">projection</span> <span class="op">&lt;-</span> <span class="fu">project</span><span class="op">(</span><span class="va">params</span>, effort <span class="op">=</span> <span class="va">fishing_array</span>,  initial_n <span class="op">=</span> <span class="op">(</span><span class="va">tosteady</span><span class="op">@</span><span class="va">n</span><span class="op">)</span><span class="op">[</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">tosteady</span><span class="op">@</span><span class="va">n</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,,<span class="op">]</span>,</span>
+<span>                      initial_n_pp <span class="op">=</span> <span class="op">(</span><span class="va">tosteady</span><span class="op">@</span><span class="va">n_pp</span><span class="op">)</span><span class="op">[</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">tosteady</span><span class="op">@</span><span class="va">n</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,<span class="op">]</span>,</span>
+<span>                      waa_initial <span class="op">=</span> <span class="va">tosteady</span><span class="op">@</span><span class="va">waa</span><span class="op">[</span><span class="fl">1001</span>,,<span class="op">]</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-historic-weights" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-historic-weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="pictures/whiting_obs_miz.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-historic-weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: The black line shows the weight at age inputs to SMS’ key-run <span class="citation" data-cites="ICES2024">(<a href="#ref-ICES2024" role="doc-biblioref">ICES 2024</a>)</span> (and the stock assessent) for whiting and the red line shows the mizer estimate of weight at age for whiting using <code>NS_params</code>
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>In <a href="#fig-historic-weights" class="quarto-xref">Figure&nbsp;3</a> we show the size at age of whiting and compare it to weight at age inputs to SMS’ key-run <span class="citation" data-cites="ICES2024">(<a href="#ref-ICES2024" role="doc-biblioref">ICES 2024</a>)</span>. Using the default mizer model <code>NS_params</code> we show that the weight at age of whiting changes over the simulation, with a similar pattern to the inputs to SMS, however, the scale and range are different.</p>
+<section id="sec:numatage" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="sec:numatage">
+<span class="header-section-number">2.1</span> Numbers at age</h2>
+<p>Given the IIs we can calculate the numbers at age. Suppose that at time <span class="math inline">\(t\)</span> the density of numbers at weight is shown below, with IIs aged one, <span class="math inline">\(I_i(t-1,t)=0.2\)</span>, and two, <span class="math inline">\(I_i(t-2,t)=5\)</span>, being shown.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-weight-classes-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="672">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-weight-classes-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="age-in-mizer_files/figure-html/fig-weight-classes-1-1.png" id="fig-weight-classes-1" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-weight-classes-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>The numbers younger than age one are all of the individuals smaller than <span class="math inline">\(I_i(t-1,t)=0.2\)</span>, which in the figure above is 14671.88. The number of individuals younger than two years old are smaller than <span class="math inline">\(I_i(t-2,t)=5\)</span>, which in the figure is 17671.88. Therefore, 14671.88 are in the youngest age class (less than one years old) and 3000 individuals are in the age class between one and two years old.</p>
+<p>In this example the IIs were on the boundary of the weight-classes. However, in practice this will almost surely not happen. The IIs will fall between weight-classes, and so, to assign an age to individuals in that weight-class we describe how individuals are distributed within the weight class. The plot below is more likely:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-weight-classes-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="672">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-weight-classes-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="age-in-mizer_files/figure-html/fig-weight-classes-2-1.png" id="fig-weight-classes-2" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-weight-classes-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>It is clear that the individuals in the red bars are less than one, and the individuals in the blue bar are less than two but older than one, but it is not clear how old the individuals in the white bars are.</p>
+<p>Defining how the individuals in the white bars are distributed is down to the user. In this work we defined it as following a power law. Specifically the density of individuals between sizes <span class="math inline">\(w_0\)</span> and <span class="math inline">\(w_1\)</span> was <span class="math display">\[\begin{equation}
+\alpha{}w^{\beta}.
+\end{equation}\]</span> We set <span class="math display">\[\begin{equation}
+\beta=\frac{\log(n(w_1))-\log(n(w_0))}{\log(w_1)-\log(w_0)},
+\end{equation}\]</span> and <span class="math display">\[\begin{equation}
+\alpha=\frac{n(w_0)(w_1-w_0)(\beta+1)}{w_1^{\beta+1}-w_0^{\beta+1}},
+\end{equation}\]</span> which ensures that the total number in the weight-class is constant in both cases.</p>
+<p>The example above becomes:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="age-in-mizer_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-cohort-plot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-cohort-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="pictures/cohort_plot.png" class="quarto-figure quarto-figure-center figure-img" width="500" height="700">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cohort-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: The top plot shows the evolution of individual whiting cohorts through time. The lower plots shows the fishing mortality over time for whiting from <span class="citation" data-cites="spence_prec">Spence et al. (<a href="#ref-spence_prec" role="doc-biblioref">2024</a>)</span>
+</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="sec:Zatage" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="sec:Zatage">
+<span class="header-section-number">2.2</span> Mortality rates</h2>
+<p>By calculating the numbers at age, as done in the section ‘<a href="#sec:numatage">Numbers at age</a>’, we can calculate how many individuals die in a cohort in a year. Consider that at time <span class="math inline">\(t-1\)</span> and <span class="math inline">\(t\)</span> we have calculated numbers age <span class="math inline">\(a-1\)</span> and <span class="math inline">\(a\)</span> respectively, then we can rearrange equation (<a href="#eq-grow" class="quarto-xref">2</a>) to find <span id="eq-getZ"><span class="math display">\[
+    Z_{a-1,t-1}=-\ln(N_{a,t})+\ln(N_{a-1,t-1}).
+\tag{6}\]</span></span> This is the total mortality for age <span class="math inline">\(a-1\)</span> at time <span class="math inline">\(t-1\)</span>. By calculating the numbers caught at age <span class="math inline">\(a\)</span> in time <span class="math inline">\(t-1\)</span>, <span class="math inline">\(C_{a-1,t-1}\)</span>, in a similar way to how we calculate the numbers at age, we can calculate the fishing mortality <span id="eq-getF"><span class="math display">\[
+    F_{a-1,t-1}=\frac{Z_{a-1,t-1}C_{a-1,t-1}}{N_{a-1,t-1}(1-\exp(-Z_{a-1,t-1}))}
+\tag{7}\]</span></span> and the natural mortality <span id="eq-getM"><span class="math display">\[
+    M_{a-1,t-1}=Z_{a-1,t-1}-F_{a-1,t-1}.
+\tag{8}\]</span></span></p>
+<p>After a simulation we get the numbers at age and the numbers caught at age</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">numbers</span> <span class="op">&lt;-</span> <span class="fu">get_num_by_year_by_age</span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span><span class="va">catch</span> <span class="op">&lt;-</span> <span class="fu">get_catch_by_year_by_age</span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The <code>get_catch_by_year_by_age</code> function works the same as <code>get_num_by_year_by_age</code>, but prior to the numbers in size classes being summed over ages, they are multiplied by the size, species specific fishing mortality, acquired from <code>getFMort</code>. The catch here is the same as in mizer’s <code>getYield</code>.</p>
+<p>We calculate equations (<a href="#eq-getZ" class="quarto-xref">6</a>) and (<a href="#eq-getF" class="quarto-xref">7</a>) for the <code>i</code>th year, <code>j</code>th species and <code>k</code>th age class to get <span class="math inline">\(Z_{i,k}\)</span> and <span class="math inline">\(F_{i,k}\)</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log</span>(numbers[i<span class="sc">+</span><span class="dv">1</span>,j,k<span class="sc">+</span><span class="dv">1</span>]) <span class="sc">+</span> <span class="fu">log</span>(numbers[i,j,k])</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>F_m <span class="ot">&lt;-</span> catch[i<span class="dv">-1</span>,j,k]<span class="sc">*</span>z<span class="er">)</span><span class="sc">/</span>(numbers[i,j,k]<span class="sc">-</span>next_alive) <span class="do">### F_m rather than F as F is protected</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>and equation (<a href="#eq-getM" class="quarto-xref">8</a>) to get <span class="math inline">\(M_{i,k}\)</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="va">z</span> <span class="op">-</span> <span class="va">F_m</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><a href="#fig-Z-plot" class="quarto-xref">Figure&nbsp;7</a> is the emergent <span class="math inline">\(Z\)</span>, <span class="math inline">\(F\)</span> and <span class="math inline">\(M\)</span> over time using the historical fishing mortality.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Z-plot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-Z-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="pictures/Zs_plot_whiting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Z-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Plots depict the <span class="math inline">\(Z\)</span>, <span class="math inline">\(F\)</span> and <span class="math inline">\(M\)</span> rates for whiting of different ages over time
+</figcaption></figure>
+</div>
+</div>
+</div>
+</section></section><section id="sec:Sens" class="level1" data-number="3"><h1 data-number="3">
+<span class="header-section-number">3</span> Sensitivity to <code>no_w</code> and <code>dt</code>
+</h1>
+<p>Due to the numerical integration of the partial differential equation (pde) in mizer, the II do not follow the distribution of fish density exactly and this sometimes results in negative <span class="math inline">\(M\)</span>. To investigate this we followed one individual and their growth for different values of <code>dt</code> and <code>no_w</code>. We initialised the <code>params</code> object for <code>no_w</code> equal to 100, 1000 and 10000</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">newMultispeciesParams</span><span class="op">(</span><span class="va">NS_params</span><span class="op">@</span><span class="va">species_params</span>, no_w <span class="op">=</span> <span class="va">no_w</span><span class="op">)</span></span>
+<span><span class="va">allgrow</span> <span class="op">&lt;-</span> <span class="fu">getEGrowth</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
+<span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="va">allgrow</span><span class="op">[</span><span class="fl">6</span>,<span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>and assumed a constant growth rate <code>gs</code> for a whiting individual. We initialised the population at zero except in the first size class where we set it so that there was only one individual.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">num</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">params</span><span class="op">@</span><span class="va">w</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">num</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">params</span><span class="op">@</span><span class="va">dw</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Assuming no mortality and no recruitment we updated the numbers at size for 10 years using the numerical pde solver in mizer (see supplementary for the code) and compared the size distribution with the size of an II at the same age.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-quantiles" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-quantiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="pictures/quantiles.png" class="quarto-figure quarto-figure-center figure-img" width="500" height="500">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quantiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Comparison of II size prediction to mizer’s numerical solution. The grid cell value is the proportion of individuals in the numerical solution that are smaller than the II. Each simulation has a different <code>dt</code> and <code>no_w</code>.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-sensitive" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-sensitive-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="pictures/SENSITIVEGRID.png" class="quarto-figure quarto-figure-center figure-img" width="600" height="600">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sensitive-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: The numerical solution of the growth with different <code>dt</code> and <code>no_w</code>. Each plot contains 3 lines, indicating a different value of <code>dt</code> - black is 0.1, blue is 0.01 and red is 0.001. Each row of plots indicates that the example’s <code>no_w</code>, increasing from top to bottom. The left columns shows age 1 and right age 4.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>We compared the proportion of individuals that are smaller than the II and found that as <code>dt</code> got smaller and <code>no_w</code> got bigger the proportion approached 50%, <a href="#fig-quantiles" class="quarto-xref">Figure&nbsp;8</a>. Further, as <code>dt</code> got smaller and <code>no_w</code>got bigger the range of sizes at age decreased <a href="#fig-sensitive" class="quarto-xref">Figure&nbsp;9</a>.</p>
+<p>Therefore for more accurate age-based information we are required to choose a finer resolution for the numerical solver in mizer. We demonstrate this on the North Sea model for values of <code>dt</code> equal to 0.1, 0.01 and 0.001, and <code>no_w</code> equal to 100, 1000 and 2000.</p>
+<table class="caption-top table">
+<caption>Proportion of Negative Ms in ages 1 to 6 for all species. The rows represent different <code>dt</code>s and the columns different <code>no_w</code>. We did not run it for <code>dt=0.001</code> and <code>no_w=2000</code> as the file was too large.</caption>
+<thead><tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">100</th>
+<th style="text-align: right;">1000</th>
+<th style="text-align: right;">2000</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">0.1</td>
+<td style="text-align: right;">0.1015873</td>
+<td style="text-align: right;">0.0099206</td>
+<td style="text-align: right;">0.002381</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">0.01</td>
+<td style="text-align: right;">0.0746032</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">0.001</td>
+<td style="text-align: right;">0.0726190</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+<p>Decreasing <code>dt</code> and increasing <code>no_w</code> makes the numerial integration more accurate and stablises the results. This comes at a cost, as the <code>MizerSim</code> object gets very large.</p>
+</section><section id="discussion" class="level1" data-number="4"><h1 data-number="4">
+<span class="header-section-number">4</span> Discussion</h1>
+<p>Most models used in advice are age-based. In this blog post, we have introduced a way of calculating emergent age in mizer, potentially increasing the utility of mizer when it comes to giving management advice.</p>
+<p>For example, mizer could be used as an operating model for MSEs. A common MSE framework is to use an operating model to test management actions. The operating model stands in for reality and management actions, such as harvest control rules, are run <span class="citation" data-cites="punt_MSE">(<a href="#ref-punt_MSE" role="doc-biblioref">Punt et al. 2016</a>)</span>. This process involves the operating model generating data, which assessment models are fitted to. As data for assessment models is age resolved, the operating model has to be able to sample age resolved data. By introducing emergent age in mizer, mizer can now generate age-based data, meaning that it can be used as an operating model in the MSE frameworks.</p>
+<p>Some category 1 assessments, those that have full analytical assessments, use natural mortality at age from fitted multispecies models as inputs to the assessment. For example, many North Sea stocks use natural mortality estimates from the stochastic multispecies model <span class="citation" data-cites="sms">(<a href="#ref-sms" role="doc-biblioref">Lewy and Vinther 2004</a>)</span>. Typically, assessment models require natural mortality at age rather than size. In the section ‘<a href="#sec:Zatage">Mortality rates</a>’ we showed that we can calculate emergent natural mortality at age. Therefore, coupled with dynamical fitting, <span class="citation" data-cites="spence_cs">(<a href="#ref-spence_cs" role="doc-biblioref">Spence et al. 2021</a>)</span>, mizer could be used to provide natural mortality estimates as inputs to single-species assessments.</p>
+<p>Many data collection schemes are designed to be fit to age-based models, for example, length stratified sample is used on surveys to calculate age-length keys. For these reasons, it can be difficult to incorporate age-based data when calibrating mizer. Furthermore, the data collected are not in a steady state (e.g., see <a href="#fig-historic-weights" class="quarto-xref">Figure&nbsp;3</a>). Using the ages process described here, we can compare these data with mizer. For example, growth could be tuned by looking at emergent growth rates rather than steady states.</p>
+<p>In many cases, fishing mortality from stock assessments has been used to drive the dynamics of the mizer model <span class="citation" data-cites="blanchard spence_ns spence_prec">(<a href="#ref-blanchard" role="doc-biblioref">Blanchard et al. 2014</a>; <a href="#ref-spence_ns" role="doc-biblioref">Spence et al. 2016</a>, <a href="#ref-spence_prec" role="doc-biblioref">2024</a>)</span>. Typically fishing mortality from stock assessments is age-based. In previous studies, the fishing mortality inputs were some kind of average, for example Fbar, or some steady-state assumption about age <span class="citation" data-cites="spence_prec">(<a href="#ref-spence_prec" role="doc-biblioref">Spence et al. 2024</a>)</span>. Using this approach, age-based fishing mortality can be implemented in age classes as they change size throughout the simulation as done in the assessment. However, how selectivity occurs within an age can be difficult to calculate <span class="citation" data-cites="spence_prec">(<a href="#ref-spence_prec" role="doc-biblioref">Spence et al. 2024</a>)</span>, particularly at lower ages.</p>
+<p>The work presented here is exact in the limit when <code>dt</code> and <code>dw</code> are 0, however practically this is not possible. We showed that as <code>dt</code> and <code>dw</code> get smaller the age estimation becomes more accurate, however, inaccuracies in the ageing process can lead to some strange behaviour. For example, we found that for the default values of <code>dt</code> and <code>dw</code> some cohorts natural mortality was less than 0, i.e.&nbsp;<span class="math inline">\(M&lt;0\)</span>, which could cause difficulties when comparing mizer to age-based models. This could be caused by the numerical integration and/or how we say the lengths of fish within an age class are distributed. More research is required, although we suspect these problems occur due to how the emergent catch is calculated.</p>
+<p>In this blog post, we introduced an extension that allows you to calculate dynamic growth curves and ages at size in mizer. This addition will improve how mizer is calibrated to data and also allows it to be interpreted and compared to age-based models, potentially increasing the utility of mizer in the assessment and advice process.</p>
+
+
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Andersen_book" class="csl-entry" role="listitem">
+Andersen, Ken H. 2019. <em>Fish Ecology, Evolution, and Exploitation: A New Theoretical Synthesis</em>. Princeton University Press.
+</div>
+<div id="ref-blanchard" class="csl-entry" role="listitem">
+Blanchard, Julia L., Ken H. Andersen, Finlay Scott, Niels T. Hintzen, Gerjan Piet, and Simon Jennings. 2014. <span>“Evaluating Targets and Trade-Offs Among Fisheries and Conservation Objectives Using a Multispecies Size Spectrum Model.”</span> <em>Journal of Applied Ecology</em> 51 (3): 612–22. <a href="https://doi.org/10.1111/1365-2664.12238">https://doi.org/10.1111/1365-2664.12238</a>.
+</div>
+<div id="ref-hartvig" class="csl-entry" role="listitem">
+Hartvig, Martin, Ken H. Andersen, and Jan E. Beyer. 2011. <span>“Food Web Framework for Size-Structured Populations.”</span> <em>Journal of Theoretical Biology</em> 272 (1): 113–22. <a href="https://doi.org/10.1016/j.jtbi.2010.12.006">https://doi.org/10.1016/j.jtbi.2010.12.006</a>.
+</div>
+<div id="ref-ICES2024" class="csl-entry" role="listitem">
+ICES. 2024. <em>Working Group on Multispecies Assessment Methods (WGSAM; Outputs from 2023 Meeting)</em>. <a href="https://doi.org/10.17895/ices.pub.25020968.v3">https://doi.org/10.17895/ices.pub.25020968.v3</a>.
+</div>
+<div id="ref-sms" class="csl-entry" role="listitem">
+Lewy, Peter, and Morten Vinther. 2004. <em>A Stochastic Age-Length-Structured Multispecies Model Applied to North Sea Stocks</em>. ICES.
+</div>
+<div id="ref-sam" class="csl-entry" role="listitem">
+Nielsen, Anders, and Casper W. Berg. 2014. <span>“Estimation of Time-Varying Selectivity in Stock Assessments Using State-Space Models.”</span> <em>Fisheries Research</em> 158: 96–101. <a href="https://doi.org/10.1016/j.fishres.2014.01.014">https://doi.org/10.1016/j.fishres.2014.01.014</a>.
+</div>
+<div id="ref-punt_MSE" class="csl-entry" role="listitem">
+Punt, Andre E., Doug S. Butterworth, Carryn L. de Moor, José A. A. De Oliveira, and Malcolm Haddon. 2016. <span>“Management Strategy Evaluation: Best Practices.”</span> <em>Fish and Fisheries</em> 17 (2): 303–34. <a href="https://doi.org/10.1111/faf.12104">https://doi.org/10.1111/faf.12104</a>.
+</div>
+<div id="ref-mizer" class="csl-entry" role="listitem">
+Scott, Finlay, Julia L. Blanchard, and Ken H. Andersen. 2014. <span>“Mizer: An r Package for Multispecies, Trait-Based and Community Size Spectrum Ecological Modelling.”</span> <em>Methods in Ecology and Evolution</em> 5 (10): 1121–25. <a href="https://doi.org/10.1111/2041-210X.12256">https://doi.org/10.1111/2041-210X.12256</a>.
+</div>
+<div id="ref-spence_ns" class="csl-entry" role="listitem">
+Spence, Michael A., Paul G. Blackwell, and Julia L. Blanchard. 2016. <span>“Parameter Uncertainty of a Dynamic Multispecies Size Spectrum Model.”</span> <em>Canadian Journal of Fisheries and Aquatic Sciences</em> 73 (4): 589–97. <a href="https://doi.org/10.1139/cjfas-2015-0022">https://doi.org/10.1139/cjfas-2015-0022</a>.
+</div>
+<div id="ref-spence_prec" class="csl-entry" role="listitem">
+Spence, Michael A., James A. Martindale, Khatija Alliji, et al. 2024. <span>“Assessing the Effect of Multispecies Interactions on Precautionary Reference Points Using an Ensemble Modelling Approach: A North Sea Case Study.”</span> <em>Fisheries Research</em> 280: 107160. <a href="https://doi.org/10.1016/j.fishres.2024.107160">https://doi.org/10.1016/j.fishres.2024.107160</a>.
+</div>
+<div id="ref-spence_cs" class="csl-entry" role="listitem">
+Spence, Michael A., Robert B. Thorpe, Paul G. Blackwell, Finlay Scott, Richard Southwell, and Julia L. Blanchard. 2021. <span>“Quantifying Uncertainty and Dynamical Changes in Multi-Species Fishing Mortality Rates, Catches and Biomass by Combining State-Space and Size-Based Multi-Species Models.”</span> <em>Fish and Fisheries</em> 22 (4): 667–81. <a href="https://doi.org/10.1111/faf.12543">https://doi.org/10.1111/faf.12543</a>.
+</div>
+<div id="ref-Trijoulet_19" class="csl-entry" role="listitem">
+Trijoulet, Vanessa, Gavin Fay, Kiersten L. Curti, Brian Smith, and Timothy J. Miller. 2019. <span>“Performance of Multispecies Assessment Models: Insights on the Influence of Diet Data.”</span> <em>ICES Journal of Marine Science</em> 76 (6): 1464–76. <a href="https://doi.org/10.1093/icesjms/fsz053">https://doi.org/10.1093/icesjms/fsz053</a>.
+</div>
+<div id="ref-Trijoulet_20" class="csl-entry" role="listitem">
+Trijoulet, Vanessa, Gavin Fay, and Timothy J. Miller. 2020. <span>“Performance of a State-Space Multispecies Model: What Are the Consequences of Ignoring Predation and Process Errors in Stock Assessments?”</span> <em>Journal of Applied Ecology</em> 57 (1): 121–35. <a href="https://doi.org/10.1111/1365-2664.13515">https://doi.org/10.1111/1365-2664.13515</a>.
+</div>
+</div></section></div></main><!-- /main --><div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = window.location.href;  
+        this.page.identifier = window.location.pathname; 
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://mizer.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/blog\.mizer\.sizespectrum\.org");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+</body></html>

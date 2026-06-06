@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Gustav Delius">
+<meta name="dcterms.date" content="2021-09-07">
+<meta name="description" content="I present to you a new shiny gadget that makes tuning a model to reproduce the desired growth curves feel like child’s play. And this is only a first glimpse of the future of interactively tuning mizer models.">
+<title>Tuning growth curves with a shiny gadget – mizer blog</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/favicon-16x16.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-1d4ab30d7b042ad80aa203d2f9b2bdb2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><link href="../../site_libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+<script src="../../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><script src="../../site_libs/plotly-binding-4.12.0/plotly.js"></script><script src="../../site_libs/typedarray-0.1/typedarray.min.js"></script><script src="../../site_libs/jquery-3.5.1/jquery.min.js"></script><link href="../../site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+<script src="../../site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script><link href="../../site_libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="../../site_libs/plotly-main-2.25.2/plotly-latest.min.js"></script><link rel="stylesheet" href="../../mizer.css">
+<meta property="og:title" content="Tuning growth curves with a shiny gadget – mizer blog">
+<meta property="og:description" content="I present to you a new shiny gadget that makes tuning a model to reproduce the desired growth curves feel like child’s play. And this is only a first glimpse of the future of interactively tuning mizer models.">
+<meta property="og:image" content="https://blog.mizer.sizespectrum.org/posts/2021-09-07-tuning-growth-curves-with-a-shiny-gadget/how-to-tune-the-growth-curves_files/figure-html/unnamed-chunk-3-1.png">
+<meta property="og:site_name" content="mizer blog">
+<meta name="twitter:title" content="Tuning growth curves with a shiny gadget – mizer blog">
+<meta name="twitter:description" content="I present to you a new shiny gadget that makes tuning a model to reproduce the desired growth curves feel like child’s play. And this is only a first glimpse of the future of interactively tuning mizer models.">
+<meta name="twitter:image" content="https://blog.mizer.sizespectrum.org/posts/2021-09-07-tuning-growth-curves-with-a-shiny-gadget/how-to-tune-the-growth-curves_files/figure-html/unnamed-chunk-3-1.png">
+<meta name="twitter:site" content="@mizer_model">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">mizer blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link" href="https://sizespectrum.org/mizer/"> 
+<span class="menu-text">mizer home</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/mizer_model"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/sizespectrum/mizerBlog"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#setting-up-an-example" id="toc-setting-up-an-example" class="nav-link" data-scroll-target="#setting-up-an-example">Setting up an example</a></li>
+  <li><a href="#how-difficult-it-was-in-the-past" id="toc-how-difficult-it-was-in-the-past" class="nav-link" data-scroll-target="#how-difficult-it-was-in-the-past">How difficult it was in the past</a></li>
+  <li><a href="#how-easy-it-is-now" id="toc-how-easy-it-is-now" class="nav-link" data-scroll-target="#how-easy-it-is-now">How easy it is now</a></li>
+  <li><a href="#the-future" id="toc-the-future" class="nav-link" data-scroll-target="#the-future">The future</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">Tuning growth curves with a shiny gadget</h1>
+</div>
+
+<div>
+  <div class="description">
+    <p>I present to you a new shiny gadget that makes tuning a model to reproduce the desired growth curves feel like child’s play. And this is only a first glimpse of the future of interactively tuning mizer models.</p>
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p><a href="true">Gustav Delius</a> </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 7, 2021</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header><section id="introduction" class="level1"><h1>Introduction</h1>
+<p>In a <a href="https://bit.ly/2YqXESV">previous blog post</a> I presented a new method for tuning a mizer model to reproduce observed values for species biomasses. In the example I used there, after matching the biomasses also the growth curves had a pretty good agreement with observations. However I already warned you that that was unusual, and that you are highly unlikely to have similar luck with your own model. So in this blog post I will show you what to do if the growth curves in your model need to be adjusted.</p>
+<p>This will give me an opportunity to introduce you to the mizer tuning gadget, which is an amazing interactive tool that eventually will be useful for much more than just matching growth curves.</p>
+</section><section id="setting-up-an-example" class="level1"><h1>Setting up an example</h1>
+<p>I will use the same species parameters and gear parameters for a North Sea model that I used in my <a href="https://bit.ly/2YqXESV">previous blog post</a>, but I will now also use the species interaction matrix <code>NS_interaction</code> that comes as an example with mizer, and which encodes that, due to only partial spatial overlap, not all species interact with each other with the same strength. With those parameters we can create the mizer model and make an initial plot of the steady state:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">newMultispeciesParams</span><span class="op">(</span>species_params <span class="op">=</span> <span class="va">species_params</span>,</span>
+<span>                                gear_params <span class="op">=</span> <span class="va">gear_params</span>,</span>
+<span>                                interaction <span class="op">=</span> <span class="va">NS_interaction</span>,</span>
+<span>                                initial_effort <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Because you have n != p, the default value for `h` is not very good.
+Because the age at maturity is not known, I need to fall back to using
+von Bertalanffy parameters, where available, and this is not reliable.
+No ks column so calculating from critical feeding level.
+Using z0 = z0pre * w_max ^ z0exp for missing z0 values.
+Using f0, h, lambda, kappa and the predation kernel to calculate gamma.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">steady</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Convergence was achieved in 16.5 years.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">plotlySpectra</span><span class="op">(</span><span class="va">params</span>, power <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-7784c7ecfcc0f2cb89bf" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-7784c7ecfcc0f2cb89bf">{"x":{"data":[{"x":[-3,-2.9232278536040344,-2.8464557072080692,-2.7696835608121035,-2.6929114144161383,-2.6161392680201727,-2.5393671216242075,-2.4625949752282419,-2.3858228288322767,-2.3090506824363111,-2.2322785360403454,-2.1555063896443802,-2.0787342432484146,-2.0019620968524494,-1.9251899504564838,-1.8484178040605184,-1.771645657664553,-1.6948735112685875,-1.6181013648726221,-1.5413292184766567,-1.4645570720806913,-1.3877849256847257,-1.3110127792887603,-1.2342406328927948,-1.1574684864968294,-1.080696340100864,-1.0039241937048986,-0.92715204730893319,-0.85037990091296756,-0.77360775451700237,-0.69683560812103673,-0.62006346172507154,-0.54329131532910591,-0.46651916893314027,-0.38974702253717508,-0.31297487614120945,-0.23620272974524428,-0.15943058334927862,-0.082658436953313416,-0.0058862905573478074,0.070885855838617409,0.14765800223458306,0.22443014863054866,0.30120229502651386,0.37797444142247949,0.45474658781844468,0.53151873421441032,0.60829088061037551,0.68506302700634114,0.76183517340230678,0.83860731979827197,0.9153794661942376,0.99215161259020279,1.068923758986168,1.1456959053821336,1.2224680517780993,1.2992401981740649,1.3760123445700305,1.4527844909659953,1.5295566373619609],"y":[5.8294709708177965,5.9315014964850619,6.033441531498025,6.1352776307954633,6.236994390824588,6.3385741591243887,6.4399966602476422,6.5412385397246711,6.6422728326288363,6.7430683656464607,6.8435891024257476,6.9437934426881656,7.0436334871926602,7.1430542837193007,7.241993073866718,7.3403785663655654,7.4381302693298776,7.5351579208431474,7.6313610639099734,7.7266288174664908,7.8208398991626131,7.9138629573002417,8.0055572679234075,8.0957738479506247,8.1843570258906393,8.2711464977893669,8.3559798776342191,8.4386957289011608,8.5191370381115092,8.5971550634298239,8.6726134630681635,8.7453925812868167,8.8153937456157418,8.8825434082969004,8.9467969467250796,9.0081419165500662,9.0666005123621005,9.1222308971785733,9.1751268190699928,9.2254142980356058,9.2732424943741716,9.3187614269196182,9.3620673977981479,9.4030668701367812,9.4411462756997295,9.4745011241464194,9.4995271916905644,9.5125553822293742,9.5140685052978267,9.5079725565123461,9.4976224053008416,9.4857008899786219,9.479623851480639,9.5099997953220683,9.6087789104405879,9.6258825327035051,9.4415586275284049,9.1050315763490755,8.6185919090947927,7.8478211024455531],"text":["Species: Sprat<br />w: 1.000000e-03<br />value: 6.752599e+05","Species: Sprat<br />w: 1.193362e-03<br />value: 8.540858e+05","Species: Sprat<br />w: 1.424112e-03<br />value: 1.080044e+06","Species: Sprat<br />w: 1.699481e-03<br />value: 1.365456e+06","Species: Sprat<br />w: 2.028096e-03<br />value: 1.725816e+06","Species: Sprat<br />w: 2.420253e-03<br />value: 2.180591e+06","Species: Sprat<br />w: 2.888237e-03<br />value: 2.754208e+06","Species: Sprat<br />w: 3.446712e-03<br />value: 3.477271e+06","Species: Sprat<br />w: 4.113175e-03<br />value: 4.388063e+06","Species: Sprat<br />w: 4.908506e-03<br />value: 5.534372e+06","Species: Sprat<br />w: 5.857624e-03<br />value: 6.975721e+06","Species: Sprat<br />w: 6.990265e-03<br />value: 8.786045e+06","Species: Sprat<br />w: 8.341915e-03<br />value: 1.105690e+07","Species: Sprat<br />w: 9.954923e-03<br />value: 1.390126e+07","Species: Sprat<br />w: 1.187983e-02<br />value: 1.745794e+07","Species: Sprat<br />w: 1.417693e-02<br />value: 2.189669e+07","Species: Sprat<br />w: 1.691821e-02<br />value: 2.742397e+07","Species: Sprat<br />w: 2.018954e-02<br />value: 3.428924e+07","Species: Sprat<br />w: 2.409343e-02<br />value: 4.279185e+07","Species: Sprat<br />w: 2.875218e-02<br />value: 5.328793e+07","Species: Sprat<br />w: 3.431175e-02<br />value: 6.619724e+07","Species: Sprat<br />w: 4.094634e-02<br />value: 8.200927e+07","Species: Sprat<br />w: 4.886380e-02<br />value: 1.012878e+08","Species: Sprat<br />w: 5.831219e-02<br />value: 1.246734e+08","Species: Sprat<br />w: 6.958754e-02<br />value: 1.528822e+08","Species: Sprat<br />w: 8.304312e-02<br />value: 1.867009e+08","Species: Sprat<br />w: 9.910049e-02<br />value: 2.269760e+08","Species: Sprat<br />w: 1.182627e-01<br />value: 2.745970e+08","Species: Sprat<br />w: 1.411302e-01<br />value: 3.304738e+08","Species: Sprat<br />w: 1.684195e-01<br />value: 3.955078e+08","Species: Sprat<br />w: 2.009853e-01<br />value: 4.705583e+08","Species: Sprat<br />w: 2.398482e-01<br />value: 5.564070e+08","Species: Sprat<br />w: 2.862257e-01<br />value: 6.537230e+08","Species: Sprat<br />w: 3.415709e-01<br />value: 7.630332e+08","Species: Sprat<br />w: 4.076176e-01<br />value: 8.847019e+08","Species: Sprat<br />w: 4.864353e-01<br />value: 1.018924e+09","Species: Sprat<br />w: 5.804934e-01<br />value: 1.165737e+09","Species: Sprat<br />w: 6.927386e-01<br />value: 1.325046e+09","Species: Sprat<br />w: 8.266879e-01<br />value: 1.496673e+09","Species: Sprat<br />w: 9.865378e-01<br />value: 1.680406e+09","Species: Sprat<br />w: 1.177297e+00<br />value: 1.876042e+09","Species: Sprat<br />w: 1.404941e+00<br />value: 2.083346e+09","Species: Sprat<br />w: 1.676603e+00<br />value: 2.301799e+09","Species: Sprat<br />w: 2.000794e+00<br />value: 2.529687e+09","Species: Sprat<br />w: 2.387671e+00<br />value: 2.761508e+09","Species: Sprat<br />w: 2.849355e+00<br />value: 2.981955e+09","Species: Sprat<br />w: 3.400312e+00<br />value: 3.158837e+09","Species: Sprat<br />w: 4.057802e+00<br />value: 3.255033e+09","Species: Sprat<br />w: 4.842426e+00<br />value: 3.266394e+09","Species: Sprat<br />w: 5.778767e+00<br />value: 3.220865e+09","Species: Sprat<br />w: 6.896160e+00<br />value: 3.145013e+09","Species: Sprat<br />w: 8.229614e+00<br />value: 3.059855e+09","Species: Sprat<br />w: 9.820907e+00<br />value: 3.017337e+09","Species: Sprat<br />w: 1.171990e+01<br />value: 3.235935e+09","Species: Sprat<br />w: 1.398608e+01<br />value: 4.062365e+09","Species: Sprat<br />w: 1.669045e+01<br />value: 4.225543e+09","Species: Sprat<br />w: 1.991775e+01<br />value: 2.764131e+09","Species: Sprat<br />w: 2.376908e+01<br />value: 1.273596e+09","Species: Sprat<br />w: 2.836511e+01<br />value: 4.155200e+08","Species: Sprat<br />w: 3.384984e+01<br />value: 7.044028e+07"],"type":"scatter","mode":"lines","line":{"width":3.0236220472440949,"color":"rgba(129,95,0,1)","dash":"solid"},"hoveron":"points","name":"Sprat","legendgroup":"Sprat","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-3,-2.9232278536040344,-2.8464557072080692,-2.7696835608121035,-2.6929114144161383,-2.6161392680201727,-2.5393671216242075,-2.4625949752282419,-2.3858228288322767,-2.3090506824363111,-2.2322785360403454,-2.1555063896443802,-2.0787342432484146,-2.0019620968524494,-1.9251899504564838,-1.8484178040605184,-1.771645657664553,-1.6948735112685875,-1.6181013648726221,-1.5413292184766567,-1.4645570720806913,-1.3877849256847257,-1.3110127792887603,-1.2342406328927948,-1.1574684864968294,-1.080696340100864,-1.0039241937048986,-0.92715204730893319,-0.85037990091296756,-0.77360775451700237,-0.69683560812103673,-0.62006346172507154,-0.54329131532910591,-0.46651916893314027,-0.38974702253717508,-0.31297487614120945,-0.23620272974524428,-0.15943058334927862,-0.082658436953313416,-0.0058862905573478074,0.070885855838617409,0.14765800223458306,0.22443014863054866,0.30120229502651386,0.37797444142247949,0.45474658781844468,0.53151873421441032,0.60829088061037551,0.68506302700634114,0.76183517340230678,0.83860731979827197,0.9153794661942376,0.99215161259020279,1.068923758986168,1.1456959053821336,1.2224680517780993,1.2992401981740649,1.3760123445700305,1.4527844909659953,1.5295566373619609,1.6063287837579265],"y":[6.0455755588977045,6.1482396840988516,6.2509041724140664,6.3535641767748947,6.4562142432730516,6.5588482750978407,6.6614594849671507,6.7640403335038028,6.8665824518480507,6.9690765476270666,7.0715122942412094,7.1738782043030609,7.2761614890017672,7.3783479061720847,7.4804216009193656,7.5823649437682974,7.6841583724311198,7.7857802443830355,7.8872067084257393,7.9884116042327813,8.089366399399216,8.1900401736340793,8.2903996592822278,8.3904093461579112,8.490031656502536,8.5892271924981234,8.6879550538949921,8.7861732166218278,8.8838389543531893,8.9809092734412399,9.0773413167756019,9.173092673238731,9.268121505464002,9.3623863783271162,9.4558456326432818,9.5484561019144643,9.6401709153716801,9.7309360761110177,9.8206854545650106,9.9093338924408343,9.996768383406101,10.082838714474727,10.167355894189734,10.250145591838784,10.331433170513153,10.414137337624332,10.514629472692038,10.671908118233221,10.839958809782805,10.935003255027354,10.986151261671221,11.018113423475434,11.036195916138524,11.039871059699337,11.026534893990666,10.991695231628096,10.927869248325427,10.82184732564575,10.647353585320166,10.338630655363671,9.4810154454894526],"text":["Species: Sandeel<br />w: 1.000000e-03<br />value: 1.110646e+06","Species: Sandeel<br />w: 1.193362e-03<br />value: 1.406824e+06","Species: Sandeel<br />w: 1.424112e-03<br />value: 1.781986e+06","Species: Sandeel<br />w: 1.699481e-03<br />value: 2.257170e+06","Species: Sandeel<br />w: 2.028096e-03<br />value: 2.859001e+06","Species: Sandeel<br />w: 2.420253e-03<br />value: 3.621165e+06","Species: Sandeel<br />w: 2.888237e-03<br />value: 4.586269e+06","Species: Sandeel<br />w: 3.446712e-03<br />value: 5.808184e+06","Species: Sandeel<br />w: 4.113175e-03<br />value: 7.354996e+06","Species: Sandeel<br />w: 4.908506e-03<br />value: 9.312720e+06","Species: Sandeel<br />w: 5.857624e-03<br />value: 1.178996e+07","Species: Sandeel<br />w: 6.990265e-03<br />value: 1.492376e+07","Species: Sandeel<br />w: 8.341915e-03<br />value: 1.888694e+07","Species: Sandeel<br />w: 9.954923e-03<br />value: 2.389725e+07","Species: Sandeel<br />w: 1.187983e-02<br />value: 3.022885e+07","Species: Sandeel<br />w: 1.417693e-02<br />value: 3.822654e+07","Species: Sandeel<br />w: 1.691821e-02<br />value: 4.832350e+07","Species: Sandeel<br />w: 2.018954e-02<br />value: 6.106330e+07","Species: Sandeel<br />w: 2.409343e-02<br />value: 7.712705e+07","Species: Sandeel<br />w: 2.875218e-02<br />value: 9.736696e+07","Species: Sandeel<br />w: 3.431175e-02<br />value: 1.228475e+08","Species: Sandeel<br />w: 4.094634e-02<br />value: 1.548960e+08","Species: Sandeel<br />w: 4.886380e-02<br />value: 1.951640e+08","Species: Sandeel<br />w: 5.831219e-02<br />value: 2.457024e+08","Species: Sandeel<br />w: 6.958754e-02<br />value: 3.090521e+08","Species: Sandeel<br />w: 8.304312e-02<br />value: 3.883535e+08","Species: Sandeel<br />w: 9.910049e-02<br />value: 4.874780e+08","Species: Sandeel<br />w: 1.182627e-01<br />value: 6.111857e+08","Species: Sandeel<br />w: 1.411302e-01<br />value: 7.653128e+08","Species: Sandeel<br />w: 1.684195e-01<br />value: 9.569941e+08","Species: Sandeel<br />w: 2.009853e-01<br />value: 1.194927e+09","Species: Sandeel<br />w: 2.398482e-01<br />value: 1.489679e+09","Species: Sandeel<br />w: 2.862257e-01<br />value: 1.854050e+09","Species: Sandeel<br />w: 3.415709e-01<br />value: 2.303490e+09","Species: Sandeel<br />w: 4.076176e-01<br />value: 2.856575e+09","Species: Sandeel<br />w: 4.864353e-01<br />value: 3.535543e+09","Species: Sandeel<br />w: 5.804934e-01<br />value: 4.366877e+09","Species: Sandeel<br />w: 6.927386e-01<br />value: 5.381906e+09","Species: Sandeel<br />w: 8.266879e-01<br />value: 6.617371e+09","Species: Sandeel<br />w: 9.865378e-01<br />value: 8.115848e+09","Species: Sandeel<br />w: 1.177297e+00<br />value: 9.925865e+09","Species: Sandeel<br />w: 1.404941e+00<br />value: 1.210149e+10","Species: Sandeel<br />w: 1.676603e+00<br />value: 1.470131e+10","Species: Sandeel<br />w: 2.000794e+00<br />value: 1.778876e+10","Species: Sandeel<br />w: 2.387671e+00<br />value: 2.145029e+10","Species: Sandeel<br />w: 2.849355e+00<br />value: 2.595000e+10","Species: Sandeel<br />w: 3.400312e+00<br />value: 3.270615e+10","Species: Sandeel<br />w: 4.057802e+00<br />value: 4.697947e+10","Species: Sandeel<br />w: 4.842426e+00<br />value: 6.917654e+10","Species: Sandeel<br />w: 5.778767e+00<br />value: 8.610002e+10","Species: Sandeel<br />w: 6.896160e+00<br />value: 9.686152e+10","Species: Sandeel<br />w: 8.229614e+00<br />value: 1.042590e+11","Species: Sandeel<br />w: 9.820907e+00<br />value: 1.086916e+11","Species: Sandeel<br />w: 1.171990e+01<br />value: 1.096153e+11","Species: Sandeel<br />w: 1.398608e+01<br />value: 1.063004e+11","Species: Sandeel<br />w: 1.669045e+01<br />value: 9.810592e+10","Species: Sandeel<br />w: 1.991775e+01<br />value: 8.469724e+10","Species: Sandeel<br />w: 2.376908e+01<br />value: 6.635098e+10","Species: Sandeel<br />w: 2.836511e+01<br />value: 4.439700e+10","Species: Sandeel<br />w: 3.384984e+01<br />value: 2.180874e+10","Species: Sandeel<br />w: 4.039511e+01<br />value: 3.027021e+09"],"type":"scatter","mode":"lines","line":{"width":3.0236220472440949,"color":"rgba(98,55,226,1)","dash":"solid"},"hoveron":"points","name":"Sandeel","legendgroup":"Sandeel","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-3,-2.9232278536040344,-2.8464557072080692,-2.7696835608121035,-2.6929114144161383,-2.6161392680201727,-2.5393671216242075,-2.4625949752282419,-2.3858228288322767,-2.3090506824363111,-2.2322785360403454,-2.1555063896443802,-2.0787342432484146,-2.0019620968524494,-1.9251899504564838,-1.8484178040605184,-1.771645657664553,-1.6948735112685875,-1.6181013648726221,-1.5413292184766567,-1.4645570720806913,-1.3877849256847257,-1.3110127792887603,-1.2342406328927948,-1.1574684864968294,-1.080696340100864,-1.0039241937048986,-0.92715204730893319,-0.85037990091296756,-0.77360775451700237,-0.69683560812103673,-0.62006346172507154,-0.54329131532910591,-0.46651916893314027,-0.38974702253717508,-0.31297487614120945,-0.23620272974524428,-0.15943058334927862,-0.082658436953313416,-0.0058862905573478074,0.070885855838617409,0.14765800223458306,0.22443014863054866,0.30120229502651386,0.37797444142247949,0.45474658781844468,0.53151873421441032,0.60829088061037551,0.68506302700634114,0.76183517340230678,0.83860731979827197,0.9153794661942376,0.99215161259020279,1.068923758986168,1.1456959053821336,1.2224680517780993,1.2992401981740649,1.3760123445700305,1.4527844909659953,1.5295566373619609,1.6063287837579265,1.6831009301538922,1.7598730765498569,1.8366452229458226,1.9134173693417882,1.9901895157377538,2.0669616621337195],"y":[5.7819283878061754,5.8845189066926293,5.9870576985184965,6.0895365203639518,6.1919457750511642,6.2942743023395202,6.3965091426258693,6.4986352722101994,6.6006353098449422,6.7024891949706493,6.8041738388087856,6.9056627504042014,7.0069256408509082,7.1079280103477815,7.2086307244583789,7.3089895880297862,7.4089549276999342,7.508471196832474,7.6074766200975885,7.7059028987751592,7.8036750021517065,7.9007110749874032,7.9969224956939673,8.092214124178092,8.1864847816705844,8.2796280064869521,8.3715331285910146,8.4620867010007306,8.5511743164457883,8.6386828224056309,8.7245029262524234,8.8085321548075246,8.890678100055176,8.9708618467448975,9.0490214406653209,9.1251152216327984,9.1991248161765586,9.271057564891553,9.3409481512955583,9.4088592046450046,9.4748806692121423,9.5391277664687006,9.6017374229792196,9.6628630936723852,9.7226679752687257,9.7813166698617131,9.8389653635942445,9.8957501882723289,9.9517728070398892,10.007091905767423,10.061722923693123,10.115624504647398,10.168706157109375,10.220921599540949,10.274169787645693,10.331707957274642,10.416588590071557,10.577276921371448,10.738944434609285,10.789359205857441,10.769123434507565,10.710209310463323,10.613004810042707,10.462330350187605,10.223791727677428,9.8063531575807765,8.4477328892884866],"text":["Species: N.pout<br />w: 1.000000e-03<br />value: 6.052411e+05","Species: N.pout<br />w: 1.193362e-03<br />value: 7.665119e+05","Species: N.pout<br />w: 1.424112e-03<br />value: 9.706389e+05","Species: N.pout<br />w: 1.699481e-03<br />value: 1.228957e+06","Species: N.pout<br />w: 2.028096e-03<br />value: 1.555771e+06","Species: N.pout<br />w: 2.420253e-03<br />value: 1.969130e+06","Species: N.pout<br />w: 2.888237e-03<br />value: 2.491777e+06","Species: N.pout<br />w: 3.446712e-03<br />value: 3.152356e+06","Species: N.pout<br />w: 4.113175e-03<br />value: 3.986900e+06","Species: N.pout<br />w: 4.908506e-03<br />value: 5.040681e+06","Species: N.pout<br />w: 5.857624e-03<br />value: 6.370505e+06","Species: N.pout<br />w: 6.990265e-03<br />value: 8.047533e+06","Species: N.pout<br />w: 8.341915e-03<br />value: 1.016075e+07","Species: N.pout<br />w: 9.954923e-03<br />value: 1.282118e+07","Species: N.pout<br />w: 1.187983e-02<br />value: 1.616705e+07","Species: N.pout<br />w: 1.417693e-02<br />value: 2.036993e+07","Species: N.pout<br />w: 1.691821e-02<br />value: 2.564218e+07","Species: N.pout<br />w: 2.018954e-02<br />value: 3.224565e+07","Species: N.pout<br />w: 2.409343e-02<br />value: 4.050201e+07","Species: N.pout<br />w: 2.875218e-02<br />value: 5.080458e+07","Species: N.pout<br />w: 3.431175e-02<br />value: 6.363192e+07","Species: N.pout<br />w: 4.094634e-02<br />value: 7.956299e+07","Species: N.pout<br />w: 4.886380e-02<br />value: 9.929388e+07","Species: N.pout<br />w: 5.831219e-02<br />value: 1.236557e+08","Species: N.pout<br />w: 6.958754e-02<br />value: 1.536331e+08","Species: N.pout<br />w: 8.304312e-02<br />value: 1.903829e+08","Species: N.pout<br />w: 9.910049e-02<br />value: 2.352519e+08","Species: N.pout<br />w: 1.182627e-01<br />value: 2.897922e+08","Species: N.pout<br />w: 1.411302e-01<br />value: 3.557741e+08","Species: N.pout<br />w: 1.684195e-01<br />value: 4.351939e+08","Species: N.pout<br />w: 2.009853e-01<br />value: 5.302772e+08","Species: N.pout<br />w: 2.398482e-01<br />value: 6.434757e+08","Species: N.pout<br />w: 2.862257e-01<br />value: 7.774601e+08","Species: N.pout<br />w: 3.415709e-01<br />value: 9.351082e+08","Species: N.pout<br />w: 4.076176e-01<br />value: 1.119493e+09","Species: N.pout<br />w: 4.864353e-01<br />value: 1.333875e+09","Species: N.pout<br />w: 5.804934e-01<br />value: 1.581703e+09","Species: N.pout<br />w: 6.927386e-01<br />value: 1.866627e+09","Species: N.pout<br />w: 8.266879e-01<br />value: 2.192543e+09","Species: N.pout<br />w: 9.865378e-01<br />value: 2.563653e+09","Species: N.pout<br />w: 1.177297e+00<br />value: 2.984562e+09","Species: N.pout<br />w: 1.404941e+00<br />value: 3.460412e+09","Species: N.pout<br />w: 1.676603e+00<br />value: 3.997030e+09","Species: N.pout<br />w: 2.000794e+00<br />value: 4.601115e+09","Species: N.pout<br />w: 2.387671e+00<br />value: 5.280414e+09","Species: N.pout<br />w: 2.849355e+00<br />value: 6.043892e+09","Species: N.pout<br />w: 3.400312e+00<br />value: 6.901848e+09","Species: N.pout<br />w: 4.057802e+00<br />value: 7.865932e+09","Species: N.pout<br />w: 4.842426e+00<br />value: 8.948965e+09","Species: N.pout<br />w: 5.778767e+00<br />value: 1.016464e+10","Species: N.pout<br />w: 6.896160e+00<br />value: 1.152718e+10","Species: N.pout<br />w: 8.229614e+00<br />value: 1.305042e+10","Species: N.pout<br />w: 9.820907e+00<br />value: 1.474708e+10","Species: N.pout<br />w: 1.171990e+01<br />value: 1.663112e+10","Species: N.pout<br />w: 1.398608e+01<br />value: 1.880052e+10","Species: N.pout<br />w: 1.669045e+01<br />value: 2.146387e+10","Species: N.pout<br />w: 1.991775e+01<br />value: 2.609688e+10","Species: N.pout<br />w: 2.376908e+01<br />value: 3.778130e+10","Species: N.pout<br />w: 2.836511e+01<br />value: 5.482068e+10","Species: N.pout<br />w: 3.384984e+01<br />value: 6.156859e+10","Species: N.pout<br />w: 4.039511e+01<br />value: 5.876564e+10","Species: N.pout<br />w: 4.820598e+01<br />value: 5.131086e+10","Species: N.pout<br />w: 5.752718e+01<br />value: 4.102086e+10","Species: N.pout<br />w: 6.865074e+01<br />value: 2.899548e+10","Species: N.pout<br />w: 8.192517e+01<br />value: 1.674140e+10","Species: N.pout<br />w: 9.776638e+01<br />value: 6.402553e+09","Species: N.pout<br />w: 1.166707e+02<br />value: 2.803709e+08"],"type":"scatter","mode":"lines","line":{"width":3.0236220472440949,"color":"rgba(141,166,0,1)","dash":"solid"},"hoveron":"points","name":"N.pout","legendgroup":"N.pout","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-3,-2.9232278536040344,-2.8464557072080692,-2.7696835608121035,-2.6929114144161383,-2.6161392680201727,-2.5393671216242075,-2.4625949752282419,-2.3858228288322767,-2.3090506824363111,-2.2322785360403454,-2.1555063896443802,-2.0787342432484146,-2.0019620968524494,-1.9251899504564838,-1.8484178040605184,-1.771645657664553,-1.6948735112685875,-1.6181013648726221,-1.5413292184766567,-1.4645570720806913,-1.3877849256847257,-1.3110127792887603,-1.2342406328927948,-1.1574684864968294,-1.080696340100864,-1.0039241937048986,-0.92715204730893319,-0.85037990091296756,-0.77360775451700237,-0.69683560812103673,-0.62006346172507154,-0.54329131532910591,-0.46651916893314027,-0.38974702253717508,-0.31297487614120945,-0.23620272974524428,-0.15943058334927862,-0.082658436953313416,-0.0058862905573478074,0.070885855838617409,0.14765800223458306,0.22443014863054866,0.30120229502651386,0.37797444142247949,0.45474658781844468,0.53151873421441032,0.60829088061037551,0.68506302700634114,0.76183517340230678,0.83860731979827197,0.9153794661942376,0.99215161259020279,1.068923758986168,1.1456959053821336,1.2224680517780993,1.2992401981740649,1.3760123445700305,1.4527844909659953,1.5295566373619609,1.6063287837579265,1.6831009301538922,1.7598730765498569,1.8366452229458226,1.9134173693417882,1.9901895157377538,2.0669616621337195,2.1437338085296842,2.2205059549256498,2.2972781013216155,2.3740502477175811,2.4508223941135459,2.5275945405095115],"y":[5.4989743489265717,5.6009864001858807,5.7029625436212337,5.804891329908429,5.906760297000881,6.0085557402634526,6.1102624449532081,6.2118633805322458,6.3133393577209134,6.414668650320043,6.515826584867245,6.6167851024096214,6.7175122982871054,6.8179719479423166,6.9181230294193234,7.0179192563227453,7.11730863846691,7.2162330911042707,7.3146281173046459,7.4124225915485775,7.5095386756427027,7.6058919003576095,7.7013914473759675,7.7959406658276027,7.8894378554648634,7.9817773439919923,8.072850878855391,8.1625493436849403,8.250764796478542,8.3373928107073247,8.4223350822447589,8.5055022451748474,8.5868168192285488,8.6662161922386147,8.7436555241928051,8.8191104468652171,8.8925794261635165,8.9640856544969196,9.0336783484285998,9.1014333428127667,9.167452896054936,9.2318646509462727,9.2948197300149413,9.3564899813911779,9.4170644284393017,9.4767450114506868,9.5357417401504936,9.5942673990977347,9.6525319625971715,9.7107368956831301,9.7690695089602588,9.8276974874164296,9.8867637575845126,9.9463818150034573,10.006633714332555,10.067562715005101,10.129180035696256,10.19147862862615,10.254421056524858,10.317882488695528,10.381669839217768,10.445608578029224,10.509944842713812,10.577705020495157,10.666770896618242,10.833990743276463,11.060810559470569,11.184675508294927,11.20786345158287,11.176632838610592,11.093517194163249,10.927371243965142,10.563853729280479],"text":["Species: Herring<br />w: 1.000000e-03<br />value: 3.154818e+05","Species: Herring<br />w: 1.193362e-03<br />value: 3.990124e+05","Species: Herring<br />w: 1.424112e-03<br />value: 5.046178e+05","Species: Herring<br />w: 1.699481e-03<br />value: 6.381038e+05","Species: Herring<br />w: 2.028096e-03<br />value: 8.067896e+05","Species: Herring<br />w: 2.420253e-03<br />value: 1.019896e+06","Species: Herring<br />w: 2.888237e-03<br />value: 1.289028e+06","Species: Herring<br />w: 3.446712e-03<br />value: 1.628784e+06","Species: Herring<br />w: 4.113175e-03<br />value: 2.057498e+06","Species: Herring<br />w: 4.908506e-03<br />value: 2.598176e+06","Species: Herring<br />w: 5.857624e-03<br />value: 3.279643e+06","Species: Herring<br />w: 6.990265e-03<br />value: 4.137949e+06","Species: Herring<br />w: 8.341915e-03<br />value: 5.218099e+06","Species: Herring<br />w: 9.954923e-03<br />value: 6.576154e+06","Species: Herring<br />w: 1.187983e-02<br />value: 8.281767e+06","Species: Herring<br />w: 1.417693e-02<br />value: 1.042124e+07","Species: Herring<br />w: 1.691821e-02<br />value: 1.310113e+07","Species: Herring<br />w: 2.018954e-02<br />value: 1.645255e+07","Species: Herring<br />w: 2.409343e-02<br />value: 2.063612e+07","Species: Herring<br />w: 2.875218e-02<br />value: 2.584774e+07","Species: Herring<br />w: 3.431175e-02<br />value: 3.232501e+07","Species: Herring<br />w: 4.094634e-02<br />value: 4.035449e+07","Species: Herring<br />w: 4.886380e-02<br />value: 5.027956e+07","Species: Herring<br />w: 5.831219e-02<br />value: 6.250873e+07","Species: Herring<br />w: 6.958754e-02<br />value: 7.752430e+07","Species: Herring<br />w: 8.304312e-02<br />value: 9.589089e+07","Species: Herring<br />w: 9.910049e-02<br />value: 1.182635e+08","Species: Herring<br />w: 1.182627e-01<br />value: 1.453950e+08","Species: Herring<br />w: 1.411302e-01<br />value: 1.781414e+08","Species: Herring<br />w: 1.684195e-01<br />value: 2.174667e+08","Species: Herring<br />w: 2.009853e-01<br />value: 2.644448e+08","Species: Herring<br />w: 2.398482e-01<br />value: 3.202597e+08","Species: Herring<br />w: 2.862257e-01<br />value: 3.862040e+08","Species: Herring<br />w: 3.415709e-01<br />value: 4.636777e+08","Species: Herring<br />w: 4.076176e-01<br />value: 5.541860e+08","Species: Herring<br />w: 4.864353e-01<br />value: 6.593416e+08","Species: Herring<br />w: 5.804934e-01<br />value: 7.808712e+08","Species: Herring<br />w: 6.927386e-01<br />value: 9.206311e+08","Species: Herring<br />w: 8.266879e-01<br />value: 1.080633e+09","Species: Herring<br />w: 9.865378e-01<br />value: 1.263087e+09","Species: Herring<br />w: 1.177297e+00<br />value: 1.470459e+09","Species: Herring<br />w: 1.404941e+00<br />value: 1.705551e+09","Species: Herring<br />w: 1.676603e+00<br />value: 1.971604e+09","Species: Herring<br />w: 2.000794e+00<br />value: 2.272427e+09","Species: Herring<br />w: 2.387671e+00<br />value: 2.612549e+09","Species: Herring<br />w: 2.849355e+00<br />value: 2.997402e+09","Species: Herring<br />w: 3.400312e+00<br />value: 3.433537e+09","Species: Herring<br />w: 4.057802e+00<br />value: 3.928868e+09","Species: Herring<br />w: 4.842426e+00<br />value: 4.492954e+09","Species: Herring<br />w: 5.778767e+00<br />value: 5.137323e+09","Species: Herring<br />w: 6.896160e+00<br />value: 5.875834e+09","Species: Herring<br />w: 8.229614e+00<br />value: 6.725081e+09","Species: Herring<br />w: 9.820907e+00<br />value: 7.704842e+09","Species: Herring<br />w: 1.171990e+01<br />value: 8.838566e+09","Species: Herring<br />w: 1.398608e+01<br />value: 1.015392e+10","Species: Herring<br />w: 1.669045e+01<br />value: 1.168322e+10","Species: Herring<br />w: 1.991775e+01<br />value: 1.346418e+10","Species: Herring<br />w: 2.376908e+01<br />value: 1.554099e+10","Species: Herring<br />w: 2.836511e+01<br />value: 1.796474e+10","Species: Herring<br />w: 3.384984e+01<br />value: 2.079134e+10","Species: Herring<br />w: 4.039511e+01<br />value: 2.408074e+10","Species: Herring<br />w: 4.820598e+01<br />value: 2.790028e+10","Species: Herring<br />w: 5.752718e+01<br />value: 3.235526e+10","Species: Herring<br />w: 6.865074e+01<br />value: 3.781856e+10","Species: Herring<br />w: 8.192517e+01<br />value: 4.642703e+10","Species: Herring<br />w: 9.776638e+01<br />value: 6.823242e+10","Species: Herring<br />w: 1.166707e+02<br />value: 1.150299e+11","Species: Herring<br />w: 1.392303e+02<br />value: 1.529944e+11","Species: Herring<br />w: 1.661521e+02<br />value: 1.613851e+11","Species: Herring<br />w: 1.982796e+02<br />value: 1.501872e+11","Species: Herring<br />w: 2.366193e+02<br />value: 1.240273e+11","Species: Herring<br />w: 2.823725e+02<br />value: 8.460017e+10","Species: Herring<br />w: 3.369726e+02<br />value: 3.663142e+10"],"type":"scatter","mode":"lines","line":{"width":3.0236220472440949,"color":"rgba(222,83,255,1)","dash":"solid"},"hoveron":"points","name":"Herring","legendgroup":"Herring","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-3,-2.9232278536040344,-2.8464557072080692,-2.7696835608121035,-2.6929114144161383,-2.6161392680201727,-2.5393671216242075,-2.4625949752282419,-2.3858228288322767,-2.3090506824363111,-2.2322785360403454,-2.1555063896443802,-2.0787342432484146,-2.0019620968524494,-1.9251899504564838,-1.8484178040605184,-1.771645657664553,-1.6948735112685875,-1.6181013648726221,-1.5413292184766567,-1.4645570720806913,-1.3877849256847257,-1.3110127792887603,-1.2342406328927948,-1.1574684864968294,-1.080696340100864,-1.0039241937048986,-0.92715204730893319,-0.85037990091296756,-0.77360775451700237,-0.69683560812103673,-0.62006346172507154,-0.54329131532910591,-0.46651916893314027,-0.38974702253717508,-0.31297487614120945,-0.23620272974524428,-0.15943058334927862,-0.082658436953313416,-0.0058862905573478074,0.070885855838617409,0.14765800223458306,0.22443014863054866,0.30120229502651386,0.37797444142247949,0.45474658781844468,0.53151873421441032,0.60829088061037551,0.68506302700634114,0.76183517340230678,0.83860731979827197,0.9153794661942376,0.99215161259020279,1.068923758986168,1.1456959053821336,1.2224680517780993,1.2992401981740649,1.3760123445700305,1.4527844909659953,1.5295566373619609,1.6063287837579265,1.6831009301538922,1.7598730765498569,1.8366452229458226,1.9134173693417882,1.9901895157377538,2.0669616621337195,2.1437338085296842,2.2205059549256498,2.2972781013216155,2.3740502477175811,2.4508223941135459,2.5275945405095115],"y":[5.6354010528460083,5.7380539547926048,5.8406589207762307,5.9432072335694457,6.0456886864050512,6.1480913292820416,6.2504011663088823,6.3526018017049184,6.4546740337567767,6.5565953975370892,6.6583396588154624,6.759876263652929,6.8611697509335272,6.9621791386901579,7.0628572995326602,7.1631503456734169,7.2629970497619691,7.3623283336925187,7.4610668633616406,7.5591267925688266,7.6564137033303217,7.7528247922132776,7.8482493522567296,7.9425695970111008,8.0356618666673114,8.1273982457927829,8.2176486077242572,8.3062830823876972,8.393174922801494,8.4782037217454658,8.5612589053912185,8.6422434067306479,8.7210774002168563,8.7977019619536296,8.8720825086551987,8.9442118646960793,9.0141128106099089,9.0818399784925141,9.1474809794016529,9.2111566739311961,9.2730205281218261,9.3332570309163252,9.3920791845328999,9.4497251135273377,9.506453870053031,9.5625405383700723,9.6182707440492692,9.6739345510933781,9.7298195338668219,9.7862053005580165,9.8433604846790033,9.9015388068429271,9.9609977771355283,10.022149338396092,10.086688690807975,10.162176191045262,10.27598045644325,10.429800067804921,10.545328230880022,10.625731305583056,10.698372651899231,10.771668131439334,10.84735864074098,10.925769956647111,11.006977100233263,11.091038229990065,11.178084423922316,11.268464666807567,11.363003848753468,11.463493449306402,11.572887558683444,11.693679246659539,11.752088227390139],"text":["Species: Dab<br />w: 1.000000e-03<br />value: 4.319178e+05","Species: Dab<br />w: 1.193362e-03<br />value: 5.470839e+05","Species: Dab<br />w: 1.424112e-03<br />value: 6.928814e+05","Species: Dab<br />w: 1.699481e-03<br />value: 8.774194e+05","Species: Dab<br />w: 2.028096e-03<br />value: 1.110935e+06","Species: Dab<br />w: 2.420253e-03<br />value: 1.406343e+06","Species: Dab<br />w: 2.888237e-03<br />value: 1.779923e+06","Species: Dab<br />w: 3.446712e-03<br />value: 2.252173e+06","Species: Dab<br />w: 4.113175e-03<br />value: 2.848879e+06","Species: Dab<br />w: 4.908506e-03<br />value: 3.602429e+06","Species: Dab<br />w: 5.857624e-03<br />value: 4.553440e+06","Species: Dab<br />w: 6.990265e-03<br />value: 5.752760e+06","Species: Dab<br />w: 8.341915e-03<br />value: 7.263898e+06","Species: Dab<br />w: 9.954923e-03<br />value: 9.165985e+06","Species: Dab<br />w: 1.187983e-02<br />value: 1.155732e+07","Species: Dab<br />w: 1.417693e-02<br />value: 1.455963e+07","Species: Dab<br />w: 1.691821e-02<br />value: 1.832302e+07","Species: Dab<br />w: 2.018954e-02<br />value: 2.303182e+07","Species: Dab<br />w: 2.409343e-02<br />value: 2.891125e+07","Species: Dab<br />w: 2.875218e-02<br />value: 3.623488e+07","Species: Dab<br />w: 3.431175e-02<br />value: 4.533292e+07","Species: Dab<br />w: 4.094634e-02<br />value: 5.660109e+07","Species: Dab<br />w: 4.886380e-02<br />value: 7.050978e+07","Species: Dab<br />w: 5.831219e-02<br />value: 8.761321e+07","Species: Dab<br />w: 6.958754e-02<br />value: 1.085580e+08","Species: Dab<br />w: 8.304312e-02<br />value: 1.340906e+08","Species: Dab<br />w: 9.910049e-02<br />value: 1.650626e+08","Species: Dab<br />w: 1.182627e-01<br />value: 2.024338e+08","Species: Dab<br />w: 1.411302e-01<br />value: 2.472720e+08","Species: Dab<br />w: 1.684195e-01<br />value: 3.007487e+08","Species: Dab<br />w: 2.009853e-01<br />value: 3.641320e+08","Species: Dab<br />w: 2.398482e-01<br />value: 4.387765e+08","Species: Dab<br />w: 2.862257e-01<br />value: 5.261110e+08","Species: Dab<br />w: 3.415709e-01<br />value: 6.276275e+08","Species: Dab<br />w: 4.076176e-01<br />value: 7.448735e+08","Species: Dab<br />w: 4.864353e-01<br />value: 8.794514e+08","Species: Dab<br />w: 5.804934e-01<br />value: 1.033030e+09","Species: Dab<br />w: 6.927386e-01<br />value: 1.207369e+09","Species: Dab<br />w: 8.266879e-01<br />value: 1.404368e+09","Species: Dab<br />w: 9.865378e-01<br />value: 1.626135e+09","Species: Dab<br />w: 1.177297e+00<br />value: 1.875083e+09","Species: Dab<br />w: 1.404941e+00<br />value: 2.154056e+09","Species: Dab<br />w: 1.676603e+00<br />value: 2.466489e+09","Species: Dab<br />w: 2.000794e+00<br />value: 2.816600e+09","Species: Dab<br />w: 2.387671e+00<br />value: 3.209622e+09","Species: Dab<br />w: 2.849355e+00<br />value: 3.652082e+09","Species: Dab<br />w: 3.400312e+00<br />value: 4.152128e+09","Species: Dab<br />w: 4.057802e+00<br />value: 4.719919e+09","Species: Dab<br />w: 4.842426e+00<br />value: 5.368087e+09","Species: Dab<br />w: 5.778767e+00<br />value: 6.112309e+09","Species: Dab<br />w: 6.896160e+00<br />value: 6.972050e+09","Species: Dab<br />w: 8.229614e+00<br />value: 7.971477e+09","Species: Dab<br />w: 9.820907e+00<br />value: 9.141086e+09","Species: Dab<br />w: 1.171990e+01<br />value: 1.052324e+10","Species: Dab<br />w: 1.398608e+01<br />value: 1.220924e+10","Species: Dab<br />w: 1.669045e+01<br />value: 1.452701e+10","Species: Dab<br />w: 1.991775e+01<br />value: 1.887906e+10","Species: Dab<br />w: 2.376908e+01<br />value: 2.690296e+10","Species: Dab<br />w: 2.836511e+01<br />value: 3.510171e+10","Species: Dab<br />w: 3.384984e+01<br />value: 4.224072e+10","Species: Dab<br />w: 4.039511e+01<br />value: 4.993127e+10","Species: Dab<br />w: 4.820598e+01<br />value: 5.911098e+10","Species: Dab<br />w: 5.752718e+01<br />value: 7.036532e+10","Species: Dab<br />w: 6.865074e+01<br />value: 8.428882e+10","Species: Dab<br />w: 8.192517e+01<br />value: 1.016195e+11","Species: Dab<br />w: 9.776638e+01<br />value: 1.233213e+11","Species: Dab<br />w: 1.166707e+02<br />value: 1.506900e+11","Species: Dab<br />w: 1.392303e+02<br />value: 1.855516e+11","Species: Dab<br />w: 1.661521e+02<br />value: 2.306768e+11","Species: Dab<br />w: 1.982796e+02<br />value: 2.907324e+11","Species: Dab<br />w: 2.366193e+02<br />value: 3.740137e+11","Species: Dab<br />w: 2.823725e+02<br />value: 4.939457e+11","Species: Dab<br />w: 3.369726e+02<br />value: 5.650518e+11"],"type":"scatter","mode":"lines","line":{"width":3.0236220472440949,"color":"rgba(14,67,0,1)","dash":"solid"},"hoveron":"points","name":"Dab","legendgroup":"Dab","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-3,-2.9232278536040344,-2.8464557072080692,-2.7696835608121035,-2.6929114144161383,-2.6161392680201727,-2.5393671216242075,-2.4625949752282419,-2.3858228288322767,-2.3090506824363111,-2.2322785360403454,-2.1555063896443802,-2.0787342432484146,-2.0019620968524494,-1.9251899504564838,-1.8484178040605184,-1.771645657664553,-1.6948735112685875,-1.6181013648726221,-1.5413292184766567,-1.4645570720806913,-1.3877849256847257,-1.3110127792887603,-1.2342406328927948,-1.1574684864968294,-1.080696340100864,-1.0039241937048986,-0.92715204730893319,-0.85037990091296756,-0.77360775451700237,-0.69683560812103673,-0.62006346172507154,-0.54329131532910591,-0.46651916893314027,-0.38974702253717508,-0.31297487614120945,-0.23620272974524428,-0.15943058334927862,-0.082658436953313416,-0.0058862905573478074,0.070885855838617409,0.14765800223458306,0.22443014863054866,0.30120229502651386,0.37797444142247949,0.45474658781844468,0.53151873421441032,0.60829088061037551,0.68506302700634114,0.76183517340230678,0.83860731979827197,0.9153794661942376,0.99215161259020279,1.068923758986168,1.1456959053821336,1.2224680517780993,1.2992401981740649,1.3760123445700305,1.4527844909659953,1.5295566373619609,1.6063287837579265,1.6831009301538922,1.7598730765498569,1.8366452229458226,1.9134173693417882,1.9901895157377538,2.0669616621337195,2.1437338085296842,2.2205059549256498,2.2972781013216155,2.3740502477175811,2.4508223941135459,2.5275945405095115,2.6043666869054771,2.6811388333014428,2.7579109796974084,2.8346831260933731,2.9114552724893388,2.9882274188853044,3.06499956528127,3.1417717116772348],"y":[4.917344550754601,5.0199017423792442,5.122409599421835,5.224860004026695,5.3272434973935807,5.4295490649310887,5.5317638844955024,5.633873036648323,5.7358591771763248,5.8377021732113468,5.9393787053597213,6.0408618395405345,6.1421205739294065,6.2431193686145923,6.3438176683085281,6.4441694316619413,6.544122684289734,6.6436191163907194,6.7425937496444632,6.840974701676279,6.9386830795289232,7.0356330359517427,7.1317320235557808,7.2268812815950669,7.3209765879193283,7.413909304124493,7.5055677347957026,7.5958388118049776,7.6846101018822734,7.7717721203479373,7.8572209164760087,7.9408608772479967,8.0226076773362802,8.102391285336207,8.1801589209924561,8.2558778468848075,8.3295378720422324,8.4011534452158667,8.4707652225806331,8.5384410084235256,8.6042759873114161,8.668392191184644,8.7309371732536309,8.7920818905900866,8.8520178256570059,8.9109533892375907,8.9691095441604336,9.0267138210868385,9.0839906791098759,9.1411602503661484,9.1984474247836658,9.2560645236017489,9.3142015456893716,9.3730225065096082,9.4339963439306516,9.4960897801620821,9.5593987378143144,9.6239838463060963,9.689822694609397,9.7568199998997311,9.8249740530362324,9.8949592449270156,9.9717977874455936,10.077494008619764,10.22734691574863,10.34581327033092,10.41478680464405,10.462008551213078,10.496073928202451,10.51664733279245,10.52111292018858,10.506297635132702,10.468584547586085,10.403500111012804,10.308167055799634,10.172020292907384,9.983891058004625,9.7247303238575586,9.3561097658145904,8.7808906746684094,7.3132612210774051],"text":["Species: Whiting<br />w: 1.000000e-03<br />value: 8.266936e+04","Species: Whiting<br />w: 1.193362e-03<br />value: 1.046892e+05","Species: Whiting<br />w: 1.424112e-03<br />value: 1.325591e+05","Species: Whiting<br />w: 1.699481e-03<br />value: 1.678263e+05","Species: Whiting<br />w: 2.028096e-03<br />value: 2.124435e+05","Species: Whiting<br />w: 2.420253e-03<br />value: 2.688742e+05","Species: Whiting<br />w: 2.888237e-03<br />value: 3.402232e+05","Species: Whiting<br />w: 3.446712e-03<br />value: 4.304008e+05","Species: Whiting<br />w: 4.113175e-03<br />value: 5.443261e+05","Species: Whiting<br />w: 4.908506e-03<br />value: 6.881802e+05","Species: Whiting<br />w: 5.857624e-03<br />value: 8.697185e+05","Species: Whiting<br />w: 6.990265e-03<br />value: 1.098656e+06","Species: Whiting<br />w: 8.341915e-03<br />value: 1.387141e+06","Species: Whiting<br />w: 9.954923e-03<br />value: 1.750328e+06","Species: Whiting<br />w: 1.187983e-02<br />value: 2.207078e+06","Species: Whiting<br />w: 1.417693e-02<br />value: 2.780798e+06","Species: Whiting<br />w: 1.691821e-02<br />value: 3.500440e+06","Species: Whiting<br />w: 2.018954e-02<br />value: 4.401687e+06","Species: Whiting<br />w: 2.409343e-02<br />value: 5.528327e+06","Species: Whiting<br />w: 2.875218e-02<br />value: 6.933854e+06","Species: Whiting<br />w: 3.431175e-02<br />value: 8.683265e+06","Species: Whiting<br />w: 4.094634e-02<br />value: 1.085508e+07","Species: Whiting<br />w: 4.886380e-02<br />value: 1.354353e+07","Species: Whiting<br />w: 5.831219e-02<br />value: 1.686092e+07","Species: Whiting<br />w: 6.958754e-02<br />value: 2.094000e+07","Species: Whiting<br />w: 8.304312e-02<br />value: 2.593638e+07","Species: Whiting<br />w: 9.910049e-02<br />value: 3.203080e+07","Species: Whiting<br />w: 1.182627e-01<br />value: 3.943109e+07","Species: Whiting<br />w: 1.411302e-01<br />value: 4.837379e+07","Species: Whiting<br />w: 1.684195e-01<br />value: 5.912513e+07","Species: Whiting<br />w: 2.009853e-01<br />value: 7.198150e+07","Species: Whiting<br />w: 2.398482e-01<br />value: 8.726918e+07","Species: Whiting<br />w: 2.862257e-01<br />value: 1.053435e+08","Species: Whiting<br />w: 3.415709e-01<br />value: 1.265876e+08","Species: Whiting<br />w: 4.076176e-01<br />value: 1.514115e+08","Species: Whiting<br />w: 4.864353e-01<br />value: 1.802511e+08","Species: Whiting<br />w: 5.804934e-01<br />value: 2.135688e+08","Species: Whiting<br />w: 6.927386e-01<br />value: 2.518567e+08","Species: Whiting<br />w: 8.266879e-01<br />value: 2.956414e+08","Species: Whiting<br />w: 9.865378e-01<br />value: 3.454944e+08","Species: Whiting<br />w: 1.177297e+00<br />value: 4.020462e+08","Species: Whiting<br />w: 1.404941e+00<br />value: 4.660067e+08","Species: Whiting<br />w: 1.676603e+00<br />value: 5.381919e+08","Species: Whiting<br />w: 2.000794e+00<br />value: 6.195579e+08","Species: Whiting<br />w: 2.387671e+00<br />value: 7.112427e+08","Species: Whiting<br />w: 2.849355e+00<br />value: 8.146169e+08","Species: Whiting<br />w: 3.400312e+00<br />value: 9.313428e+08","Species: Whiting<br />w: 4.057802e+00<br />value: 1.063442e+09","Species: Whiting<br />w: 4.842426e+00<br />value: 1.213363e+09","Species: Whiting<br />w: 5.778767e+00<br />value: 1.384077e+09","Species: Whiting<br />w: 6.896160e+00<br />value: 1.579237e+09","Species: Whiting<br />w: 8.229614e+00<br />value: 1.803286e+09","Species: Whiting<br />w: 9.820907e+00<br />value: 2.061586e+09","Species: Whiting<br />w: 1.171990e+01<br />value: 2.360601e+09","Species: Whiting<br />w: 1.398608e+01<br />value: 2.716416e+09","Species: Whiting<br />w: 1.669045e+01<br />value: 3.133934e+09","Species: Whiting<br />w: 1.991775e+01<br />value: 3.625757e+09","Species: Whiting<br />w: 2.376908e+01<br />value: 4.207110e+09","Species: Whiting<br />w: 2.836511e+01<br />value: 4.895789e+09","Species: Whiting<br />w: 3.384984e+01<br />value: 5.712418e+09","Species: Whiting<br />w: 4.039511e+01<br />value: 6.683040e+09","Species: Whiting<br />w: 4.820598e+01<br />value: 7.851619e+09","Species: Whiting<br />w: 5.752718e+01<br />value: 9.371256e+09","Species: Whiting<br />w: 6.865074e+01<br />value: 1.195347e+10","Species: Whiting<br />w: 8.192517e+01<br />value: 1.687901e+10","Species: Whiting<br />w: 9.776638e+01<br />value: 2.217243e+10","Species: Whiting<br />w: 1.166707e+02<br />value: 2.598883e+10","Species: Whiting<br />w: 1.392303e+02<br />value: 2.897401e+10","Species: Whiting<br />w: 1.661521e+02<br />value: 3.133819e+10","Species: Whiting<br />w: 1.982796e+02<br />value: 3.285847e+10","Species: Whiting<br />w: 2.366193e+02<br />value: 3.319808e+10","Species: Whiting<br />w: 2.823725e+02<br />value: 3.208467e+10","Species: Whiting<br />w: 3.369726e+02<br />value: 2.941606e+10","Species: Whiting<br />w: 4.021302e+02<br />value: 2.532212e+10","Species: Whiting<br />w: 4.798868e+02<br />value: 2.033139e+10","Species: Whiting<br />w: 5.726786e+02<br />value: 1.486005e+10","Species: Whiting<br />w: 6.834128e+02<br />value: 9.635873e+09","Species: Whiting<br />w: 8.155588e+02<br />value: 5.305549e+09","Species: Whiting<br />w: 9.732567e+02<br />value: 2.270439e+09","Species: Whiting<br />w: 1.161447e+03<br />value: 6.037966e+08","Species: Whiting<br />w: 1.386027e+03<br />value: 2.057128e+07"],"type":"scatter","mode":"lines","line":{"width":3.0236220472440949,"color":"rgba(67,0,121,1)","dash":"solid"},"hoveron":"points","name":"Whiting","legendgroup":"Whiting","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-3,-2.9232278536040344,-2.8464557072080692,-2.7696835608121035,-2.6929114144161383,-2.6161392680201727,-2.5393671216242075,-2.4625949752282419,-2.3858228288322767,-2.3090506824363111,-2.2322785360403454,-2.1555063896443802,-2.0787342432484146,-2.0019620968524494,-1.9251899504564838,-1.8484178040605184,-1.771645657664553,-1.6948735112685875,-1.6181013648726221,-1.5413292184766567,-1.4645570720806913,-1.3877849256847257,-1.3110127792887603,-1.2342406328927948,-1.1574684864968294,-1.080696340100864,-1.0039241937048986,-0.92715204730893319,-0.85037990091296756,-0.77360775451700237,-0.69683560812103673,-0.62006346172507154,-0.54329131532910591,-0.46651916893314027,-0.38974702253717508,-0.31297487614120945,-0.23620272974524428,-0.15943058334927862,-0.082658436953313416,-0.0058862905573478074,0.070885855838617409,0.14765800223458306,0.22443014863054866,0.30120229502651386,0.37797444142247949,0.45474658781844468,0.53151873421441032,0.60829088061037551,0.68506302700634114,0.76183517340230678,0.83860731979827197,0.9153794661942376,0.99215161259020279,1.068923758986168,1.1456959053821336,1.2224680517780993,1.2992401981740649,1.3760123445700305,1.4527844909659953,1.5295566373619609,1.6063287837579265,1.6831009301538922,1.7598730765498569,1.8366452229458226,1.9134173693417882,1.9901895157377538,2.0669616621337195,2.1437338085296842,2.2205059549256498,2.2972781013216155,2.3740502477175811,2.4508223941135459,2.5275945405095115,2.6043666869054771,2.6811388333014428,2.7579109796974084,2.8346831260933731,2.9114552724893388,2.9882274188853044],"y":[5.4801470895956159,5.5826635433821652,5.6851239276282115,5.7875189349180678,5.8898377808848057,5.9920679776210601,6.0941950671279193,6.1962023149552801,6.2980703662190543,6.3997768678822879,6.5012960628193959,6.6025983630533034,6.7036499118946349,6.8044121476099928,6.9048413846479537,7.0048884321844769,7.1044982735602504,7.2036098337617558,7.3021558650977241,7.4000629832670617,7.4972518867125624,7.5936377911221644,7.6891311078280538,7.7836383893917152,7.8770635576985857,7.9693094194326104,8.0602794610735238,8.1498799009980782,8.238021960537262,8.324624299815742,8.4096155489007547,8.4929368513154397,8.5745443264064782,8.6544113503535289,8.7325305534986466,8.8089154345792675,8.8836015004279929,8.9566468524383023,9.0281321579149019,9.098159964364644,9.1668533366652198,9.2343538195949986,9.3008187501367754,9.3664179640845333,9.4313299587076553,9.4957375862795619,9.5598233579129008,9.6237644119366621,9.6877271492819332,9.7518620433032481,9.8162988008524916,9.8811406066096836,9.9464586663950296,10.012287036054957,10.078681580127119,10.145538918398112,10.212757507827234,10.280182960536825,10.347600718590117,10.414740845913855,10.481355702244235,10.547712036623267,10.617448978479405,10.709466482880494,10.853054901760963,10.979127490460563,11.035557971503975,11.054707666083532,11.051438892755497,11.025798887252529,10.973532279109252,10.888614059676856,10.763241266208292,10.586060476383864,10.342856505833891,10.011213746848318,9.5517265095044603,8.8777216069296436,7.5985897883516653],"text":["Species: Sole<br />w: 1.000000e-03<br />value: 3.020975e+05","Species: Sole<br />w: 1.193362e-03<br />value: 3.825283e+05","Species: Sole<br />w: 1.424112e-03<br />value: 4.843105e+05","Species: Sole<br />w: 1.699481e-03<br />value: 6.130825e+05","Species: Sole<br />w: 2.028096e-03<br />value: 7.759572e+05","Species: Sole<br />w: 2.420253e-03<br />value: 9.819016e+05","Species: Sole<br />w: 2.888237e-03<br />value: 1.242210e+06","Species: Sole<br />w: 3.446712e-03<br />value: 1.571095e+06","Species: Sole<br />w: 4.113175e-03<br />value: 1.986417e+06","Species: Sole<br />w: 4.908506e-03<br />value: 2.510596e+06","Species: Sole<br />w: 5.857624e-03<br />value: 3.171729e+06","Species: Sole<br />w: 6.990265e-03<br />value: 4.004962e+06","Species: Sole<br />w: 8.341915e-03<br />value: 5.054171e+06","Species: Sole<br />w: 9.954923e-03<br />value: 6.374001e+06","Species: Sole<br />w: 1.187983e-02<br />value: 8.032327e+06","Species: Sole<br />w: 1.417693e-02<br />value: 1.011320e+07","Species: Sole<br />w: 1.691821e-02<br />value: 1.272033e+07","Species: Sole<br />w: 2.018954e-02<br />value: 1.598122e+07","Species: Sole<br />w: 2.409343e-02<br />value: 2.005192e+07","Species: Sole<br />w: 2.875218e-02<br />value: 2.512251e+07","Species: Sole<br />w: 3.431175e-02<br />value: 3.142331e+07","Species: Sole<br />w: 4.094634e-02<br />value: 3.923176e+07","Species: Sole<br />w: 4.886380e-02<br />value: 4.887999e+07","Species: Sole<br />w: 5.831219e-02<br />value: 6.076289e+07","Species: Sole<br />w: 6.958754e-02<br />value: 7.534658e+07","Species: Sole<br />w: 8.304312e-02<br />value: 9.317715e+07","Species: Sole<br />w: 9.910049e-02<br />value: 1.148893e+08","Species: Sole<br />w: 1.182627e-01<br />value: 1.412147e+08","Species: Sole<br />w: 1.411302e-01<br />value: 1.729904e+08","Species: Sole<br />w: 1.684195e-01<br />value: 2.111661e+08","Species: Sole<br />w: 2.009853e-01<br />value: 2.568121e+08","Species: Sole<br />w: 2.398482e-01<br />value: 3.111264e+08","Species: Sole<br />w: 2.862257e-01<br />value: 3.754433e+08","Species: Sole<br />w: 3.415709e-01<br />value: 4.512439e+08","Species: Sole<br />w: 4.076176e-01<br />value: 5.401701e+08","Species: Sole<br />w: 4.864353e-01<br />value: 6.440438e+08","Species: Sole<br />w: 5.804934e-01<br />value: 7.648944e+08","Species: Sole<br />w: 6.927386e-01<br />value: 9.049964e+08","Species: Sole<br />w: 8.266879e-01<br />value: 1.066921e+09","Species: Sole<br />w: 9.865378e-01<br />value: 1.253603e+09","Species: Sole<br />w: 1.177297e+00<br />value: 1.468430e+09","Species: Sole<br />w: 1.404941e+00<br />value: 1.715354e+09","Species: Sole<br />w: 1.676603e+00<br />value: 1.999027e+09","Species: Sole<br />w: 2.000794e+00<br />value: 2.324973e+09","Species: Sole<br />w: 2.387671e+00<br />value: 2.699790e+09","Species: Sole<br />w: 2.849355e+00<br />value: 3.131393e+09","Species: Sole<br />w: 3.400312e+00<br />value: 3.629304e+09","Species: Sole<br />w: 4.057802e+00<br />value: 4.204985e+09","Species: Sole<br />w: 4.842426e+00<br />value: 4.872223e+09","Species: Sole<br />w: 5.778767e+00<br />value: 5.647575e+09","Species: Sole<br />w: 6.896160e+00<br />value: 6.550867e+09","Species: Sole<br />w: 8.229614e+00<br />value: 7.605725e+09","Species: Sole<br />w: 9.820907e+00<br />value: 8.840130e+09","Species: Sole<br />w: 1.171990e+01<br />value: 1.028696e+10","Species: Sole<br />w: 1.398608e+01<br />value: 1.198620e+10","Species: Sole<br />w: 1.669045e+01<br />value: 1.398102e+10","Species: Sole<br />w: 1.991775e+01<br />value: 1.632140e+10","Species: Sole<br />w: 2.376908e+01<br />value: 1.906264e+10","Species: Sole<br />w: 2.836511e+01<br />value: 2.226387e+10","Species: Sole<br />w: 3.384984e+01<br />value: 2.598608e+10","Species: Sole<br />w: 4.039511e+01<br />value: 3.029394e+10","Species: Sole<br />w: 4.820598e+01<br />value: 3.529491e+10","Species: Sole<br />w: 5.752718e+01<br />value: 4.144279e+10","Species: Sole<br />w: 6.865074e+01<br />value: 5.122317e+10","Species: Sole<br />w: 8.192517e+01<br />value: 7.129432e+10","Species: Sole<br />w: 9.776638e+01<br />value: 9.530759e+10","Species: Sole<br />w: 1.166707e+02<br />value: 1.085320e+11","Species: Sole<br />w: 1.392303e+02<br />value: 1.134247e+11","Species: Sole<br />w: 1.661521e+02<br />value: 1.125742e+11","Species: Sole<br />w: 1.982796e+02<br />value: 1.061204e+11","Species: Sole<br />w: 2.366193e+02<br />value: 9.408758e+10","Species: Sole<br />w: 2.823725e+02<br />value: 7.737739e+10","Species: Sole<br />w: 3.369726e+02<br />value: 5.797507e+10","Species: Sole<br />w: 4.021302e+02<br />value: 3.855320e+10","Species: Sole<br />w: 4.798868e+02<br />value: 2.202199e+10","Species: Sole<br />w: 5.726786e+02<br />value: 1.026157e+10","Species: Sole<br />w: 6.834128e+02<br />value: 3.562267e+09","Species: Sole<br />w: 8.155588e+02<br />value: 7.546084e+08","Species: Sole<br />w: 9.732567e+02<br />value: 3.968166e+07"],"type":"scatter","mode":"lines","line":{"width":3.0236220472440949,"color":"rgba(108,170,114,1)","dash":"solid"},"hoveron":"points","name":"Sole","legendgroup":"Sole","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-3,-2.9232278536040344,-2.8464557072080692,-2.7696835608121035,-2.6929114144161383,-2.6161392680201727,-2.5393671216242075,-2.4625949752282419,-2.3858228288322767,-2.3090506824363111,-2.2322785360403454,-2.1555063896443802,-2.0787342432484146,-2.0019620968524494,-1.9251899504564838,-1.8484178040605184,-1.771645657664553,-1.6948735112685875,-1.6181013648726221,-1.5413292184766567,-1.4645570720806913,-1.3877849256847257,-1.3110127792887603,-1.2342406328927948,-1.1574684864968294,-1.080696340100864,-1.0039241937048986,-0.92715204730893319,-0.85037990091296756,-0.77360775451700237,-0.69683560812103673,-0.62006346172507154,-0.54329131532910591,-0.46651916893314027,-0.38974702253717508,-0.31297487614120945,-0.23620272974524428,-0.15943058334927862,-0.082658436953313416,-0.0058862905573478074,0.070885855838617409,0.14765800223458306,0.22443014863054866,0.30120229502651386,0.37797444142247949,0.45474658781844468,0.53151873421441032,0.60829088061037551,0.68506302700634114,0.76183517340230678,0.83860731979827197,0.9153794661942376,0.99215161259020279,1.068923758986168,1.1456959053821336,1.2224680517780993,1.2992401981740649,1.3760123445700305,1.4527844909659953,1.5295566373619609,1.6063287837579265,1.6831009301538922,1.7598730765498569,1.8366452229458226,1.9134173693417882,1.9901895157377538,2.0669616621337195,2.1437338085296842,2.2205059549256498,2.2972781013216155,2.3740502477175811,2.4508223941135459,2.5275945405095115,2.6043666869054771,2.6811388333014428,2.7579109796974084,2.8346831260933731],"y":[5.5016720916347044,5.6040993118375555,5.7064582159410655,5.8087377078880174,5.9109248511807202,6.013004565805832,6.1149592728267583,6.2167684837426496,6.3184083331325542,6.4198510544301577,6.5210644001517934,6.6220110098184666,6.7226477314192925,6.8229249057185566,6.9227856270741714,7.0221649996894859,7.1209894142687133,7.2191758767237637,7.3166314276411617,7.4132526983168363,7.5089256558400823,7.6035255953611465,7.69691744158518,7.7889564228657733,7.8794891791291617,7.9683553583651108,8.0553897448114569,8.1404249447251225,8.2232946326538592,8.3038373328077597,8.3819006775137108,8.4573460495229824,8.5300534794540415,8.5999266366790987,8.6668977245112089,8.7309320715191507,8.7920322026283486,8.8502411780076393,8.9056450052128788,8.9583739601385055,9.0086026933966412,9.0565490482657456,9.1024715711657702,9.1466657522710779,9.1894590889004633,9.2312051141343918,9.2722765713907034,9.3130579195458427,9.3539373264193486,9.3952988393338845,9.4375150797496516,9.4809393390639407,9.5258985543447068,9.5726874740207872,9.6216315079880346,9.6729108371091232,9.7267957011971404,9.7839802606453272,9.8477253896959915,9.9333079136988687,10.068543653815913,10.204446689583454,10.295287314055754,10.369352812407822,10.442362436465327,10.517962108428303,10.596901419498172,10.679496424711576,10.766129100078846,10.85739635357559,10.954094632914682,11.056956573078754,11.165442306431999,11.274092511259749,11.371928809926766,11.412289773147251,11.19352926245953],"text":["Species: Gurnard<br />w: 1.000000e-03<br />value: 3.174476e+05","Species: Gurnard<br />w: 1.193362e-03<br />value: 4.018827e+05","Species: Gurnard<br />w: 1.424112e-03<br />value: 5.086959e+05","Species: Gurnard<br />w: 1.699481e-03<br />value: 6.437803e+05","Species: Gurnard<br />w: 2.028096e-03<br />value: 8.145633e+05","Species: Gurnard<br />w: 2.420253e-03<br />value: 1.030397e+06","Species: Gurnard<br />w: 2.888237e-03<br />value: 1.303045e+06","Species: Gurnard<br />w: 3.446712e-03<br />value: 1.647284e+06","Species: Gurnard<br />w: 4.113175e-03<br />value: 2.081653e+06","Species: Gurnard<br />w: 4.908506e-03<br />value: 2.629366e+06","Species: Gurnard<br />w: 5.857624e-03<br />value: 3.319437e+06","Species: Gurnard<br />w: 6.990265e-03<br />value: 4.188042e+06","Species: Gurnard<br />w: 8.341915e-03<br />value: 5.280168e+06","Species: Gurnard<br />w: 9.954923e-03<br />value: 6.651581e+06","Species: Gurnard<br />w: 1.187983e-02<br />value: 8.371160e+06","Species: Gurnard<br />w: 1.417693e-02<br />value: 1.052362e+07","Species: Gurnard<br />w: 1.691821e-02<br />value: 1.321263e+07","Species: Gurnard<br />w: 2.018954e-02<br />value: 1.656441e+07","Species: Gurnard<br />w: 2.409343e-02<br />value: 2.073153e+07","Species: Gurnard<br />w: 2.875218e-02<br />value: 2.589719e+07","Species: Gurnard<br />w: 3.431175e-02<br />value: 3.227942e+07","Species: Gurnard<br />w: 4.094634e-02<br />value: 4.013522e+07","Species: Gurnard<br />w: 4.886380e-02<br />value: 4.976425e+07","Species: Gurnard<br />w: 5.831219e-02<br />value: 6.151151e+07","Species: Gurnard<br />w: 6.958754e-02<br />value: 7.576859e+07","Species: Gurnard<br />w: 8.304312e-02<br />value: 9.297268e+07","Species: Gurnard<br />w: 9.910049e-02<br />value: 1.136030e+08","Species: Gurnard<br />w: 1.182627e-01<br />value: 1.381736e+08","Species: Gurnard<br />w: 1.411302e-01<br />value: 1.672225e+08","Species: Gurnard<br />w: 1.684195e-01<br />value: 2.012970e+08","Species: Gurnard<br />w: 2.009853e-01<br />value: 2.409354e+08","Species: Gurnard<br />w: 2.398482e-01<br />value: 2.866461e+08","Species: Gurnard<br />w: 2.862257e-01<br />value: 3.388859e+08","Species: Gurnard<br />w: 3.415709e-01<br />value: 3.980399e+08","Species: Gurnard<br />w: 4.076176e-01<br />value: 4.644059e+08","Species: Gurnard<br />w: 4.864353e-01<br />value: 5.381856e+08","Species: Gurnard<br />w: 5.804934e-01<br />value: 6.194870e+08","Species: Gurnard<br />w: 6.927386e-01<br />value: 7.083390e+08","Species: Gurnard<br />w: 8.266879e-01<br />value: 8.047204e+08","Species: Gurnard<br />w: 9.865378e-01<br />value: 9.086026e+08","Species: Gurnard<br />w: 1.177297e+00<br />value: 1.020006e+09","Species: Gurnard<br />w: 1.404941e+00<br />value: 1.139066e+09","Species: Gurnard<br />w: 1.676603e+00<br />value: 1.266110e+09","Species: Gurnard<br />w: 2.000794e+00<br />value: 1.401734e+09","Species: Gurnard<br />w: 2.387671e+00<br />value: 1.546889e+09","Species: Gurnard<br />w: 2.849355e+00<br />value: 1.702963e+09","Species: Gurnard<br />w: 3.400312e+00<br />value: 1.871874e+09","Species: Gurnard<br />w: 4.057802e+00<br />value: 2.056165e+09","Species: Gurnard<br />w: 4.842426e+00<br />value: 2.259110e+09","Species: Gurnard<br />w: 5.778767e+00<br />value: 2.484842e+09","Species: Gurnard<br />w: 6.896160e+00<br />value: 2.738515e+09","Species: Gurnard<br />w: 8.229614e+00<br />value: 3.026491e+09","Species: Gurnard<br />w: 9.820907e+00<br />value: 3.356592e+09","Species: Gurnard<br />w: 1.171990e+01<br />value: 3.738415e+09","Species: Gurnard<br />w: 1.398608e+01<br />value: 4.184384e+09","Species: Gurnard<br />w: 1.669045e+01<br />value: 4.708806e+09","Species: Gurnard<br />w: 1.991775e+01<br />value: 5.330841e+09","Species: Gurnard<br />w: 2.376908e+01<br />value: 6.081074e+09","Species: Gurnard<br />w: 2.836511e+01<br />value: 7.042476e+09","Species: Gurnard<br />w: 3.384984e+01<br />value: 8.576457e+09","Species: Gurnard<br />w: 4.039511e+01<br />value: 1.170964e+10","Species: Gurnard<br />w: 4.820598e+01<br />value: 1.601204e+10","Species: Gurnard<br />w: 5.752718e+01<br />value: 1.973728e+10","Species: Gurnard<br />w: 6.865074e+01<br />value: 2.340738e+10","Species: Gurnard<br />w: 8.192517e+01<br />value: 2.769252e+10","Species: Gurnard<br />w: 9.776638e+01<br />value: 3.295810e+10","Species: Gurnard<br />w: 1.166707e+02<br />value: 3.952769e+10","Species: Gurnard<br />w: 1.392303e+02<br />value: 4.780754e+10","Species: Gurnard<br />w: 1.661521e+02<br />value: 5.836186e+10","Species: Gurnard<br />w: 1.982796e+02<br />value: 7.201059e+10","Species: Gurnard<br />w: 2.366193e+02<br />value: 8.996936e+10","Species: Gurnard<br />w: 2.823725e+02<br />value: 1.140136e+11","Species: Gurnard<br />w: 3.369726e+02<br />value: 1.463667e+11","Species: Gurnard<br />w: 4.021302e+02<br />value: 1.879717e+11","Species: Gurnard<br />w: 4.798868e+02<br />value: 2.354663e+11","Species: Gurnard<br />w: 5.726786e+02<br />value: 2.583984e+11","Species: Gurnard<br />w: 6.834128e+02<br />value: 1.561454e+11"],"type":"scatter","mode":"lines","line":{"width":3.0236220472440949,"color":"rgba(238,0,83,1)","dash":"solid"},"hoveron":"points","name":"Gurnard","legendgroup":"Gurnard","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-3,-2.9232278536040344,-2.8464557072080692,-2.7696835608121035,-2.6929114144161383,-2.6161392680201727,-2.5393671216242075,-2.4625949752282419,-2.3858228288322767,-2.3090506824363111,-2.2322785360403454,-2.1555063896443802,-2.0787342432484146,-2.0019620968524494,-1.9251899504564838,-1.8484178040605184,-1.771645657664553,-1.6948735112685875,-1.6181013648726221,-1.5413292184766567,-1.4645570720806913,-1.3877849256847257,-1.3110127792887603,-1.2342406328927948,-1.1574684864968294,-1.080696340100864,-1.0039241937048986,-0.92715204730893319,-0.85037990091296756,-0.77360775451700237,-0.69683560812103673,-0.62006346172507154,-0.54329131532910591,-0.46651916893314027,-0.38974702253717508,-0.31297487614120945,-0.23620272974524428,-0.15943058334927862,-0.082658436953313416,-0.0058862905573478074,0.070885855838617409,0.14765800223458306,0.22443014863054866,0.30120229502651386,0.37797444142247949,0.45474658781844468,0.53151873421441032,0.60829088061037551,0.68506302700634114,0.76183517340230678,0.83860731979827197,0.9153794661942376,0.99215161259020279,1.068923758986168,1.1456959053821336,1.2224680517780993,1.2992401981740649,1.3760123445700305,1.4527844909659953,1.5295566373619609,1.6063287837579265,1.6831009301538922,1.7598730765498569,1.8366452229458226,1.9134173693417882,1.9901895157377538,2.0669616621337195,2.1437338085296842,2.2205059549256498,2.2972781013216155,2.3740502477175811,2.4508223941135459,2.5275945405095115,2.6043666869054771,2.6811388333014428,2.7579109796974084,2.8346831260933731,2.9114552724893388,2.9882274188853044,3.06499956528127,3.1417717116772348,3.2185438580732004,3.2953160044691661,3.3720881508651317,3.4488602972610973,3.5256324436570621],"y":[5.0605633757082185,5.1627794670390124,5.2649108742839861,5.3669433756606741,5.4688603962754048,5.5706426225684345,5.6722675406291048,5.7737088963384746,5.8749360784598235,5.9759134283650051,6.0765994825743821,6.1769461573167677,6.2768978883715194,6.3763907447816033,6.4753515416094407,6.5736969845163262,6.6713328871870416,6.7681535109709019,6.8640410839311157,6.9588655630393665,7.0524847076788548,7.1447445340207061,7.2354802173076571,7.3245175017945545,7.4116746654365651,7.4967650680854891,7.5796002880965858,7.659993823541587,7.737765301924675,7.8127451082172863,7.8847793074228987,7.9537347072757409,8.0195038816015707,8.082009957587692,8.1412109624399616,8.1971035275946473,8.2497257618503266,8.2991591276219712,8.3455291853139837,8.3890051072671259,8.4297979022142506,8.4681573309790537,8.5043675317739922,8.5387414068142036,8.571613849438334,8.6033339104722746,8.6342560045218164,8.6647301871498819,8.695091407148432,8.7256489931707897,8.7566767330195301,8.7884001443586968,8.8209843102934844,8.8545223799675963,8.8891541260209923,8.9246941554074564,8.9609701666557768,8.9977150630682345,9.0345521676446552,9.0709774869618816,9.1063779994672789,9.1400708832803836,9.1714285137280509,9.2004950316608074,9.2311118699818255,9.2793589518917035,9.3442623189300775,9.3642948982543093,9.3395411003310738,9.2922979242831421,9.2287600655119242,9.1492146951536615,9.0523866658577425,8.9350194471200162,8.7952867483788477,8.6295782865315491,8.4337323933464017,8.2022439100852438,7.927991747617515,7.6020769536898012,7.2139074324497354,6.7509252147364949,6.1965400201433471,5.5207809539220571,4.6448384082230412,3.1756658010916992],"text":["Species: Plaice<br />w: 1.000000e-03<br />value: 1.149644e+05","Species: Plaice<br />w: 1.193362e-03<br />value: 1.454720e+05","Species: Plaice<br />w: 1.424112e-03<br />value: 1.840394e+05","Species: Plaice<br />w: 1.699481e-03<br />value: 2.327788e+05","Species: Plaice<br />w: 2.028096e-03<br />value: 2.943475e+05","Species: Plaice<br />w: 2.420253e-03<br />value: 3.720854e+05","Species: Plaice<br />w: 2.888237e-03<br />value: 4.701837e+05","Species: Plaice<br />w: 3.446712e-03<br />value: 5.938939e+05","Species: Plaice<br />w: 4.113175e-03<br />value: 7.497838e+05","Species: Plaice<br />w: 4.908506e-03<br />value: 9.460486e+05","Species: Plaice<br />w: 5.857624e-03<br />value: 1.192887e+06","Species: Plaice<br />w: 6.990265e-03<br />value: 1.502956e+06","Species: Plaice<br />w: 8.341915e-03<br />value: 1.891899e+06","Species: Plaice<br />w: 9.954923e-03<br />value: 2.378980e+06","Species: Plaice<br />w: 1.187983e-02<br />value: 2.987800e+06","Species: Plaice<br />w: 1.417693e-02<br />value: 3.747115e+06","Species: Plaice<br />w: 1.691821e-02<br />value: 4.691729e+06","Species: Plaice<br />w: 2.018954e-02<br />value: 5.863454e+06","Species: Plaice<br />w: 2.409343e-02<br />value: 7.312083e+06","Species: Plaice<br />w: 2.875218e-02<br />value: 9.096317e+06","Species: Plaice<br />w: 3.431175e-02<br />value: 1.128456e+07","Species: Plaice<br />w: 4.094634e-02<br />value: 1.395547e+07","Species: Plaice<br />w: 4.886380e-02<br />value: 1.719809e+07","Species: Plaice<br />w: 5.831219e-02<br />value: 2.111142e+07","Species: Plaice<br />w: 6.958754e-02<br />value: 2.580327e+07","Species: Plaice<br />w: 8.304312e-02<br />value: 3.138810e+07","Species: Plaice<br />w: 9.910049e-02<br />value: 3.798396e+07","Species: Plaice<br />w: 1.182627e-01<br />value: 4.570817e+07","Species: Plaice<br />w: 1.411302e-01<br />value: 5.467204e+07","Species: Plaice<br />w: 1.684195e-01<br />value: 6.497482e+07","Species: Plaice<br />w: 2.009853e-01<br />value: 7.669716e+07","Species: Plaice<br />w: 2.398482e-01<br />value: 8.989483e+07","Species: Plaice<br />w: 2.862257e-01<br />value: 1.045933e+08","Species: Plaice<br />w: 3.415709e-01<br />value: 1.207842e+08","Species: Plaice<br />w: 4.076176e-01<br />value: 1.384239e+08","Species: Plaice<br />w: 4.864353e-01<br />value: 1.574358e+08","Species: Plaice<br />w: 5.804934e-01<br />value: 1.777157e+08","Species: Plaice<br />w: 6.927386e-01<br />value: 1.991403e+08","Species: Plaice<br />w: 8.266879e-01<br />value: 2.215793e+08","Species: Plaice<br />w: 9.865378e-01<br />value: 2.449092e+08","Species: Plaice<br />w: 1.177297e+00<br />value: 2.690283e+08","Species: Plaice<br />w: 1.404941e+00<br />value: 2.938714e+08","Species: Plaice<br />w: 1.676603e+00<br />value: 3.194240e+08","Species: Plaice<br />w: 2.000794e+00<br />value: 3.457335e+08","Species: Plaice<br />w: 2.387671e+00<br />value: 3.729184e+08","Species: Plaice<br />w: 2.849355e+00<br />value: 4.011750e+08","Species: Plaice<br />w: 3.400312e+00<br />value: 4.307805e+08","Species: Plaice<br />w: 4.057802e+00<br />value: 4.620938e+08","Species: Plaice<br />w: 4.842426e+00<br />value: 4.955545e+08","Species: Plaice<br />w: 5.778767e+00<br />value: 5.316784e+08","Species: Plaice<br />w: 6.896160e+00<br />value: 5.710534e+08","Species: Plaice<br />w: 8.229614e+00<br />value: 6.143278e+08","Species: Plaice<br />w: 9.820907e+00<br />value: 6.621926e+08","Species: Plaice<br />w: 1.171990e+01<br />value: 7.153563e+08","Species: Plaice<br />w: 1.398608e+01<br />value: 7.747367e+08","Species: Plaice<br />w: 1.669045e+01<br />value: 8.408028e+08","Species: Plaice<br />w: 1.991775e+01<br />value: 9.140504e+08","Species: Plaice<br />w: 2.376908e+01<br />value: 9.947526e+08","Species: Plaice<br />w: 2.836511e+01<br />value: 1.082810e+09","Species: Plaice<br />w: 3.384984e+01<br />value: 1.177545e+09","Species: Plaice<br />w: 4.039511e+01<br />value: 1.277550e+09","Species: Plaice<br />w: 4.820598e+01<br />value: 1.380610e+09","Species: Plaice<br />w: 5.752718e+01<br />value: 1.483982e+09","Species: Plaice<br />w: 6.865074e+01<br />value: 1.586701e+09","Species: Plaice<br />w: 8.192517e+01<br />value: 1.702597e+09","Species: Plaice<br />w: 9.776638e+01<br />value: 1.902650e+09","Species: Plaice<br />w: 1.166707e+02<br />value: 2.209339e+09","Species: Plaice<br />w: 1.392303e+02<br />value: 2.313635e+09","Species: Plaice<br />w: 1.661521e+02<br />value: 2.185451e+09","Species: Plaice<br />w: 1.982796e+02<br />value: 1.960189e+09","Species: Plaice<br />w: 2.366193e+02<br />value: 1.693402e+09","Species: Plaice<br />w: 2.823725e+02<br />value: 1.409986e+09","Species: Plaice<br />w: 3.369726e+02<br />value: 1.128201e+09","Species: Plaice<br />w: 4.021302e+02<br />value: 8.610323e+08","Species: Plaice<br />w: 4.798868e+02<br />value: 6.241468e+08","Species: Plaice<br />w: 5.726786e+02<br />value: 4.261655e+08","Species: Plaice<br />w: 6.834128e+02<br />value: 2.714766e+08","Species: Plaice<br />w: 8.155588e+02<br />value: 1.593103e+08","Species: Plaice<br />w: 9.732567e+02<br />value: 8.472113e+07","Species: Plaice<br />w: 1.161447e+03<br />value: 4.000156e+07","Species: Plaice<br />w: 1.386027e+03<br />value: 1.636468e+07","Species: Plaice<br />w: 1.654032e+03<br />value: 5.635406e+06","Species: Plaice<br />w: 1.973858e+03<br />value: 1.572317e+06","Species: Plaice<br />w: 2.355527e+03<br />value: 3.317271e+05","Species: Plaice<br />w: 2.810996e+03<br />value: 4.414062e+04","Species: Plaice<br />w: 3.354536e+03<br />value: 1.498531e+03"],"type":"scatter","mode":"lines","line":{"width":3.0236220472440949,"color":"rgba(0,121,87,1)","dash":"solid"},"hoveron":"points","name":"Plaice","legendgroup":"Plaice","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-3,-2.9232278536040344,-2.8464557072080692,-2.7696835608121035,-2.6929114144161383,-2.6161392680201727,-2.5393671216242075,-2.4625949752282419,-2.3858228288322767,-2.3090506824363111,-2.2322785360403454,-2.1555063896443802,-2.0787342432484146,-2.0019620968524494,-1.9251899504564838,-1.8484178040605184,-1.771645657664553,-1.6948735112685875,-1.6181013648726221,-1.5413292184766567,-1.4645570720806913,-1.3877849256847257,-1.3110127792887603,-1.2342406328927948,-1.1574684864968294,-1.080696340100864,-1.0039241937048986,-0.92715204730893319,-0.85037990091296756,-0.77360775451700237,-0.69683560812103673,-0.62006346172507154,-0.54329131532910591,-0.46651916893314027,-0.38974702253717508,-0.31297487614120945,-0.23620272974524428,-0.15943058334927862,-0.082658436953313416,-0.0058862905573478074,0.070885855838617409,0.14765800223458306,0.22443014863054866,0.30120229502651386,0.37797444142247949,0.45474658781844468,0.53151873421441032,0.60829088061037551,0.68506302700634114,0.76183517340230678,0.83860731979827197,0.9153794661942376,0.99215161259020279,1.068923758986168,1.1456959053821336,1.2224680517780993,1.2992401981740649,1.3760123445700305,1.4527844909659953,1.5295566373619609,1.6063287837579265,1.6831009301538922,1.7598730765498569,1.8366452229458226,1.9134173693417882,1.9901895157377538,2.0669616621337195,2.1437338085296842,2.2205059549256498,2.2972781013216155,2.3740502477175811,2.4508223941135459,2.5275945405095115,2.6043666869054771,2.6811388333014428,2.7579109796974084,2.8346831260933731,2.9114552724893388,2.9882274188853044,3.06499956528127,3.1417717116772348,3.2185438580732004,3.2953160044691661,3.3720881508651317,3.4488602972610973,3.5256324436570621,3.6024045900530277,3.6791767364489933],"y":[5.1559112486576995,5.2585907673060408,5.3612289352730835,5.4638182694416049,5.5663500223060751,5.6688139897059413,5.7711982939942557,5.8734891423506452,5.9756705607839127,6.0777241052703594,6.1796285524888628,6.2813595737996728,6.382889397514397,6.484186466140379,6.5852150971514316,6.6859351579173625,6.7863017676820512,6.8862650418663058,6.98576989642544,7.0847559324290561,7.1831574233383435,7.2809034294791424,7.377918065739224,7.4741209492867808,7.5694278537811863,7.663751594738085,7.7570031669967339,7.8490931492036031,7.9399333815256048,8.0294389112361948,8.1175301864056166,8.2041354610116723,8.2891933560817002,8.3726555020852516,8.454489169186461,8.5346797758637649,8.6132331546437566,8.6901774480040537,8.7655645092745313,8.8394706934622143,8.9119969414886082,8.9832680877082876,9.0534313533226474,9.1226540252356489,9.1911203581727001,9.2590277734500006,9.326582450469207,9.3939943753069812,9.4614718346602036,9.5292163237725909,9.5974181670690619,9.666250385771983,9.7358631579389936,9.8063788013161162,9.8779655234088821,9.9506153525616128,10.024349662802997,10.099169053308589,10.175031909508007,10.251775534337737,10.329124234254135,10.406701159747222,10.4840295751718,10.560547203077181,10.635660945223172,10.70901174646359,10.781960524274854,10.864406824626132,10.979710541982559,11.095180009246022,11.160372959672596,11.195978978743767,11.216942091080318,11.226220948325295,11.223838932075827,11.208829174430145,11.179843400475038,11.135095950033969,11.072226443218,10.988053731551471,10.878391541962158,10.737505886107337,10.557271657136718,10.325647852312901,10.023552029280028,9.6170457850397586,9.0312749459297255,7.9392010060782772],"text":["Species: Haddock<br />w: 1.000000e-03<br />value: 1.431895e+05","Species: Haddock<br />w: 1.193362e-03<br />value: 1.813806e+05","Species: Haddock<br />w: 1.424112e-03<br />value: 2.297359e+05","Species: Haddock<br />w: 1.699481e-03<br />value: 2.909499e+05","Species: Haddock<br />w: 2.028096e-03<br />value: 3.684258e+05","Species: Haddock<br />w: 2.420253e-03<br />value: 4.664596e+05","Species: Haddock<br />w: 2.888237e-03<br />value: 5.904706e+05","Species: Haddock<br />w: 3.446712e-03<br />value: 7.472900e+05","Species: Haddock<br />w: 4.113175e-03<br />value: 9.455197e+05","Species: Haddock<br />w: 4.908506e-03<br />value: 1.195981e+06","Species: Haddock<br />w: 5.857624e-03<br />value: 1.512267e+06","Species: Haddock<br />w: 6.990265e-03<br />value: 1.911435e+06","Species: Haddock<br />w: 8.341915e-03<br />value: 2.414846e+06","Species: Haddock<br />w: 9.954923e-03<br />value: 3.049204e+06","Species: Haddock<br />w: 1.187983e-02<br />value: 3.847823e+06","Species: Haddock<br />w: 1.417693e-02<br />value: 4.852160e+06","Species: Haddock<br />w: 1.691821e-02<br />value: 6.113667e+06","Species: Haddock<br />w: 2.018954e-02<br />value: 7.696000e+06","Species: Haddock<br />w: 2.409343e-02<br />value: 9.677650e+06","Species: Haddock<br />w: 2.875218e-02<br />value: 1.215503e+07","Species: Haddock<br />w: 3.431175e-02<br />value: 1.524605e+07","Species: Haddock<br />w: 4.094634e-02<br />value: 1.909429e+07","Species: Haddock<br />w: 4.886380e-02<br />value: 2.387361e+07","Species: Haddock<br />w: 5.831219e-02<br />value: 2.979346e+07","Species: Haddock<br />w: 6.958754e-02<br />value: 3.710461e+07","Species: Haddock<br />w: 8.304312e-02<br />value: 4.610538e+07","Species: Haddock<br />w: 9.910049e-02<br />value: 5.714828e+07","Species: Haddock<br />w: 1.182627e-01<br />value: 7.064691e+07","Species: Haddock<br />w: 1.411302e-01<br />value: 8.708300e+07","Species: Haddock<br />w: 1.684195e-01<br />value: 1.070136e+08","Species: Haddock<br />w: 2.009853e-01<br />value: 1.310781e+08","Species: Haddock<br />w: 2.398482e-01<br />value: 1.600057e+08","Species: Haddock<br />w: 2.862257e-01<br />value: 1.946226e+08","Species: Haddock<br />w: 3.415709e-01<br />value: 2.358607e+08","Species: Haddock<br />w: 4.076176e-01<br />value: 2.847667e+08","Species: Haddock<br />w: 4.864353e-01<br />value: 3.425151e+08","Species: Haddock<br />w: 5.804934e-01<br />value: 4.104244e+08","Species: Haddock<br />w: 6.927386e-01<br />value: 4.899790e+08","Species: Haddock<br />w: 8.266879e-01<br />value: 5.828603e+08","Species: Haddock<br />w: 9.865378e-01<br />value: 6.909883e+08","Species: Haddock<br />w: 1.177297e+00<br />value: 8.165766e+08","Species: Haddock<br />w: 1.404941e+00<br />value: 9.622061e+08","Species: Haddock<br />w: 1.676603e+00<br />value: 1.130919e+09","Species: Haddock<br />w: 2.000794e+00<br />value: 1.326337e+09","Species: Haddock<br />w: 2.387671e+00<br />value: 1.552817e+09","Species: Haddock<br />w: 2.849355e+00<br />value: 1.815632e+09","Species: Haddock<br />w: 3.400312e+00<br />value: 2.121204e+09","Species: Haddock<br />w: 4.057802e+00<br />value: 2.477390e+09","Species: Haddock<br />w: 4.842426e+00<br />value: 2.893822e+09","Species: Haddock<br />w: 5.778767e+00<br />value: 3.382333e+09","Species: Haddock<br />w: 6.896160e+00<br />value: 3.957475e+09","Species: Haddock<br />w: 8.229614e+00<br />value: 4.637142e+09","Species: Haddock<br />w: 9.820907e+00<br />value: 5.443311e+09","Species: Haddock<br />w: 1.171990e+01<br />value: 6.402931e+09","Species: Haddock<br />w: 1.398608e+01<br />value: 7.550323e+09","Species: Haddock<br />w: 1.669045e+01<br />value: 8.925146e+09","Species: Haddock<br />w: 1.991775e+01<br />value: 1.057669e+10","Species: Haddock<br />w: 2.376908e+01<br />value: 1.256519e+10","Species: Haddock<br />w: 2.836511e+01<br />value: 1.496346e+10","Species: Haddock<br />w: 3.384984e+01<br />value: 1.785564e+10","Species: Haddock<br />w: 4.039511e+01<br />value: 2.133655e+10","Species: Haddock<br />w: 4.820598e+01<br />value: 2.550945e+10","Species: Haddock<br />w: 5.752718e+01<br />value: 3.048103e+10","Species: Haddock<br />w: 6.865074e+01<br />value: 3.635358e+10","Species: Haddock<br />w: 8.192517e+01<br />value: 4.321763e+10","Species: Haddock<br />w: 9.776638e+01<br />value: 5.116957e+10","Species: Haddock<br />w: 1.166707e+02<br />value: 6.052859e+10","Species: Haddock<br />w: 1.392303e+02<br />value: 7.318243e+10","Species: Haddock<br />w: 1.661521e+02<br />value: 9.543563e+10","Species: Haddock<br />w: 1.982796e+02<br />value: 1.245031e+11","Species: Haddock<br />w: 2.366193e+02<br />value: 1.446682e+11","Species: Haddock<br />w: 2.823725e+02<br />value: 1.570287e+11","Species: Haddock<br />w: 3.369726e+02<br />value: 1.647943e+11","Species: Haddock<br />w: 4.021302e+02<br />value: 1.683530e+11","Species: Haddock<br />w: 4.798868e+02<br />value: 1.674322e+11","Species: Haddock<br />w: 5.726786e+02<br />value: 1.617444e+11","Species: Haddock<br />w: 6.834128e+02<br />value: 1.513016e+11","Species: Haddock<br />w: 8.155588e+02<br />value: 1.364885e+11","Species: Haddock<br />w: 9.732567e+02<br />value: 1.180936e+11","Species: Haddock<br />w: 1.161447e+03<br />value: 9.728676e+10","Species: Haddock<br />w: 1.386027e+03<br />value: 7.557733e+10","Species: Haddock<br />w: 1.654032e+03<br />value: 5.463940e+10","Species: Haddock<br />w: 1.973858e+03<br />value: 3.608043e+10","Species: Haddock<br />w: 2.355527e+03<br />value: 2.116644e+10","Species: Haddock<br />w: 2.810996e+03<br />value: 1.055728e+10","Species: Haddock<br />w: 3.354536e+03<br />value: 4.140433e+09","Species: Haddock<br />w: 4.003175e+03<br />value: 1.074670e+09","Species: Haddock<br />w: 4.777236e+03<br />value: 8.693627e+07"],"type":"scatter","mode":"lines","line":{"width":3.0236220472440949,"color":"rgba(180,41,121,1)","dash":"solid"},"hoveron":"points","name":"Haddock","legendgroup":"Haddock","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-3,-2.9232278536040344,-2.8464557072080692,-2.7696835608121035,-2.6929114144161383,-2.6161392680201727,-2.5393671216242075,-2.4625949752282419,-2.3858228288322767,-2.3090506824363111,-2.2322785360403454,-2.1555063896443802,-2.0787342432484146,-2.0019620968524494,-1.9251899504564838,-1.8484178040605184,-1.771645657664553,-1.6948735112685875,-1.6181013648726221,-1.5413292184766567,-1.4645570720806913,-1.3877849256847257,-1.3110127792887603,-1.2342406328927948,-1.1574684864968294,-1.080696340100864,-1.0039241937048986,-0.92715204730893319,-0.85037990091296756,-0.77360775451700237,-0.69683560812103673,-0.62006346172507154,-0.54329131532910591,-0.46651916893314027,-0.38974702253717508,-0.31297487614120945,-0.23620272974524428,-0.15943058334927862,-0.082658436953313416,-0.0058862905573478074,0.070885855838617409,0.14765800223458306,0.22443014863054866,0.30120229502651386,0.37797444142247949,0.45474658781844468,0.53151873421441032,0.60829088061037551,0.68506302700634114,0.76183517340230678,0.83860731979827197,0.9153794661942376,0.99215161259020279,1.068923758986168,1.1456959053821336,1.2224680517780993,1.2992401981740649,1.3760123445700305,1.4527844909659953,1.5295566373619609,1.6063287837579265,1.6831009301538922,1.7598730765498569,1.8366452229458226,1.9134173693417882,1.9901895157377538,2.0669616621337195,2.1437338085296842,2.2205059549256498,2.2972781013216155,2.3740502477175811,2.4508223941135459,2.5275945405095115,2.6043666869054771,2.6811388333014428,2.7579109796974084,2.8346831260933731,2.9114552724893388,2.9882274188853044,3.06499956528127,3.1417717116772348,3.2185438580732004,3.2953160044691661,3.3720881508651317,3.4488602972610973,3.5256324436570621,3.6024045900530277,3.6791767364489933,3.755948882844959,3.8327210292409246,3.9094931756368894,3.986265322032855,4.0630374684288206,4.1398096148247863,4.216581761220751,4.2933539076167166,4.3701260540126823,4.4468982004086479,4.5236703468046136,4.6004424932005783],"y":[2.4299470910035637,2.5326866583464516,2.6354034292360784,2.738093321712014,2.8407515841906559,2.9433726891417562,3.0459502078147787,3.1484766654975997,3.2509433774874821,3.3533402665125203,3.4556556628699853,3.5578760891785386,3.6599860324810716,3.76196770754242,3.8638008165700795,3.9654623122161241,4.0669261725387074,4.1681631985373171,4.2691408468369341,4.3698231119733331,4.470170474393778,4.5701399315783364,4.6696851304264335,4.7687566190401238,4.8673022350572843,4.9652676455349152,5.0625970498676773,5.1592340522111311,5.2551227033017485,5.3502087034755963,5.4444407492718234,5.5377719956141869,5.6301615947114909,5.7215762621829684,5.8119918113012563,5.9013945885272907,5.9897827385548705,6.0771672256557467,6.1635725407939033,6.2490370310581493,6.3336127994031068,6.4173651380806005,6.5003714777168238,6.5827198546569301,6.6645069205293908,6.7458355374528267,6.8268120100401006,6.9075429515720916,6.9881316627683407,7.0686749962770721,7.1492611370520036,7.2299656443066631,7.3108480763149446,7.3919492547544481,7.473373497776862,7.5550721365690734,7.6370361470000567,7.7192447350369431,7.8016572572686309,7.8841902828586514,7.9667252237262938,8.0491131301010501,8.1311760262553019,8.2127119671791604,8.2934964249992973,8.3732744443755394,8.4517557262468888,8.5286154798955813,8.6034940558592918,8.6759934762691504,8.7456679329570903,8.8120340765537772,8.8745436280752408,8.932458660407832,8.9855274823060043,9.0330840178567495,9.0747664491225493,9.11045736142243,9.1405703172579678,9.1676539299413555,9.2035505186336497,9.2680953817471021,9.3176354248038749,9.3153886402754829,9.287634094698042,9.2482290367365696,9.199783068890854,9.1418456236545094,9.0729711069030898,8.9910790103000107,8.893439260833139,8.7765314381848238,8.6357932410514753,8.4652048228443864,8.2565909223327818,7.9983920950318597,7.6733276865145328,7.2533803999856046,6.6866363389506835,5.8461377278083839],"text":["Species: Cod<br />w: 1.000000e-03<br />value: 2.691207e+02","Species: Cod<br />w: 1.193362e-03<br />value: 3.409468e+02","Species: Cod<br />w: 1.424112e-03<br />value: 4.319201e+02","Species: Cod<br />w: 1.699481e-03<br />value: 5.471335e+02","Species: Cod<br />w: 2.028096e-03<br />value: 6.930293e+02","Species: Cod<br />w: 2.420253e-03<br />value: 8.777537e+02","Species: Cod<br />w: 2.888237e-03<br />value: 1.111604e+03","Species: Cod<br />w: 3.446712e-03<br />value: 1.407592e+03","Species: Cod<br />w: 4.113175e-03<br />value: 1.782146e+03","Species: Cod<br />w: 4.908506e-03<br />value: 2.256006e+03","Species: Cod<br />w: 5.857624e-03<br />value: 2.855326e+03","Species: Cod<br />w: 6.990265e-03<br />value: 3.613068e+03","Species: Cod<br />w: 8.341915e-03<br />value: 4.570735e+03","Species: Cod<br />w: 9.954923e-03<br />value: 5.780531e+03","Species: Cod<br />w: 1.187983e-02<br />value: 7.308038e+03","Species: Cod<br />w: 1.417693e-02<br />value: 9.235540e+03","Species: Cod<br />w: 1.691821e-02<br />value: 1.166611e+04","Species: Cod<br />w: 2.018954e-02<br />value: 1.472866e+04","Species: Cod<br />w: 2.409343e-02<br />value: 1.858407e+04","Species: Cod<br />w: 2.875218e-02<br />value: 2.343274e+04","Species: Cod<br />w: 3.431175e-02<br />value: 2.952368e+04","Species: Cod<br />w: 4.094634e-02<br />value: 3.716550e+04","Species: Cod<br />w: 4.886380e-02<br />value: 4.673961e+04","Species: Cod<br />w: 5.831219e-02<br />value: 5.871602e+04","Species: Cod<br />w: 6.958754e-02<br />value: 7.367196e+04","Species: Cod<br />w: 8.304312e-02<br />value: 9.231402e+04","Species: Cod<br />w: 9.910049e-02<br />value: 1.155040e+05","Species: Cod<br />w: 1.182627e-01<br />value: 1.442893e+05","Species: Cod<br />w: 1.411302e-01<br />value: 1.799379e+05","Species: Cod<br />w: 1.684195e-01<br />value: 2.239797e+05","Species: Cod<br />w: 2.009853e-01<br />value: 2.782536e+05","Species: Cod<br />w: 2.398482e-01<br />value: 3.449626e+05","Species: Cod<br />w: 2.862257e-01<br />value: 4.267383e+05","Species: Cod<br />w: 3.415709e-01<br />value: 5.267157e+05","Species: Cod<br />w: 4.076176e-01<br />value: 6.486222e+05","Species: Cod<br />w: 4.864353e-01<br />value: 7.968830e+05","Species: Cod<br />w: 5.804934e-01<br />value: 9.767485e+05","Species: Cod<br />w: 6.927386e-01<br />value: 1.194448e+06","Species: Cod<br />w: 8.266879e-01<br />value: 1.457379e+06","Species: Cod<br />w: 9.865378e-01<br />value: 1.774341e+06","Species: Cod<br />w: 1.177297e+00<br />value: 2.155822e+06","Species: Cod<br />w: 1.404941e+00<br />value: 2.614358e+06","Species: Cod<br />w: 1.676603e+00<br />value: 3.164984e+06","Species: Cod<br />w: 2.000794e+00<br />value: 3.825779e+06","Species: Cod<br />w: 2.387671e+00<br />value: 4.618564e+06","Species: Cod<br />w: 2.849355e+00<br />value: 5.569748e+06","Species: Cod<br />w: 3.400312e+00<br />value: 6.711383e+06","Species: Cod<br />w: 4.057802e+00<br />value: 8.082449e+06","Species: Cod<br />w: 4.842426e+00<br />value: 9.730422e+06","Species: Cod<br />w: 5.778767e+00<br />value: 1.171318e+07","Species: Cod<br />w: 6.896160e+00<br />value: 1.410136e+07","Species: Cod<br />w: 8.229614e+00<br />value: 1.698109e+07","Species: Cod<br />w: 9.820907e+00<br />value: 2.045729e+07","Species: Cod<br />w: 1.171990e+01<br />value: 2.465751e+07","Species: Cod<br />w: 1.398608e+01<br />value: 2.974223e+07","Species: Cod<br />w: 1.669045e+01<br />value: 3.589816e+07","Species: Cod<br />w: 1.991775e+01<br />value: 4.335470e+07","Species: Cod<br />w: 2.376908e+01<br />value: 5.238956e+07","Species: Cod<br />w: 2.836511e+01<br />value: 6.333697e+07","Species: Cod<br />w: 3.384984e+01<br />value: 7.659321e+07","Species: Cod<br />w: 4.039511e+01<br />value: 9.262436e+07","Species: Cod<br />w: 4.820598e+01<br />value: 1.119730e+08","Species: Cod<br />w: 5.752718e+01<br />value: 1.352621e+08","Species: Cod<br />w: 6.865074e+01<br />value: 1.631969e+08","Species: Cod<br />w: 8.192517e+01<br />value: 1.965606e+08","Species: Cod<br />w: 9.776638e+01<br />value: 2.361970e+08","Species: Cod<br />w: 1.166707e+02<br />value: 2.829800e+08","Species: Cod<br />w: 1.392303e+02<br />value: 3.377656e+08","Species: Cod<br />w: 1.661521e+02<br />value: 4.013230e+08","Species: Cod<br />w: 1.982796e+02<br />value: 4.742349e+08","Species: Cod<br />w: 2.366193e+02<br />value: 5.567599e+08","Species: Cod<br />w: 2.823725e+02<br />value: 6.486853e+08","Species: Cod<br />w: 3.369726e+02<br />value: 7.491066e+08","Species: Cod<br />w: 4.021302e+02<br />value: 8.559702e+08","Species: Cod<br />w: 4.798868e+02<br />value: 9.672249e+08","Species: Cod<br />w: 5.726786e+02<br />value: 1.079155e+09","Species: Cod<br />w: 6.834128e+02<br />value: 1.187863e+09","Species: Cod<br />w: 8.155588e+02<br />value: 1.289607e+09","Species: Cod<br />w: 9.732567e+02<br />value: 1.382198e+09","Species: Cod<br />w: 1.161447e+03<br />value: 1.471140e+09","Species: Cod<br />w: 1.386027e+03<br />value: 1.597903e+09","Species: Cod<br />w: 1.654032e+03<br />value: 1.853939e+09","Species: Cod<br />w: 1.973858e+03<br />value: 2.077952e+09","Species: Cod<br />w: 2.355527e+03<br />value: 2.067229e+09","Species: Cod<br />w: 2.810996e+03<br />value: 1.939251e+09","Species: Cod<br />w: 3.354536e+03<br />value: 1.771043e+09","Species: Cod<br />w: 4.003175e+03<br />value: 1.584102e+09","Species: Cod<br />w: 4.777236e+03<br />value: 1.386263e+09","Species: Cod<br />w: 5.700972e+03<br />value: 1.182963e+09","Species: Cod<br />w: 6.803322e+03<br />value: 9.796682e+08","Species: Cod<br />w: 8.118825e+03<br />value: 7.824188e+08","Species: Cod<br />w: 9.688696e+03<br />value: 5.977663e+08","Species: Cod<br />w: 1.156212e+04<br />value: 4.323080e+08","Species: Cod<br />w: 1.379779e+04<br />value: 2.918803e+08","Species: Cod<br />w: 1.646576e+04<br />value: 1.805473e+08","Species: Cod<br />w: 1.964961e+04<br />value: 9.963045e+07","Species: Cod<br />w: 2.344909e+04<br />value: 4.713328e+07","Species: Cod<br />w: 2.798325e+04<br />value: 1.792175e+07","Species: Cod<br />w: 3.339415e+04<br />value: 4.860001e+06","Species: Cod<br />w: 3.985130e+04<br />value: 7.016778e+05"],"type":"scatter","mode":"lines","line":{"width":3.0236220472440949,"color":"rgba(20,35,0,1)","dash":"solid"},"hoveron":"points","name":"Cod","legendgroup":"Cod","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-2.8464557072080692,-2.7696835608121035,-2.6929114144161383,-2.6161392680201727,-2.5393671216242075,-2.4625949752282419,-2.3858228288322767,-2.3090506824363111,-2.2322785360403454,-2.1555063896443802,-2.0787342432484146,-2.0019620968524494,-1.9251899504564838,-1.8484178040605184,-1.771645657664553,-1.6948735112685875,-1.6181013648726221,-1.5413292184766567,-1.4645570720806913,-1.3877849256847257,-1.3110127792887603,-1.2342406328927948,-1.1574684864968294,-1.080696340100864,-1.0039241937048986,-0.92715204730893319,-0.85037990091296756,-0.77360775451700237,-0.69683560812103673,-0.62006346172507154,-0.54329131532910591,-0.46651916893314027,-0.38974702253717508,-0.31297487614120945,-0.23620272974524428,-0.15943058334927862,-0.082658436953313416,-0.0058862905573478074,0.070885855838617409,0.14765800223458306,0.22443014863054866,0.30120229502651386,0.37797444142247949,0.45474658781844468,0.53151873421441032,0.60829088061037551,0.68506302700634114,0.76183517340230678,0.83860731979827197,0.9153794661942376,0.99215161259020279,1.068923758986168,1.1456959053821336,1.2224680517780993,1.2992401981740649,1.3760123445700305,1.4527844909659953,1.5295566373619609,1.6063287837579265,1.6831009301538922,1.7598730765498569,1.8366452229458226,1.9134173693417882,1.9901895157377538,2.0669616621337195,2.1437338085296842,2.2205059549256498,2.2972781013216155,2.3740502477175811,2.4508223941135459,2.5275945405095115,2.6043666869054771,2.6811388333014428,2.7579109796974084,2.8346831260933731,2.9114552724893388,2.9882274188853044,3.06499956528127,3.1417717116772348,3.2185438580732004,3.2953160044691661,3.3720881508651317,3.4488602972610973,3.5256324436570621,3.6024045900530277,3.6791767364489933,3.755948882844959,3.8327210292409246,3.9094931756368894,3.986265322032855,4.0630374684288206,4.1398096148247863,4.216581761220751,4.2933539076167166,4.3701260540126823,4.4468982004086479,4.5236703468046136,4.6004424932005783],"y":[1.8538507588745952,1.9567835088890493,2.0597067588396314,2.1626182529774534,2.2655153569656101,2.3683950023582292,2.4712536253998256,2.5740871002999173,2.6768906673182937,2.7796588562098177,2.8823854058326295,2.9850631810272445,3.0876840882320282,3.1902389917186729,3.292717632816184,3.3951085550505713,3.4973990387665537,3.5995750495198631,3.701621205328852,3.8035207687328341,3.9052556704816652,4.0068065725084097,4.1081529785127309,4.2092734008683674,4.3101455924904899,4.4107468515591881,4.5110544053873927,4.6110458770576619,4.7106998345993931,4.8099964173964551,4.9089180282992047,5.0074500728234108,5.105581719293923,5.2033066464521243,5.300623738658337,5.3975376842335301,5.4940594305496981,5.5902064509448879,5.6860027839477656,5.7814788148798222,5.876670783501198,5.9716200183728718,6.0663719179353306,6.1609747182685597,6.2554781049331041,6.3499317317711235,6.4443836991613086,6.5388792015355195,6.6334594881479996,6.7281608254317575,6.8230137984029193,6.9180429746626224,7.0133447308183303,7.1089049752939175,7.204762204448544,7.3009723777458442,7.3976068231512295,7.4947287981746991,7.5924038806414309,7.6907100828301989,7.7897412226207869,7.8896086891274235,7.9904405668124756,8.0923762544072702,8.1955572711103475,8.3001133547142611,8.406131646362013,8.5136224929188504,8.6224648182834187,8.7323386863886352,8.8426176193060062,8.952217727321667,9.0595417681565706,9.1622922345734654,9.257962838092757,9.3464040193940932,9.4381244748150586,9.5382814883575868,9.5908734054687468,9.5849676431700548,9.5455718694995237,9.4847835259525954,9.4084538461375775,9.3202948191348263,9.2224995099791727,9.1158141567321298,8.9996362703957438,8.8721226904565427,8.73022136656596,8.5695551148549036,8.3840917372825015,8.165513826604494,7.9021464829296724,7.5771866306671205,7.1657136936197228,6.6290907249751836,5.9014343496184258,4.8360689007750661],"text":["Species: Saithe<br />w: 1.424112e-03<br />value: 7.142508e+01","Species: Saithe<br />w: 1.699481e-03<br />value: 9.052812e+01","Species: Saithe<br />w: 2.028096e-03<br />value: 1.147379e+02","Species: Saithe<br />w: 2.420253e-03<br />value: 1.454180e+02","Species: Saithe<br />w: 2.888237e-03<br />value: 1.842958e+02","Species: Saithe<br />w: 3.446712e-03<br />value: 2.335581e+02","Species: Saithe<br />w: 4.113175e-03<br />value: 2.959740e+02","Species: Saithe<br />w: 4.908506e-03<br />value: 3.750482e+02","Species: Saithe<br />w: 5.857624e-03<br />value: 4.752156e+02","Species: Saithe<br />w: 6.990265e-03<br />value: 6.020865e+02","Species: Saithe<br />w: 8.341915e-03<br />value: 7.627556e+02","Species: Saithe<br />w: 9.954923e-03<br />value: 9.661914e+02","Species: Saithe<br />w: 1.187983e-02<br />value: 1.223726e+03","Species: Saithe<br />w: 1.417693e-02<br />value: 1.549669e+03","Species: Saithe<br />w: 1.691821e-02<br />value: 1.962084e+03","Species: Saithe<br />w: 2.018954e-02<br />value: 2.483754e+03","Species: Saithe<br />w: 2.409343e-02<br />value: 3.143396e+03","Species: Saithe<br />w: 2.875218e-02<br />value: 3.977178e+03","Species: Saithe<br />w: 3.431175e-02<br />value: 5.030616e+03","Species: Saithe<br />w: 4.094634e-02<br />value: 6.360932e+03","Species: Saithe<br />w: 4.886380e-02<br />value: 8.039993e+03","Species: Saithe<br />w: 5.831219e-02<br />value: 1.015796e+04","Species: Saithe<br />w: 6.958754e-02<br />value: 1.282782e+04","Species: Saithe<br />w: 8.304312e-02<br />value: 1.619099e+04","Species: Saithe<br />w: 9.910049e-02<br />value: 2.042423e+04","Species: Saithe<br />w: 1.182627e-01<br />value: 2.574820e+04","Species: Saithe<br />w: 1.411302e-01<br />value: 3.243803e+04","Species: Saithe<br />w: 1.684195e-01<br />value: 4.083625e+04","Species: Saithe<br />w: 2.009853e-01<br />value: 5.136885e+04","Species: Saithe<br />w: 2.398482e-01<br />value: 6.456489e+04","Species: Saithe<br />w: 2.862257e-01<br />value: 8.108080e+04","Species: Saithe<br />w: 3.415709e-01<br />value: 1.017302e+05","Species: Saithe<br />w: 4.076176e-01<br />value: 1.275210e+05","Species: Saithe<br />w: 4.864353e-01<br />value: 1.597006e+05","Species: Saithe<br />w: 5.804934e-01<br />value: 1.998130e+05","Species: Saithe<br />w: 6.927386e-01<br />value: 2.497685e+05","Species: Saithe<br />w: 8.266879e-01<br />value: 3.119316e+05","Species: Saithe<br />w: 9.865378e-01<br />value: 3.892301e+05","Species: Saithe<br />w: 1.177297e+00<br />value: 4.852916e+05","Species: Saithe<br />w: 1.404941e+00<br />value: 6.046149e+05","Species: Saithe<br />w: 1.676603e+00<br />value: 7.527847e+05","Species: Saithe<br />w: 2.000794e+00<br />value: 9.367421e+05","Species: Saithe<br />w: 2.387671e+00<br />value: 1.165123e+06","Species: Saithe<br />w: 2.849355e+00<br />value: 1.448688e+06","Species: Saithe<br />w: 3.400312e+00<br />value: 1.800852e+06","Species: Saithe<br />w: 4.057802e+00<br />value: 2.238369e+06","Species: Saithe<br />w: 4.842426e+00<br />value: 2.782170e+06","Species: Saithe<br />w: 5.778767e+00<br />value: 3.458432e+06","Species: Saithe<br />w: 6.896160e+00<br />value: 4.299911e+06","Species: Saithe<br />w: 8.229614e+00<br />value: 5.347624e+06","Species: Saithe<br />w: 9.820907e+00<br />value: 6.652943e+06","Species: Saithe<br />w: 1.171990e+01<br />value: 8.280241e+06","Species: Saithe<br />w: 1.398608e+01<br />value: 1.031204e+07","Species: Saithe<br />w: 1.669045e+01<br />value: 1.285005e+07","Species: Saithe<br />w: 1.991775e+01<br />value: 1.602368e+07","Species: Saithe<br />w: 2.376908e+01<br />value: 1.999735e+07","Species: Saithe<br />w: 2.836511e+01<br />value: 2.498083e+07","Species: Saithe<br />w: 3.384984e+01<br />value: 3.124128e+07","Species: Saithe<br />w: 4.039511e+01<br />value: 3.912045e+07","Species: Saithe<br />w: 4.820598e+01<br />value: 4.905803e+07","Species: Saithe<br />w: 5.752718e+01<br />value: 6.162277e+07","Species: Saithe<br />w: 6.865074e+01<br />value: 7.755480e+07","Species: Saithe<br />w: 8.192517e+01<br />value: 9.782291e+07","Species: Saithe<br />w: 9.776638e+01<br />value: 1.237019e+08","Species: Saithe<br />w: 1.166707e+02<br />value: 1.568763e+08","Species: Saithe<br />w: 1.392303e+02<br />value: 1.995783e+08","Species: Saithe<br />w: 1.661521e+02<br />value: 2.547602e+08","Species: Saithe<br />w: 1.982796e+02<br />value: 3.263041e+08","Species: Saithe<br />w: 2.366193e+02<br />value: 4.192420e+08","Species: Saithe<br />w: 2.823725e+02<br />value: 5.399315e+08","Species: Saithe<br />w: 3.369726e+02<br />value: 6.960134e+08","Species: Saithe<br />w: 4.021302e+02<br />value: 8.958138e+08","Species: Saithe<br />w: 4.798868e+02<br />value: 1.146943e+09","Species: Saithe<br />w: 5.726786e+02<br />value: 1.453089e+09","Species: Saithe<br />w: 6.834128e+02<br />value: 1.811185e+09","Species: Saithe<br />w: 8.155588e+02<br />value: 2.220261e+09","Species: Saithe<br />w: 9.732567e+02<br />value: 2.742360e+09","Species: Saithe<br />w: 1.161447e+03<br />value: 3.453675e+09","Species: Saithe<br />w: 1.386027e+03<br />value: 3.898283e+09","Species: Saithe<br />w: 1.654032e+03<br />value: 3.845631e+09","Species: Saithe<br />w: 1.973858e+03<br />value: 3.512140e+09","Species: Saithe<br />w: 2.355527e+03<br />value: 3.053399e+09","Species: Saithe<br />w: 2.810996e+03<br />value: 2.561261e+09","Species: Saithe<br />w: 3.354536e+03<br />value: 2.090715e+09","Species: Saithe<br />w: 4.003175e+03<br />value: 1.669166e+09","Species: Saithe<br />w: 4.777236e+03<br />value: 1.305612e+09","Species: Saithe<br />w: 5.700972e+03<br />value: 9.991628e+08","Species: Saithe<br />w: 6.803322e+03<br />value: 7.449424e+08","Species: Saithe<br />w: 8.118825e+03<br />value: 5.373056e+08","Species: Saithe<br />w: 9.688696e+03<br />value: 3.711548e+08","Species: Saithe<br />w: 1.156212e+04<br />value: 2.421541e+08","Species: Saithe<br />w: 1.379779e+04<br />value: 1.463908e+08","Species: Saithe<br />w: 1.646576e+04<br />value: 7.982639e+07","Species: Saithe<br />w: 1.964961e+04<br />value: 3.777345e+07","Species: Saithe<br />w: 2.344909e+04<br />value: 1.464582e+07","Species: Saithe<br />w: 2.798325e+04<br />value: 4.256873e+06","Species: Saithe<br />w: 3.339415e+04<br />value: 7.969560e+05","Species: Saithe<br />w: 3.985130e+04<br />value: 6.855970e+04"],"type":"scatter","mode":"lines","line":{"width":3.0236220472440949,"color":"rgba(160,141,251,1)","dash":"solid"},"hoveron":"points","name":"Saithe","legendgroup":"Saithe","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[-4.9960758062951012,-4.9193036598991364,-4.8425315135031708,-4.7657593671072052,-4.6889872207112404,-4.6122150743152748,-4.5354429279193091,-4.4586707815233435,-4.3818986351273779,-4.3051264887314122,-4.2283543423354475,-4.1515821959394819,-4.0748100495435162,-3.998037903147551,-3.9212657567515854,-3.8444936103556202,-3.7677214639596546,-3.6909493175636889,-3.6141771711677237,-3.5374050247717581,-3.4606328783757929,-3.3838607319798273,-3.3070885855838621,-3.2303164391878965,-3.1535442927919313,-3.0767721463959656,-3,-2.9232278536040344,-2.8464557072080692,-2.7696835608121035,-2.6929114144161383,-2.6161392680201727,-2.5393671216242075,-2.4625949752282419,-2.3858228288322767,-2.3090506824363111,-2.2322785360403454,-2.1555063896443802,-2.0787342432484146,-2.0019620968524494,-1.9251899504564838,-1.8484178040605184,-1.771645657664553,-1.6948735112685875,-1.6181013648726221,-1.5413292184766567,-1.4645570720806913,-1.3877849256847257,-1.3110127792887603,-1.2342406328927948,-1.1574684864968294,-1.080696340100864,-1.0039241937048986,-0.92715204730893319,-0.85037990091296756,-0.77360775451700237,-0.69683560812103673,-0.62006346172507154,-0.54329131532910591,-0.46651916893314027,-0.38974702253717508,-0.31297487614120945,-0.23620272974524428,-0.15943058334927862,-0.082658436953313416,-0.0058862905573478074,0.070885855838617409,0.14765800223458306,0.22443014863054866,0.30120229502651386,0.37797444142247949,0.45474658781844468,0.53151873421441032,0.60829088061037551,0.68506302700634114,0.76183517340230678,0.83860731979827197,0.9153794661942376,0.99215161259020279],"y":[11.249803790314754,11.245965182994956,11.242126575675158,11.23828796835536,11.234449361035562,11.230610753715762,11.226772146395964,11.222933539076166,11.219094931756368,11.21525632443657,11.211417717116772,11.207579109796974,11.203740502477174,11.199901895157376,11.196063287837578,11.19222468051778,11.188386073197982,11.184547465878184,11.180708858558386,11.176870251238586,11.173031643918788,11.16919303659899,11.165354429279192,11.161515821959394,11.157677214639596,11.153838607319798,11.15,11.146161392680201,11.142322785360403,11.138484178040605,11.134645570720807,11.130806963401009,11.12696835608121,11.123129748761411,11.119291141441613,11.115452534121815,11.111613926802017,11.107775319482219,11.103936712162421,11.100098104842623,11.096259497522825,11.092420890203025,11.088582282883227,11.084743675563429,11.080905068243631,11.077066460923833,11.073227853604035,11.069389246284237,11.065550638964437,11.061712031644639,11.057873424324841,11.054034817005043,11.050196209685245,11.046357602365447,11.042518995045649,11.038680387725851,11.034841780406051,11.031003173086253,11.027164565766455,11.023325958446657,11.019487351126859,11.015648743807061,11.011810136487263,11.007971529167463,11.004132921847665,11.000294314527867,10.996455707208069,10.992617099888271,10.988778492568473,10.984939885248675,10.981101277928875,10.977262670609077,10.973424063289279,10.969585455969481,10.965746848649683,10.961908241329885,10.958069634010087,10.954231026690287,10.950392419370489],"text":["Species: Resource<br />w: 1.009077e-05<br />value: 1.777476e+11","Species: Resource<br />w: 1.204194e-05<br />value: 1.761835e+11","Species: Resource<br />w: 1.437039e-05<br />value: 1.746331e+11","Species: Resource<br />w: 1.714907e-05<br />value: 1.730964e+11","Species: Resource<br />w: 2.046505e-05<br />value: 1.715732e+11","Species: Resource<br />w: 2.442221e-05<br />value: 1.700634e+11","Species: Resource<br />w: 2.914453e-05<br />value: 1.685668e+11","Species: Resource<br />w: 3.477997e-05<br />value: 1.670835e+11","Species: Resource<br />w: 4.150509e-05<br />value: 1.656132e+11","Species: Resource<br />w: 4.953059e-05<br />value: 1.641558e+11","Species: Resource<br />w: 5.910792e-05<br />value: 1.627113e+11","Species: Resource<br />w: 7.053713e-05<br />value: 1.612795e+11","Species: Resource<br />w: 8.417632e-05<br />value: 1.598603e+11","Species: Resource<br />w: 1.004528e-04<br />value: 1.584535e+11","Species: Resource<br />w: 1.198766e-04<br />value: 1.570592e+11","Species: Resource<br />w: 1.430561e-04<br />value: 1.556771e+11","Species: Resource<br />w: 1.707177e-04<br />value: 1.543072e+11","Species: Resource<br />w: 2.037280e-04<br />value: 1.529493e+11","Species: Resource<br />w: 2.431212e-04<br />value: 1.516034e+11","Species: Resource<br />w: 2.901316e-04<br />value: 1.502693e+11","Species: Resource<br />w: 3.462319e-04<br />value: 1.489470e+11","Species: Resource<br />w: 4.131800e-04<br />value: 1.476363e+11","Species: Resource<br />w: 4.930732e-04<br />value: 1.463371e+11","Species: Resource<br />w: 5.884148e-04<br />value: 1.450494e+11","Species: Resource<br />w: 7.021917e-04<br />value: 1.437730e+11","Species: Resource<br />w: 8.379688e-04<br />value: 1.425078e+11","Species: Resource<br />w: 1.000000e-03<br />value: 1.412538e+11","Species: Resource<br />w: 1.193362e-03<br />value: 1.400108e+11","Species: Resource<br />w: 1.424112e-03<br />value: 1.387787e+11","Species: Resource<br />w: 1.699481e-03<br />value: 1.375575e+11","Species: Resource<br />w: 2.028096e-03<br />value: 1.363470e+11","Species: Resource<br />w: 2.420253e-03<br />value: 1.351472e+11","Species: Resource<br />w: 2.888237e-03<br />value: 1.339579e+11","Species: Resource<br />w: 3.446712e-03<br />value: 1.327791e+11","Species: Resource<br />w: 4.113175e-03<br />value: 1.316107e+11","Species: Resource<br />w: 4.908506e-03<br />value: 1.304525e+11","Species: Resource<br />w: 5.857624e-03<br />value: 1.293046e+11","Species: Resource<br />w: 6.990265e-03<br />value: 1.281667e+11","Species: Resource<br />w: 8.341915e-03<br />value: 1.270389e+11","Species: Resource<br />w: 9.954923e-03<br />value: 1.259210e+11","Species: Resource<br />w: 1.187983e-02<br />value: 1.248129e+11","Species: Resource<br />w: 1.417693e-02<br />value: 1.237146e+11","Species: Resource<br />w: 1.691821e-02<br />value: 1.226259e+11","Species: Resource<br />w: 2.018954e-02<br />value: 1.215468e+11","Species: Resource<br />w: 2.409343e-02<br />value: 1.204773e+11","Species: Resource<br />w: 2.875218e-02<br />value: 1.194171e+11","Species: Resource<br />w: 3.431175e-02<br />value: 1.183662e+11","Species: Resource<br />w: 4.094634e-02<br />value: 1.173246e+11","Species: Resource<br />w: 4.886380e-02<br />value: 1.162922e+11","Species: Resource<br />w: 5.831219e-02<br />value: 1.152689e+11","Species: Resource<br />w: 6.958754e-02<br />value: 1.142545e+11","Species: Resource<br />w: 8.304312e-02<br />value: 1.132491e+11","Species: Resource<br />w: 9.910049e-02<br />value: 1.122525e+11","Species: Resource<br />w: 1.182627e-01<br />value: 1.112648e+11","Species: Resource<br />w: 1.411302e-01<br />value: 1.102856e+11","Species: Resource<br />w: 1.684195e-01<br />value: 1.093152e+11","Species: Resource<br />w: 2.009853e-01<br />value: 1.083532e+11","Species: Resource<br />w: 2.398482e-01<br />value: 1.073997e+11","Species: Resource<br />w: 2.862257e-01<br />value: 1.064546e+11","Species: Resource<br />w: 3.415709e-01<br />value: 1.055179e+11","Species: Resource<br />w: 4.076176e-01<br />value: 1.045893e+11","Species: Resource<br />w: 4.864353e-01<br />value: 1.036690e+11","Species: Resource<br />w: 5.804934e-01<br />value: 1.027567e+11","Species: Resource<br />w: 6.927386e-01<br />value: 1.018525e+11","Species: Resource<br />w: 8.266879e-01<br />value: 1.009562e+11","Species: Resource<br />w: 9.865378e-01<br />value: 1.000678e+11","Species: Resource<br />w: 1.177297e+00<br />value: 9.918722e+10","Species: Resource<br />w: 1.404941e+00<br />value: 9.831439e+10","Species: Resource<br />w: 1.676603e+00<br />value: 9.744925e+10","Species: Resource<br />w: 2.000794e+00<br />value: 9.659172e+10","Species: Resource<br />w: 2.387671e+00<br />value: 9.574173e+10","Species: Resource<br />w: 2.849355e+00<br />value: 9.489923e+10","Species: Resource<br />w: 3.400312e+00<br />value: 9.406413e+10","Species: Resource<br />w: 4.057802e+00<br />value: 9.323639e+10","Species: Resource<br />w: 4.842426e+00<br />value: 9.241593e+10","Species: Resource<br />w: 5.778767e+00<br />value: 9.160269e+10","Species: Resource<br />w: 6.896160e+00<br />value: 9.079661e+10","Species: Resource<br />w: 8.229614e+00<br />value: 8.999762e+10","Species: Resource<br />w: 9.820907e+00<br />value: 8.920566e+10"],"type":"scatter","mode":"lines","line":{"width":3.0236220472440949,"color":"rgba(0,255,0,1)","dash":"solid"},"hoveron":"points","name":"Resource","legendgroup":"Resource","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":23.305936073059364,"r":7.3059360730593621,"b":37.260273972602747,"l":54.794520547945211},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-5.4800221246600289,5.0804646178606072],"tickmode":"array","ticktext":["1e-03","1e+00","1e+03"],"tickvals":[-3,-8.8817841970012523e-16,2.9999999999999991],"categoryorder":"array","categoryarray":["1e-03","1e+00","1e+03"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"Size [g]","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[1.2520882273901386,12.252088227390139],"tickmode":"array","ticktext":["100","1000","10000","1e+05","1e+06","1e+07","1e+08","1e+09","1e+10","1e+11","1e+12"],"tickvals":[2,3,4,5,6,7.0000000000000009,8,9,10,11,12],"categoryorder":"array","categoryarray":["100","1000","10000","1e+05","1e+06","1e+07","1e+08","1e+09","1e+10","1e+11","1e+12"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"Biomass density [g]","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"Legend","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"5e874730acb9b":{"x":{},"y":{},"colour":{},"linetype":{},"linewidth":{},"type":"scatter"}},"cur_data":"5e874730acb9b","visdat":{"5e874730acb9b":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>As discussed in that previous post, matching to the observed biomasses is easy:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op">|&gt;</span> <span class="fu">calibrateBiomass</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">matchBiomasses</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">steady</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">calibrateBiomass</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">matchBiomasses</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">steady</span><span class="op">(</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in setBevertonHolt.MizerParams(params): For the following species `erepro` has been increased to the smallest possible value: erepro[Sprat] = 0.021; erepro[Sandeel] = 0.000425; erepro[Cod] = 6.12e-05; erepro[Saithe] = 1.23e-05</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Convergence was achieved in 15 years.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in setBevertonHolt.MizerParams(params): For the following species `erepro` has been increased to the smallest possible value: erepro[Whiting] = 0.000257; erepro[Haddock] = 0.000163; erepro[Cod] = 6.11e-05</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Convergence was achieved in 12 years.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">plotBiomassVsSpecies</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="how-to-tune-the-growth-curves_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The matching did not work quite so well for Saithe, and it will become clear in a moment why that is. Let us plot the growth curves:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">plotGrowthCurves</span><span class="op">(</span><span class="va">params</span>, species_panel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="how-to-tune-the-growth-curves_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It is clear to see that the growth is too low for all species, but particularly so for Saithe.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">plotGrowthCurves</span><span class="op">(</span><span class="va">params</span>, species <span class="op">=</span> <span class="st">"Saithe"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="how-to-tune-the-growth-curves_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Saithe takes almost twice as long to reach maturity as is predicted by the von Bertalanffy growth curve. So we need to do some tuning. Before we start with that, we’ll save the current state into a new variable.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params_start</span> <span class="op">&lt;-</span> <span class="va">params</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>If you want to try things for yourself, you can load this example MizerParams object with</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params_start</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/connections.html">url</a></span><span class="op">(</span><span class="st">"https://bit.ly/3jSNAKF"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section><section id="how-difficult-it-was-in-the-past" class="level1 page-columns page-full"><h1>How difficult it was in the past</h1>
+<p>Now I am going to try to get the growth curve of Saithe in the model to agree with the observed growth curve, without using the new tuning gadget. I am doing that because it might be useful to understand what goes on under the hood in the tuning gadget. But I am also doing it to show off how much of an advance the tuning gadget represents. So let’s start.</p>
+<p>Clearly we need to get Saithe to feed more rapidly. We can do that by increasing the coefficient <code>gamma</code> in the search volume. We don’t know how much we need to increase <code>gamma</code> exactly, so we try a factor of 2.</p>
+<aside>
+If you want to learn more about how growth is modelled in mizer, take a look at the <a href="https://sizespectrum.org/mizer/articles/model_description.html#growth-2">relevant section</a> in the mizer model description.
+</aside><div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">species_params</span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[[</span><span class="st">"Saithe"</span>, <span class="st">"gamma"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> </span>
+<span>    <span class="fl">2</span> <span class="op">*</span> <span class="fu">species_params</span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[[</span><span class="st">"Saithe"</span>, <span class="st">"gamma"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="fu">plotGrowthCurves</span><span class="op">(</span><span class="va">params</span>, species <span class="op">=</span> <span class="st">"Saithe"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="how-to-tune-the-growth-curves_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>That helped, but is not enough. So we can try again, increasing <code>gamma</code> a bit further.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">species_params</span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[[</span><span class="st">"Saithe"</span>, <span class="st">"gamma"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> </span>
+<span>    <span class="fl">1.2</span> <span class="op">*</span> <span class="fu">species_params</span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[[</span><span class="st">"Saithe"</span>, <span class="st">"gamma"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="fu">plotGrowthCurves</span><span class="op">(</span><span class="va">params</span>, species <span class="op">=</span> <span class="st">"Saithe"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="how-to-tune-the-growth-curves_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Unfortunately, while we have improved the growth curve by changing <code>gamma</code>, we have at the same time messed up other aspects of the model. For one thing, our initial spectra don’t represent a steady state any more. So we have to use <a href="https://sizespectrum.org/mizer/reference/steady.html"><code>steady()</code></a> again:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">steady</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Convergence was achieved in 12 years.</code></pre>
+</div>
+</div>
+<p>Now this has allowed the full effect of multi-species interaction to take hold and, due to increased competition.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">plotGrowthCurves</span><span class="op">(</span><span class="va">params</span>, species <span class="op">=</span> <span class="st">"Saithe"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="how-to-tune-the-growth-curves_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We have also messed up the biomasses of some of the species, in particular Gurnard and Haddock, as it turns out:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">plotBiomassVsSpecies</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="how-to-tune-the-growth-curves_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Of course we know how to correct that:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op">|&gt;</span> <span class="fu">calibrateBiomass</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">matchBiomasses</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">steady</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in setBevertonHolt.MizerParams(params): For the following species `erepro` has been increased to the smallest possible value: erepro[Whiting] = 0.00029</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Convergence was achieved in 12 years.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">plotBiomassVsSpecies</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="how-to-tune-the-growth-curves_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>But there is another aspects of the model that we have messed up. Let’s plot the feeding level.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">plotFeedingLevel</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="how-to-tune-the-growth-curves_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The feeding level describes how satiated a fish is. The closer to 1, the more satiated the fish is and the less sensitive it therefore is to changes in prey availability. We have now made Saithe less sensitive than other species, without actually intending to do that. What we probably should have done is to change the parameter <code>h</code> that controls the maximum intake rate, and thus the density dependence in feeding, at the same time as <code>gamma</code> so as to keep the feeding level constant, at least for larvae.</p>
+<p>I think this is enough to explain what is involved in tuning a model to reproduce the desired growth curves and to demonstrate that it was a very tedious task in the past. We have only partially dealt with the growth curve of a single species and already are exhausted.</p>
+</section><section id="how-easy-it-is-now" class="level1 page-columns page-full"><h1>How easy it is now</h1>
+<p>The previous section showed us that tuning model parameters by hand is very tedious and it will take ages before we have the model in the shape we want it to be in. I’ll now discuss how to do it much faster. There are three things we need to do to make this faster solution possible:</p>
+<ol type="1">
+<li>Make the process interactive so that we can just click around with the mouse instead of issuing long sequences of commands.</li>
+<li>Intelligently adjust several parameters at a time to avoid messing up other aspects of the model while we are trying to fit the growth curves.</li>
+<li>Automatically recalibrate and match biomasses whenever we determine a new steady state.</li>
+</ol>
+<p>I would like you to try it out yourself, so please copy and paste the commands below to your RStudio console and run them.</p>
+<p>As always we start by installing the latest version of the mizerExperimental package and loading it. The <code>install_github()</code> will do nothing if you already have the latest version installed. Otherwise it may prompt you to also update other packages for which there are newer versions available. You should always agree to update mizer if that is suggested.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"sizespectrum/mizerExperimental"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://sizespectrum.org/mizerExperimental">mizerExperimental</a></span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now load the un-tuned MizerParams object with</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params_start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/connections.html">url</a></span><span class="op">(</span><span class="st">"https://bit.ly/3jSNAKF"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The interactivity, intelligence and automation mentioned above are provided by the shiny gadget that you start with</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizerExperimental/reference/tuneGrowth.html">tuneGrowth</a></span><span class="op">(</span><span class="va">params_start</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<aside>
+The tool is called a “<a href="https://shiny.rstudio.com/articles/gadgets.html">shiny gadget</a>” not because it shines, but because it is realised with the <a href="https://shiny.rstudio.com/">R shiny package</a>.
+</aside><p>This will open a new tab in your browser that looks a bit like the following screenshot:</p>
+<div class="cell page-columns page-full" data-preview="true">
+<div class="cell-output-display page-columns page-full">
+<div class="page-columns page-full">
+<figure class="figure page-columns page-full"><p class="page-columns page-full"><img src="screenshot1.png" class="img-fluid figure-img column-page" width="668"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This shows two plots that are already familiar to you if you have read the previous section: the upper plot shows the growth curves and the lower plot shows the feeding levels. To the left of the plots there is a sidebar with various controls. One lets you choose which species you are currently dealing with. There is a slider to change the value of <code>gamma</code>. There is a button labelled “steady” that will find the steady state. So this is all very familiar.</p>
+<p>However there are also some unfamiliar buttons in the sidebar:</p>
+<ul>
+<li>“Help” opens a short tour of the user interface</li>
+<li>“Download” (icon) downloads the current MizerParams object</li>
+<li>“Return” closes the gadget and returns the current MizerParams object back to R, where with the code we used above it will then be assigned to <code>params</code>.</li>
+<li>“Undo”, “Redo” and “Rewind” (icons) allow you to go back to a previous steady state, go forward again, or rewind all the way back to your starting state.</li>
+<li>“previous” and “next” let you conveniently cycle through all the species.</li>
+</ul>
+<p>There are some hidden features, that are however revealed in popups while you hover over elements. For example you can select a particular species quickly by clicking on its growth curve. You can switch to a single-species view by double-clicking on a species. Here is what you will get after double-clicking on “Saithe”:</p>
+<div class="cell page-columns page-full">
+<div class="cell-output-display page-columns page-full">
+<div class="page-columns page-full">
+<figure class="figure page-columns page-full"><p class="page-columns page-full"><img src="screenshot2.png" class="img-fluid figure-img column-page" width="668"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now you know what to do: use the slider on the left to increase <code>gamma</code>. You can do that either by sliding or by clicking somewhere along the slider. You will notice that the graphs on the right immediately update. This makes it really easy to select the value you want.</p>
+<p>You will also notice that the feeding level for the larvae remains unchanged as you change <code>gamma</code>. That is because the gadget automatically changes the maximum intake rate to compensate for your change in ‘gamma’.</p>
+<p>Don’t spend too much time tuning the growth curve for Saithe, because we know that the von Bertalanffy curve is also just an approximation to the true growth curve, and also because we know that things will change a bit again when you click the “steady” button. Instead use the “previous” button to go to fix the growth curve for Cod and so on.</p>
+<p>You can also always double click on a single-species growth curve (or use the radio buttons above the plot) to go back to viewing all species at once.</p>
+<p>You will have noticed that the main panel of the gadget has two tabs. The one we are currently viewing is called “Growth”. Clicking on “Biomass” gives us more familiar plots:</p>
+<div class="cell page-columns page-full">
+<div class="cell-output-display page-columns page-full">
+<div class="page-columns page-full">
+<figure class="figure page-columns page-full"><p class="page-columns page-full"><img src="screenshot3.png" class="img-fluid figure-img column-page" width="669"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The upper plot is the plot comparing the model biomasses to the observed biomasses and the lower plot shows the size spectra. You don’t need to do anything on this tab. It is there just to reassure you that you have not messed up anything in your model. In particular, the model biomasses will match the observed biomasses very well. This is because behind the scenes the gadget calibrated and matched the biomasses each time you hit the “steady” button. If you don’t find that they agree well, then click the “steady” button now. There is never any harm in pressing the “steady” button.</p>
+<p>Once you are happy with all your growth curves you can hit the “Return” button. Because we specified above that we wanted to assign the return value of <code><a href="https://sizespectrum.org/mizerExperimental/reference/tuneGrowth.html">tuneGrowth()</a></code> to a variable <code>params</code>, you can now work further with this MizerParams object under the name <code>params</code>.</p>
+</section><section id="the-future" class="level1"><h1>The future</h1>
+<p>This gadget for tuning growth curve is actually only a particular instance of a more powerful shiny gadget with many more controls and many more tabs, which allows you to adjust almost any model parameter and investigate many different aspects of you model. For example there is a tab for looking at the diets of the various species and how they change with size, a tab to look at the causes of death at various sizes, a tab to compare the size distribution of the catches in the model to observed size distributions, …</p>
+<p>I have been told that the full gadget, that you can start with</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizerExperimental/reference/tuneParams.html">tuneParams</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>is overwhelming, even though it does not yet have all the tabs and controls that I envisage. The <code><a href="https://sizespectrum.org/mizerExperimental/reference/tuneParams.html">tuneParams()</a></code> function therefore allows us to just select just the bits we need for a particular task. The <code><a href="https://sizespectrum.org/mizerExperimental/reference/tuneGrowth.html">tuneGrowth()</a></code> gadget is actually just what you get when you tell <code><a href="https://sizespectrum.org/mizerExperimental/reference/tuneParams.html">tuneParams()</a></code> that you want the “growth” control and the “Growth” and “Biomass” tabs.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizerExperimental/reference/tuneParams.html">tuneParams</a></span><span class="op">(</span><span class="va">params</span>, controls <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"growth"</span><span class="op">)</span>, </span>
+<span>               tabs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Growth"</span>, <span class="st">"Biomass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>So I think that very soon we will have a large set of targeted tools similar to <code><a href="https://sizespectrum.org/mizerExperimental/reference/tuneGrowth.html">tuneGrowth()</a></code> to facilitate various stages of the model tuning process, but also one very powerful combined tool for those of us who like the Swiss army knife approach.</p>
+<p>Now, quite likely, when you try this with your own model you will run into problems. I am always eager to hear about those problems. Post about them in the comments or email them to me at <a href="mailto:gustav.delius@gmail.com" class="email">gustav.delius@gmail.com</a>.</p>
+
+
+</section></main><!-- /main --><div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = window.location.href;  
+        this.page.identifier = window.location.pathname; 
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://mizer.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/blog\.mizer\.sizespectrum\.org");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+</body></html>
