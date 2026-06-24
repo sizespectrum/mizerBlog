@@ -12,7 +12,2720 @@
 new features, technical details, plans and ideas. Contributions welcome.
 </description>
 <generator>quarto-1.9.36</generator>
-<lastBuildDate>Fri, 22 May 2026 23:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 23 Jun 2026 23:00:00 GMT</lastBuildDate>
+<item>
+  <title>Pre-announcing mizer 3.1</title>
+  <dc:creator>Gustav Delius</dc:creator>
+  <link>https://blog.mizer.sizespectrum.org/posts/2026-06-26-mizer-3-1-announcement/</link>
+  <description><![CDATA[ <p>We are pleased to announce the release of <strong>mizer 3.1</strong>. Coming so soon after the big 3.0 release, this is a more focused update: its centrepiece is an <em>experimental, opt-in</em> numerical scheme that makes mizer second-order accurate in the size variable, backed up by a new time-stepping method. Alongside the numerics there is a clarification of how mizer handles the various “maximum size” parameters, plus the usual collection of smaller improvements and bug fixes.</p>
+<p>If you do nothing differently, <strong>your results will not change</strong>: the new accuracy features are switched off by default and the default code path is byte-for-byte identical to mizer 3.0.</p>
+<section id="experimental-second-order-accuracy-in-size" class="level2"><h2 class="anchored" data-anchor-id="experimental-second-order-accuracy-in-size">Experimental: second-order accuracy in size</h2>
+<p>mizer solves the size-spectrum (McKendrick–von Foerster) equation on a logarithmic grid of size bins using a finite-volume method. Historically that method has been <em>first order</em> in the bin width: halving the bin width roughly halves the discretisation error. That is robust and fast, but on the coarse grids people often use it can introduce a visible bias — most noticeably a small shift in size-integrated quantities such as biomass, yield and SSB.</p>
+<p>mizer 3.1.0 introduces an experimental <strong>second-order</strong> finite-volume scheme. The idea is to stop point-sampling quantities at the left edge of each size bin and instead use their exact (or trapezoidal) average <em>over</em> the bin, so that sinks, sources, fluxes and diagnostics are all consistent with the finite-volume interpretation of the abundance as a cell average. With it switched on, halving the bin width quarters the error.</p>
+<p>It is controlled by a single new slot, accessed with <a href="https://sizespectrum.org/mizer/reference/second_order_w.html"><code>second_order_w()</code></a>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Turn on the full second-order scheme</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">second_order_w</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">params</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span></span>
+<span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Or control the two ingredients independently</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">second_order_w</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">params</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>flux <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"centred"</span>, bin_average <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div></div>
+<p>There are two ingredients, and a fully second-order run wants both:</p>
+<ul>
+<li>
+<strong><code>bin_average</code></strong> replaces every point-sampled power law and quadrature that feeds the update — external mortality and diffusion, the resource growth rate and capacity, the predation kernels, gear selectivity and the reproductive investment — with its exact bin average. The summary integrals (<a href="https://sizespectrum.org/mizer/reference/getBiomass.html"><code>getBiomass()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getSSB.html"><code>getSSB()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getYield.html"><code>getYield()</code></a>, …) and the size-resolved mortalities are likewise weighted and placed consistently, the latter now reported at the geometric bin centre where a bin average actually lives.</li>
+<li>
+<strong><code>flux</code></strong> chooses the advective reconstruction for the growth term: <code>"van_leer"</code> is a TVD scheme that stays second order while keeping abundances non-negative, and <code>"centred"</code> is genuinely second order even at peaks and troughs.</li>
+</ul>
+<p>You can also build a model with the scheme already enabled by passing <code>second_order_w = TRUE</code> to <a href="https://sizespectrum.org/mizer/reference/newMultispeciesParams.html"><code>newMultispeciesParams()</code></a>, <a href="https://sizespectrum.org/mizer/reference/newTraitParams.html"><code>newTraitParams()</code></a>, <a href="https://sizespectrum.org/mizer/reference/newCommunityParams.html"><code>newCommunityParams()</code></a> or <a href="https://sizespectrum.org/mizer/reference/newSingleSpeciesParams.html"><code>newSingleSpeciesParams()</code></a>.</p>
+<section id="does-it-actually-deliver" class="level3"><h3 class="anchored" data-anchor-id="does-it-actually-deliver">Does it actually deliver?</h3>
+<p>It is one thing to claim second-order accuracy and another to measure it. mizer ships with an <a href="https://sizespectrum.org/mizer/articles/analytic_test.html">analytic test vignette</a> that solves the transport equation exactly for power-law rates, so we can compare the numerical solution against a known answer. The figure below — adapted from that vignette — projects a travelling, diffusing pulse on grids of increasing resolution and plots the relative error against the (logarithmic) grid spacing <code>Δx</code>, once with the default first-order scheme and once with <code>second_order_w &lt;- TRUE</code>.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/">mizer</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Power-law rates with an exact time-dependent (advecting, diffusing, decaying)</span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># solution. See the analytic_test vignette for the derivation.</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span>; <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">A</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>; <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">B</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>; <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">K</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">w0</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-2</span>; <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t_start</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>; <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t_end</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Growth rate g(w) = A w^p, supplied as a custom rate function.</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">start_growth</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">params</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">...</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">A</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">params</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">w</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p</span>, nrow <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Exact pulse N(w, t): a Green's function of the transport equation.</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">N_analytic</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">w</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">w0</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t0</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">K_eff</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">K</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">U</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">A</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">K_eff</span>; <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">V</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">K_eff</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>; <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">b</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">B</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">nu</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">U</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">V</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">b</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">V</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dt</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t0</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">w</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>; <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x0</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">w0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">z</span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">V</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dt</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">log_N</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">V</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dt</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">U</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">V</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span></span>
+<span>             <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">V</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dt</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">z</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Bessel.html">besselI</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">z</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">nu</span>, expon.scaled <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">log_N</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">w</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Single-species model with these rates, optionally second order in size.</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">build_sp</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">no_w</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">second_order</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sp</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>species <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Test"</span>, w_max <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span>, w_mat <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>,</span>
+<span>                     n <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p</span>, z0 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, z_ext <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">B</span>, d <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, D_ext <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">K</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/newMultispeciesParams.html">newMultispeciesParams</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sp</span>, no_w <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">no_w</span>, min_w <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-3</span>, info_level <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/second_order_w.html">second_order_w</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">second_order</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/setRateFunction.html">setRateFunction</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"EGrowth"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"start_growth"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">interaction</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>                      <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># mortality is purely B w^(p-1)</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/setExtMort.html">setExtMort</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">species_params</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">constant_reproduction</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/setRateFunction.html">setRateFunction</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RDD"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"constantRDD"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># In the second-order scheme N_j is the cell *average* (≈ value at the cell</span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># centre); in the first-order scheme it is the node value.</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ref_w</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">second_order</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/w.html">w</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">second_order</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Relative L2 error of the projected pulse, restricted to its bulk.</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pulse_err</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">no_w</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">second_order</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dt</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0025</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">build_sp</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">no_w</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">second_order</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">rw</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ref_w</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">second_order</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/initialN-set.html">initialN</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">N_analytic</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">rw</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t_start</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">w0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, nrow <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sim</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/project.html">project</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span>, t_max <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t_end</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t_start</span>, dt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dt</span>,</span>
+<span>                   t_save <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t_end</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t_start</span>, method <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tr_bdf2"</span>,</span>
+<span>                   progress_bar <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">num</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/finalN.html">finalN</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sim</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span>; <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ana</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">N_analytic</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">rw</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t_end</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">w0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mask</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ana</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ana</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-3</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">num</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mask</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ana</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mask</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dw</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mask</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span></span>
+<span>         <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">ana</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mask</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dw</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mask</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">no_ws</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">200</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">400</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">800</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dx</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-3</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">no_ws</span>                 <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># log-size grid spacing</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">err_first</span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">no_ws</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pulse_err</span>, second_order <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">err_second</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">no_ws</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pulse_err</span>, second_order <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sp_order</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">e</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/unname.html">unname</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">e</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dx</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dx</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">err_first</span>, log <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"xy"</span>, type <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"b"</span>, pch <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>, lwd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>,</span>
+<span>     col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#E69F00"</span>, xlab <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Delta</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">log</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">beta</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>     ylab <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"relative L2 error"</span>, ylim <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">err_first</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">err_second</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>     main <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Order of convergence in size"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dx</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">err_second</span>, type <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"b"</span>, pch <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">17</span>, lwd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#0072B2"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">i0</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dx</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dx</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">err_first</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">i0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dx</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dx</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">i0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, lty <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey50"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dx</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">err_second</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">i0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dx</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dx</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">i0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, lty <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey50"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bottomright"</span>, bty <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"n"</span>,</span>
+<span>       legend <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"first order (slope %.2f)"</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sp_order</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">err_first</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>                  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"second order (slope %.2f)"</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sp_order</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">err_second</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>                  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"slope 1"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"slope 2"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>       col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#E69F00"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#0072B2"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey50"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey50"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>       pch <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">17</span>, <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>, <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, lty <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, lwd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div></div>
+</details><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="https://blog.mizer.sizespectrum.org/posts/2026-06-26-mizer-3-1-announcement/index_files/figure-html/spatial-convergence-1.png" class="img-fluid figure-img" width="576"></p>
+<figcaption>Relative L2 error of a projected pulse versus grid spacing. The default scheme converges roughly linearly (slope-1 guide line); the experimental second-order scheme follows slope 2 and is up to ~100x more accurate over the range of resolutions shown.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>The default scheme converges only linearly: its error falls roughly in step with the slope-1 guide line, so halving the grid spacing roughly halves the error (the coarsest grids here are still pre-asymptotic, which is why the fitted slope sits a little below 1). The experimental scheme follows the slope-2 line — about four times more accurate for every halving of <code>Δx</code> — so it pulls away fast: from a few times more accurate on the coarsest grid to roughly a hundredfold more accurate on the finest grid shown.</p>
+</section><section id="what-the-error-looks-like-numerical-diffusion" class="level3"><h3 class="anchored" data-anchor-id="what-the-error-looks-like-numerical-diffusion">What the error looks like: numerical diffusion</h3>
+<p>That abstract error norm has a very concrete consequence. A first-order upwind scheme does not merely lose accuracy — it injects <strong>numerical diffusion</strong>, an artificial smearing that imitates the individual growth variability mizer models with its diffusion term, except that here it is a numerical artefact rather than biology. We can watch it happen by following annual cohorts. Driving the model with a once-a-year pulse of reproduction (as in the <a href="https://sizespectrum.org/mizer/articles/cohort_dynamics_and_diffusion.html">cohort dynamics vignette</a>) and switching physical diffusion <strong>off</strong>, every individual born together grows together, so each cohort should stay a sharp spike for life. Any broadening we see is the numerics talking, not the model.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Pulsed annual reproduction: one sharp cohort per year.</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pulse_width</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">annual_pulse_RDD</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">rdi</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">species_params</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">...</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">frac</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span>    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">frac</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pulse_width</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">rdd</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">rdi</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">rdd</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">frac</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pulse_width</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pi</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">rdd</span></span>
+<span>    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">rdi</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">run_cohorts</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">second_order</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/newSingleSpeciesParams.html">newSingleSpeciesParams</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>h <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, no_w <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">400</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/setRateFunction.html">setRateFunction</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RDD"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"annual_pulse_RDD"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/initialN-set.html">initialN</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>                  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># start from an empty spectrum</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/second_order_w.html">second_order_w</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">second_order</span>   <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># physical diffusion stays off</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/project.html">project</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span>, t_max <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, dt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.005</span>, t_save <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span>,</span>
+<span>            method <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tr_bdf2"</span>, progress_bar <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sim_first</span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">run_cohorts</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>         <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># default first-order upwind flux</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sim_second</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">run_cohorts</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>          <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># second-order scheme</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/w.html">w</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sim_first</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">params</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">b_first</span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/finalN.html">finalN</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sim_first</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">b_second</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/finalN.html">finalN</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sim_second</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">b_second</span>, type <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"l"</span>, log <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"x"</span>, lwd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#0072B2"</span>,</span>
+<span>     xlim <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-2</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>     xlab <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Weight [g]"</span>, ylab <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Biomass</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">density</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/N.html">N</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">w</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">w</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>     main <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Numerical broadening of cohorts (no physical diffusion)"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">b_first</span>, lwd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#E69F00"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"topright"</span>, bty <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"n"</span>, lwd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#E69F00"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#0072B2"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>       legend <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"default (first-order upwind)"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"second_order_w = TRUE"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div></div>
+</details><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="https://blog.mizer.sizespectrum.org/posts/2026-06-26-mizer-3-1-announcement/index_files/figure-html/cohort-diffusion-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>Five annual cohorts grown with no physical diffusion, so any spreading is purely numerical. The default first-order upwind scheme smears the cohorts into low, broad, merging humps; the second-order scheme keeps each one tall and sharp.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>With the default upwind flux the cohorts bleed into low, broad humps and the oldest are already merging — even though nothing in the model is making them spread. The second-order scheme keeps each cohort roughly three times taller and correspondingly narrower, so the genuine signal is no longer drowned in numerical diffusion. The practical pay-off: when you <em>do</em> switch real diffusion on, the cohort widths you measure reflect the biology you put in rather than the grid you happened to choose.</p>
+<p>One <strong>caveat</strong> worth repeating: because bin-averaging corrects an <code>O(Δw)</code> bias, turning it on will shift your reported biomass, yield and resource spectrum slightly (more on coarse grids). A model that was carefully calibrated under the first-order scheme may therefore need recalibrating. That is precisely why the feature is opt-in and flagged experimental. The new <a href="https://sizespectrum.org/mizer/articles/numerical_details.html">“Numerical Details” vignette</a> and the <a href="https://sizespectrum.org/mizer/articles/analytic_test.html">analytic test vignette</a> go through the mathematics and the convergence tests in full.</p>
+</section></section><section id="a-new-l-stable-time-stepper" class="level2"><h2 class="anchored" data-anchor-id="a-new-l-stable-time-stepper">A new L-stable time-stepper</h2>
+<p>On the time axis, mizer 3.0.0 already offered a second-order <code>"predictor_corrector"</code> method alongside the default <code>"euler"</code>. The Crank–Nicolson corrector it uses, however, can ring at large time steps. mizer 3.1.0 adds <code>method = "tr_bdf2"</code>, an L-stable TR-BDF2 scheme that keeps the second-order accuracy while damping those oscillations — and, like every mizer time-stepper, still only needs tridiagonal solves.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sim</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/project.html">project</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">params</span>, t_max <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, method <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tr_bdf2"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div></div>
+<p>What does “ringing” look like, and why does L-stability cure it? The Crank–Nicolson corrector is only <em>neutrally</em> stable for stiff modes: instead of damping the sharp, high-frequency features it cannot resolve at a large step, it reflects them back as oscillations. We can provoke it with the same travelling pulse as above (reusing the exact solution <code>N_analytic()</code> and growth rate <code>start_growth()</code> defined earlier) but taking a deliberately large step, <code>dt = 0.24</code>.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Build the analytic-test pulse model (rates from the earlier chunk).</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">start_mort</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">params</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">...</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">B</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">params</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">w</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, nrow <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/newMultispeciesParams.html">newMultispeciesParams</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>species <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Test"</span>, w_max <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span>,</span>
+<span>                                        w_mat <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>                            no_w <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span>, min_w <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-3</span>, info_level <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/setRateFunction.html">setRateFunction</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"EGrowth"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"start_growth"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/setRateFunction.html">setRateFunction</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Mort"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"start_mort"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/setExtDiffusion.html">ext_diffusion</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">K</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/w.html">w</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">p</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">species_params</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">constant_reproduction</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/setRateFunction.html">setRateFunction</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RDD"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"constantRDD"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/w.html">w</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/initialN-set.html">initialN</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">N_analytic</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t_start</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">w0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, nrow <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">elapsed</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6.4</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dt_big</span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.24</span>                          <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># a deliberately large step</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">final_n</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">method</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/finalN.html">finalN</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/project.html">project</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pr</span>, t_max <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">elapsed</span>, dt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dt_big</span>, t_save <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">elapsed</span>,</span>
+<span>                   method <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">method</span>, progress_bar <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_pc</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">final_n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"predictor_corrector"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_tb</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">final_n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tr_bdf2"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_ex</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">N_analytic</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">t_start</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">elapsed</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">w0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_pc</span>, type <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"l"</span>, log <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"x"</span>, lwd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#D55E00"</span>,</span>
+<span>     ylim <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_pc</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_tb</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, xlim <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-2</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e3</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>     xlab <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Weight [g]"</span>, ylab <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Density  N(w)"</span>,</span>
+<span>     main <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Large time step (dt = %.2f)"</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dt_big</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>h <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey70"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_tb</span>, lwd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#0072B2"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">wv</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_ex</span>, lwd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, lty <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey30"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"topright"</span>, bty <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"n"</span>, lwd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, lty <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>       col <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#D55E00"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#0072B2"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey30"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>       legend <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"predictor_corrector"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tr_bdf2"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"exact"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div></div>
+</details><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="https://blog.mizer.sizespectrum.org/posts/2026-06-26-mizer-3-1-announcement/index_files/figure-html/cn-ringing-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>At a large time step the Crank–Nicolson corrector of <code>predictor_corrector</code> rings, throwing off spurious oscillations into negative densities near the sharp recruitment boundary, while the L-stable <code>tr_bdf2</code> stays glued to the exact solution.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>The true solution is the small bump on the right, where the pulse has grown to. <code>predictor_corrector</code> reproduces that bump but also spews oscillations an order of magnitude larger across the small-size end, swinging the density well below zero — unphysical, and a recipe for instability if fed back through the nonlinear rates. <code>tr_bdf2</code> damps exactly those modes and tracks the exact solution everywhere. (Both methods are equally accurate once the step is small enough; the difference is purely a large-step robustness one, explored further in the <a href="https://sizespectrum.org/mizer/articles/numerical_details.html">“Numerical Details” vignette</a>.)</p>
+<p>Under both second-order time methods the resource and any extra ecosystem components are now advanced to second-order accuracy in time as well, rather than being left at first order.</p>
+</section><section id="clarifying-the-maximum-size-parameters" class="level2"><h2 class="anchored" data-anchor-id="clarifying-the-maximum-size-parameters">Clarifying the maximum-size parameters</h2>
+<p>mizer has long carried three parameters that all sound like “the maximum size”, and over the years they have meant subtly different things. mizer 3.1.0 settles their roles. To explain why the dust kept getting unsettled, it helps to recall the history (see <a href="https://github.com/sizespectrum/mizer/issues/325">issue #325</a>):</p>
+<ul>
+<li>In <strong>mizer 1.0</strong> there was a single maximum-size parameter, <code>w_inf</code>. It was both the size at which growth stopped <em>and</em> the size beyond which no fish could exist, and people were encouraged to set it to the von Bertalanffy asymptotic size.</li>
+<li>In <strong>mizer 2.0</strong> we noticed that real populations contain fish larger than the von Bertalanffy <code>w_inf</code>, so <code>w_max</code> was introduced as the true ceiling — the size at which growth stops and beyond which there are no fish. Existing models had <code>w_inf</code> renamed to <code>w_max</code>, and von Bertalanffy curves were discouraged.</li>
+<li>
+<strong>Late in the 2.x series</strong> we realised that growth <em>diffusion</em> lets some individuals push past the size at which the deterministic growth rate hits zero. So <code>w_repro_max</code> was introduced for “the size at which mature fish invest everything in reproduction”, and <code>w_max</code> started to retreat into being a purely computational boundary.</li>
+<li>In <strong>mizer 3.0</strong> diffusion became fully integrated, von Bertalanffy growth rates returned as the standard way to constrain growth, and we became quite comfortable with fish living beyond the von Bertalanffy asymptotic size — because diffusion is exactly how they get there.</li>
+</ul>
+<p>That history left <code>w_max</code> doing far too many unrelated jobs and <code>w_inf</code> demoted to a plotting aid. mizer 3.1.0 puts each parameter back in its place:</p>
+<ul>
+<li>
+<strong><code>w_inf</code></strong>, the von Bertalanffy asymptotic size, is once again the first-class, required maximum-size parameter, and supplies the default for <code>w_repro_max</code> and <code>w_mat</code>.</li>
+<li>
+<strong><code>w_repro_max</code></strong> is <em>only</em> the size at which a typical mature individual invests all its energy in reproduction. It is <strong>not</strong> a hard ceiling on size — a small proportion of fish may still be immature there, and diffusion can carry individuals beyond it. There is no expectation that it is larger or smaller than <code>w_inf</code>, since von Bertalanffy estimates are often unreliable.</li>
+<li>
+<strong><code>w_max</code></strong> is now <em>purely</em> a computational boundary — the upper end of the size grid and of plot ranges. When you do not supply it, it defaults to <code>1.5 * w_inf</code>.</li>
+</ul>
+<p>This is a <strong>breaking change</strong> in spirit, but a gentle one in practice. For backwards compatibility, if you do not supply <code>w_inf</code> it is taken from <code>w_repro_max</code> or <code>w_max</code>, so <strong>existing models and scripts continue to work unchanged</strong>. The difference shows up only when you build a <em>new</em> model and rely on the defaults.</p>
+</section><section id="other-improvements" class="level2"><h2 class="anchored" data-anchor-id="other-improvements">Other improvements</h2>
+<ul>
+<li>
+<strong>Extension packages can now version and upgrade their own data</strong> inside saved model objects, independently of the mizer version, via <a href="https://sizespectrum.org/mizer/reference/recordExtension.html"><code>recordExtension()</code></a> and an <a href="https://rdrr.io/r/utils/upgrade.html"><code>upgrade()</code></a> S3 method. The core mizer upgrade is now itself just the <code>upgrade.MizerParams()</code> / <code>upgrade.MizerSim()</code> method.</li>
+<li>
+<strong><a href="https://sizespectrum.org/mizer/reference/getDiet.html"><code>getDiet()</code></a> gains a <code>MizerSim</code> method</strong> and <a href="https://sizespectrum.org/mizer/reference/plotDiet.html"><code>plotDiet()</code></a> accepts a <code>time_range</code>, so you can look at diet composition from the <em>simulated</em> abundances at any time rather than only the initial state (#357).</li>
+<li>
+<strong><a href="https://sizespectrum.org/mizer/reference/getDiffusion.html"><code>getDiffusion()</code></a> now supports a fully size-dependent predation kernel</strong>, not just a predator/prey ratio kernel (#373).</li>
+<li>
+<strong><a href="https://sizespectrum.org/mizer/reference/getTrophicLevel.html"><code>getTrophicLevel()</code></a> gives the resource a size-dependent trophic level</strong> instead of treating it as level 0, controlled by new <code>w_R</code> and <code>beta_R</code> arguments.</li>
+<li>
+<strong>Resource functions return classed objects</strong> with the same convenient <a href="https://rdrr.io/r/base/print.html"><code>print()</code></a>, <a href="https://rdrr.io/r/base/summary.html"><code>summary()</code></a>, <a href="https://rdrr.io/r/graphics/plot.default.html"><code>plot()</code></a> and <a href="https://rdrr.io/r/base/as.data.frame.html"><code>as.data.frame()</code></a> methods as the consumer rate functions, so e.g.&nbsp;<code>plot(NResource(sim))</code> just works.</li>
+<li>New <a href="https://sizespectrum.org/mizer/reference/getFluxGradient.html"><code>getFluxGradient()</code></a> function returns the flux divergence that appears as the transport term in the mizer size-spectrum equation.</li>
+<li>
+<strong><a href="https://rdrr.io/r/base/summary.html"><code>summary()</code></a> of a <code>MizerSim</code></strong> now reports the fishing effort actually used during the run, not the model’s <code>initial_effort</code>.</li>
+<li>A <strong>new vignette explains how mizer calculates its default parameter values</strong> (#189).</li>
+</ul></section><section id="bug-fixes" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes">Bug fixes</h2>
+<ul>
+<li>
+<a href="https://sizespectrum.org/mizer/reference/project.html"><code>project()</code></a> was advancing extra ecosystem components only once per <em>saved</em> time step instead of once per <code>dt</code>.</li>
+<li>
+<a href="https://sizespectrum.org/mizer/reference/getRDI.html"><code>getRDI()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getRDD.html"><code>getRDD()</code></a> and <a href="https://sizespectrum.org/mizer/reference/getFlux.html"><code>getFlux()</code></a> on a <code>MizerSim</code> now use the simulated time-varying effort rather than the initial effort (#370).</li>
+<li>
+<a href="https://sizespectrum.org/mizer/reference/plotCDF.html"><code>plotCDF()</code></a> / <a href="https://sizespectrum.org/mizer/reference/plotCDF.html"><code>plotlyCDF()</code></a> place each cumulative value correctly on its bin’s upper edge instead of its lower edge.</li>
+<li>
+<a href="https://sizespectrum.org/mizer/reference/distanceMaxRelRDI.html"><code>distanceMaxRelRDI()</code></a> now returns <code>Inf</code> instead of <code>NaN</code> when a previous RDI is zero, so <a href="https://sizespectrum.org/mizer/reference/projectToSteady.html"><code>projectToSteady()</code></a> no longer mistakes a <code>NaN</code> distance for convergence.</li>
+<li>
+<a href="https://sizespectrum.org/mizer/reference/plotYield.html"><code>plotYield()</code></a> now works correctly when called via <a href="https://rdrr.io/r/base/do.call.html"><code>do.call()</code></a>.</li>
+</ul></section><section id="upgrading" class="level2"><h2 class="anchored" data-anchor-id="upgrading">Upgrading</h2>
+<p>Install the new version from CRAN (or <a href="https://github.com/sizespectrum/mizer">GitHub</a> for the development version) as usual. Models and simulations saved with older versions are upgraded automatically the first time they are validated, so there is nothing extra to do. As always, the full list of changes is in the <a href="https://sizespectrum.org/mizer/news/index.html">NEWS file</a>.</p>
+<p>Happy modelling!</p>
+
+
+</section> ]]></description>
+  <category>release</category>
+  <guid>https://blog.mizer.sizespectrum.org/posts/2026-06-26-mizer-3-1-announcement/</guid>
+  <pubDate>Tue, 23 Jun 2026 23:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Helping AI coding agents with mizer</title>
   <dc:creator>Gustav Delius</dc:creator>
@@ -39,14 +2752,14 @@ font-style: inherit;">setup_mizer_agent</span>()</span></code></pre></div></div>
 <p>Run that once in your R project and any agent CLI you open there will immediately have the full mizer context it needs.</p>
 <section id="what-the-package-does" class="level2">
 <h2 class="anchored" data-anchor-id="what-the-package-does">What the package does</h2>
-<p><a href="https://sizespectrum.org/mizer/reference/setup_mizer_agent.html"><code>setup_mizer_agent()</code></a> creates four files in your project directory:</p>
+<p><code>setup_mizer_agent()</code> creates four files in your project directory:</p>
 <ul>
-<li><strong><code>MIZER-AGENTS.md</code></strong> — a concise mizer reference card: the six-step core workflow, the <code>MizerParams</code> and <code>MizerSim</code> object model, a species parameter table, units, the standard plotting functions, and pointers to the full documentation. This file is package-managed and refreshed every time you call <a href="https://sizespectrum.org/mizer/reference/setup_mizer_agent.html"><code>setup_mizer_agent()</code></a>.</li>
+<li><strong><code>MIZER-AGENTS.md</code></strong> — a concise mizer reference card: the six-step core workflow, the <code>MizerParams</code> and <code>MizerSim</code> object model, a species parameter table, units, the standard plotting functions, and pointers to the full documentation. This file is package-managed and refreshed every time you call <code>setup_mizer_agent()</code>.</li>
 <li><strong><code>AGENTS.md</code></strong> — your project-level instruction file, initially containing just <code>@MIZER-AGENTS.md</code> to pull in the reference card. You extend it with notes about your specific model (see below).</li>
 <li><strong><code>CLAUDE.md</code></strong> and <strong><code>GEMINI.md</code></strong> — one-line shims (<code>@AGENTS.md</code>) so that agent tools that look for a tool-specific file also pick up the shared context.</li>
 </ul>
 <p>The package also bundles two larger documentation files, <code>llms.txt</code> (a full API index, ~45 KB) and <code>llms-full.txt</code> (complete prose documentation for every exported function, ~205 KB). <code>MIZER-AGENTS.md</code> instructs the agent to grep these rather than reading them end-to-end.</p>
-<p>The design is deliberately non-invasive. <code>AGENTS.md</code>, <code>CLAUDE.md</code>, and <code>GEMINI.md</code> are only written on the first call — re-running <a href="https://sizespectrum.org/mizer/reference/setup_mizer_agent.html"><code>setup_mizer_agent()</code></a> will not overwrite project notes you have added to those files.</p>
+<p>The design is deliberately non-invasive. <code>AGENTS.md</code>, <code>CLAUDE.md</code>, and <code>GEMINI.md</code> are only written on the first call — re-running <code>setup_mizer_agent()</code> will not overwrite project notes you have added to those files.</p>
 </section>
 <section id="starting-an-agent" class="level2">
 <h2 class="anchored" data-anchor-id="starting-an-agent">Starting an agent</h2>
@@ -77,7 +2790,7 @@ copilot   # GitHub Copilot CLI</code></pre>
 </section>
 <section id="adding-your-own-project-context" class="level2">
 <h2 class="anchored" data-anchor-id="adding-your-own-project-context">Adding your own project context</h2>
-<p>After running <a href="https://sizespectrum.org/mizer/reference/setup_mizer_agent.html"><code>setup_mizer_agent()</code></a> you have an <code>AGENTS.md</code> that starts with <code>@MIZER-AGENTS.md</code>. Open it and add a short description of your model below:</p>
+<p>After running <code>setup_mizer_agent()</code> you have an <code>AGENTS.md</code> that starts with <code>@MIZER-AGENTS.md</code>. Open it and add a short description of your model below:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1">@MIZER-AGENTS.md</span>
 <span id="cb3-2"></span>
 <span id="cb3-3"><span class="fu" style="color: #4758AB;
@@ -157,6 +2870,7 @@ font-style: inherit;">setup_mizer_agent</span>()</span></code></pre></div></div>
 </section>
 
  ]]></description>
+  <category>package</category>
   <guid>https://blog.mizer.sizespectrum.org/posts/2026-05-23-mizer-agents/</guid>
   <pubDate>Fri, 22 May 2026 23:00:00 GMT</pubDate>
   <media:content url="https://blog.mizer.sizespectrum.org/posts/2026-05-23-mizer-agents/preview.png" medium="image" type="image/png" height="96" width="144"/>
@@ -203,7 +2917,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 <figcaption>Accuracy plot</figcaption></figure>
 </div>
 <hr></section><section id="rich-interactive-return-values" class="level2"><h2 class="anchored" data-anchor-id="rich-interactive-return-values">Rich, interactive return values</h2>
-<p>One of the most user-visible changes in mizer 3.0 is that the arrays returned by mizer’s getter functions are no longer plain matrices — they carry metadata and come with built-in <a href="https://rdrr.io/r/graphics/plot.default.html"><code>plot()</code></a>, <a href="https://rdrr.io/pkg/plotly/man/ggplotly.html"><code>ggplotly()</code></a>, <a href="https://rdrr.io/r/base/print.html"><code>print()</code></a>, <a href="https://rdrr.io/r/base/summary.html"><code>summary()</code></a>, and <a href="https://rdrr.io/r/base/as.data.frame.html"><code>as.data.frame()</code></a> methods.</p>
+<p>One of the most user-visible changes in mizer 3.0 is that the arrays returned by mizer’s getter functions are no longer plain matrices — they carry metadata and come with built-in <a href="https://rdrr.io/r/graphics/plot.default.html"><code>plot()</code></a>, <code>ggplotly()</code>, <a href="https://rdrr.io/r/base/print.html"><code>print()</code></a>, <a href="https://rdrr.io/r/base/summary.html"><code>summary()</code></a>, and <a href="https://rdrr.io/r/base/as.data.frame.html"><code>as.data.frame()</code></a> methods.</p>
 <p>So to get, for example, a plot of the spawning stock biomass, you simply need</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
@@ -256,7 +2970,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 </tr>
 </tbody>
 </table>
-<p>Each object carries a human-readable <code>value_name</code> and <code>units</code> attribute so that <a href="https://rdrr.io/r/graphics/plot.default.html"><code>plot()</code></a> can produce a labelled graph immediately, without requiring any manual axis annotation. <a href="https://rdrr.io/pkg/plotly/man/ggplotly.html"><code>ggplotly()</code></a> wrappers convert every <code>ggplot2</code> output into a fully interactive plotly figure with a single call.</p>
+<p>Each object carries a human-readable <code>value_name</code> and <code>units</code> attribute so that <a href="https://rdrr.io/r/graphics/plot.default.html"><code>plot()</code></a> can produce a labelled graph immediately, without requiring any manual axis annotation. <code>ggplotly()</code> wrappers convert every <code>ggplot2</code> output into a fully interactive plotly figure with a single call.</p>
 <p>For <code>ArrayTimeBySpeciesBySize</code> objects, an <a href="https://sizespectrum.org/mizer/reference/animate.html"><code>animate()</code></a> method produces a smooth animation of the evolving size spectrum, supporting axis limits, interpolation, and background species. So if you want to see how the size-dependent mortality in the North Sea model has changed over the years you can simply do:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
@@ -349,7 +3063,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/plotly/man/ggplotly.html">ggplotly</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">ggplotly</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -383,6 +3097,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 
 
 </section> ]]></description>
+  <category>release</category>
   <guid>https://blog.mizer.sizespectrum.org/posts/2026-05-13-mizer-3-0-announcement/</guid>
   <pubDate>Tue, 12 May 2026 23:00:00 GMT</pubDate>
 </item>
@@ -1742,8 +4457,10 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 
 
 </section> ]]></description>
+  <category>release</category>
   <guid>https://blog.mizer.sizespectrum.org/posts/2022-12-23-mizer-240/</guid>
   <pubDate>Fri, 23 Dec 2022 00:00:00 GMT</pubDate>
+  <media:content url="https://blog.mizer.sizespectrum.org/posts/2022-12-23-mizer-240/images/Christmas_tree_mizer.png" medium="image" type="image/png" height="163" width="144"/>
 </item>
 <item>
   <title>Don’t use von Bertalanffy growth parameters</title>
@@ -4642,6 +7359,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 
 
 </section> ]]></description>
+  <category>package</category>
   <guid>https://blog.mizer.sizespectrum.org/posts/2022-07-11-thermizer/</guid>
   <pubDate>Sun, 10 Jul 2022 23:00:00 GMT</pubDate>
 </item>
@@ -7721,6 +10439,7 @@ font-style: inherit;">]</span></span></code></pre></div></div>
 </section> ]]></description>
   <guid>https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/</guid>
   <pubDate>Sat, 07 Aug 2021 23:00:00 GMT</pubDate>
+  <media:content url="https://blog.mizer.sizespectrum.org/posts/2021-08-08-change-model-parameters-without-using/change.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Density-dependence in reproduction</title>

@@ -3,18 +3,11 @@ title: "Mizer 2.4.0"
 description: |
   Celebrating Christmas with a new mizer release that makes building 
   realistic multispecies models even simpler.
-preview: images/Christmas_tree_mizer.png
+image: images/Christmas_tree_mizer.png
 author:
   - name: Gustav Delius
-    url: {}
 date: 2022-12-23
-twitter:
-  site: "@mizer_model"
-  creator: "@gustavdelius"
-output:
-  distill::distill_article:
-    self_contained: false
-    toc: true
+categories: [release]
 ---
 
 ```{r setup, include=FALSE}

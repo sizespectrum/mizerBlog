@@ -13,6 +13,8 @@ We are pleased to announce the release of **mizer 3.1**. Coming so soon after th
 
 If you do nothing differently, **your results will not change**: the new accuracy features are switched off by default and the default code path is byte-for-byte identical to mizer 3.0.
 
+We will release this new version on CRAN in a few days. We welcome bug reports and feature requests on [GitHub](https://github.com/sizespectrum/mizer/issues).
+
 ## Experimental: second-order accuracy in size
 
 mizer solves the size-spectrum (McKendrick–von Foerster) equation on a logarithmic grid of size bins using a finite-volume method. Historically that method has been *first order* in the bin width: halving the bin width roughly halves the discretisation error. That is robust and fast, but on the coarse grids people often use it can introduce a visible bias — most noticeably a small shift in size-integrated quantities such as biomass, yield and SSB.

@@ -7,10 +7,7 @@ author:
     url: https://www.fisheries.noaa.gov/contact/phoebe-woodworth-jefcoats
     affiliation: NOAA
 date: 2022-07-11
-output: 
-  distill::distill_article:
-    self_contained: false
-    toc: true
+categories: [package]
 ---
 
 ```{r setup, include=FALSE}

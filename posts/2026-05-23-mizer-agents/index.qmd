@@ -8,6 +8,7 @@ author:
   - name: Gustav Delius
 date: 2026-05-23
 image: preview.png
+categories: [package]
 ---
 
 AI coding agents — Claude Code, Gemini CLI, GitHub Copilot, OpenAI Codex — can do more than write boilerplate. Given enough context, they can read your data, diagnose calibration problems, scaffold custom rate functions, and write scenario comparison code. The bottleneck is not the agent's capability; it is the context. An agent that does not know the mizer API will invent plausible- sounding but non-existent functions, or give advice that is correct for a generic R workflow but wrong for mizer.
