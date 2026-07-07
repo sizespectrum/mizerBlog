@@ -29,6 +29,8 @@ format:
   html:
     theme: cosmo
     css: mizer.css
+    filters:
+      - filters/inline-code-links.lua
     toc: true
     toc-depth: 2
     code-link: true
@@ -36,6 +38,6 @@ format:
     anchor-sections: true
 
 execute:
-  freeze: auto
+  freeze: true
 
 editor: visual

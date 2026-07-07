@@ -8,7 +8,9 @@
 
 # Quarto
 .quarto/
-_freeze/
 
 /.quarto/
 **/*.quarto_ipynb
+.positai
+
+posts/**/index_files/
