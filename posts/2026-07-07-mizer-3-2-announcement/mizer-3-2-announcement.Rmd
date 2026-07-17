@@ -20,13 +20,25 @@ knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
 We released [mizer 3.1](https://blog.mizer.sizespectrum.org/posts/2026-06-26-mizer-3-1-announcement/)
-only a few weeks ago, so why 3.2 already? Two reasons, and both are the kind of
-thing that is better fixed sooner than lived with. The first is that the
-functions for setting the background resource had grown inconsistent with each
-other and with the rest of mizer, in a way that could silently discard your
-changes. The second is that the extension mechanism had a structural flaw that
-made it impossible to combine two independently developed extension packages in
-one model. Neither could wait for the next feature release.
+only a few weeks ago, so why 3.2 already? Three reasons, and all are the kind of
+thing that is better fixed sooner than lived with. The first is that setting
+species parameters had become confusing, with the default setter silently failing
+to protect user changes from being overwritten. The second is that the functions
+for setting the background resource had grown inconsistent with each other and
+with the rest of mizer, in a way that could silently discard your changes. The
+third is that the extension mechanism had a structural flaw that made it
+impossible to combine two independently developed extension packages in one model.
+None could wait for the next feature release.
+
+## Safer species parameter setting
+
+When you change a species parameter in mizer, you want two things to happen: the parameter should be updated, and any dependent parameters or rate arrays (like the maturity ogive or the maximum intake rate) should be recalculated automatically. You also want mizer to remember that you set this parameter explicitly, so it doesn't overwrite it with a calculated default later.
+
+Previously, using the standard `species_params<-()` setter would update the parameter but bypass the protection mechanism (the `given_species_params` slot) and fail to trigger a recalculation. Users were instead encouraged to use `given_species_params<-()`. However, most existing scripts already used `species_params<-()`, and a single use of `given_species_params<-()` could unintentionally overwrite everything `species_params<-()` had done.
+
+mizer 3.2 fixes this by making `species_params<-()` the smart, default setter it was always meant to be. It now automatically detects your changes by comparing them against the existing parameters, records them in `given_species_params` to protect them, and silently triggers the recalculation of any dependent parameters and rate arrays. This restores expected behaviour and makes `species_params<-()` the recommended setter for scripts. 
+
+The `given_species_params<-()` setter remains as an explicit alternative that is particularly useful during interactive sessions, because it issues warnings if you change a parameter whose effect is overridden by another parameter that has already been given.
 
 ## Consistent resource setting
 
