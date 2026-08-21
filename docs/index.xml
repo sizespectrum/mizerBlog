@@ -19,7 +19,7 @@ new features, technical details, plans and ideas. Contributions welcome.
   <link>https://blog.mizer.sizespectrum.org/posts/2026-08-21-mizer-3-3-announcement/</link>
   <description><![CDATA[ <p>Where mizer 3.2 was a quick corrective release, 3.3 adds capability. Three themes run through it.</p>
 <p>The first is a question mizer could not previously answer about itself: <strong>is this model at its steady state?</strong> Every calibration workflow depends on the answer, and until now you had to keep track of it in your head.</p>
-<p>The second is what to do when the steady state is <strong>dynamically unstable</strong> — when the model does not settle down but oscillates. mizer can now find such a steady state anyway, tell you that it is unstable, tell you the period of the oscillation you should expect, and detect the limit cycle when you project the dynamics.</p>
+<p>The second is what to do when the steady state is <strong>dynamically unstable</strong> — when the model does not settle down but oscillates. mizer can now find such a steady state anyway, tell you that it is unstable, predict the period of the oscillation you should expect, and detect the limit cycle when you project the dynamics.</p>
 <p>The third is <strong>scanning</strong>: running a model over a range of values of anything and measuring anything on whatever attractor it settles on. That gives yield-against-fishing-mortality curves with <img src="https://latex.codecogs.com/png.latex?F_%7BMSY%7D"> marked, bifurcation diagrams, and scans over any species or resource parameter, all from one function.</p>
 <p>Alongside these, the documentation has been reorganised: the topic articles and the AI-agent skills are now literally the same files, so there is one <strong>guide</strong> per stage of the modelling workflow and an agent working in your project reads exactly what you read.</p>
 <section id="is-your-model-at-its-steady-state" class="level2"><h2 class="anchored" data-anchor-id="is-your-model-at-its-steady-state">Is your model at its steady state?</h2>
@@ -122,7 +122,11 @@ font-style: inherit;">1.5</span>, include_resource <span class="op" style="color
 background-color: null;
 font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
 background-color: null;
-font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">TRUE</span>, dt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span>
 <span><span class="va" style="color: #111111;
@@ -144,7 +148,7 @@ background-color: null;
 font-style: inherit;">max_real_part</span></span>
 <span><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">#&gt; [1] 1.235902</span></span>
+font-style: inherit;">#&gt; [1] 0.07209386</span></span>
 <span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">stab</span><span class="op" style="color: #5E5E5E;
@@ -160,7 +164,7 @@ background-color: null;
 font-style: inherit;">]</span></span>
 <span><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">#&gt; [1] 1.235902+0.847932i</span></span>
+font-style: inherit;">#&gt; [1] 0.07209386+1.216536i</span></span>
 <span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">stab</span><span class="op" style="color: #5E5E5E;
@@ -170,9 +174,9 @@ background-color: null;
 font-style: inherit;">dominant_period</span></span>
 <span><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">#&gt; [1] 7.410008</span></span></code></pre></div></div>
-<p>The leading eigenvalue is complex with a positive real part. A real positive eigenvalue would mean monotone growth away from the steady state; a complex pair means the perturbation grows <em>while oscillating</em>, and the imaginary part sets the period — about 7.4 years.</p>
-<p>One detail is worth dwelling on, because it is easy to get wrong. mizer steps the dynamics with an implicit solver, and implicit solvers artificially damp oscillations. The eigenvalues of the one-step map therefore describe the stability of the <em>numerical scheme</em> at whatever step size you chose, not the stability of the model. <a href="https://sizespectrum.org/mizer/reference/getStability.html"><code>getStability()</code></a> reports both, and keeps them apart: <code>spectral_radius</code> is <img src="https://latex.codecogs.com/png.latex?%5Cmax%7C%5Cmu%7C"> for the discrete map at the given <code>dt</code>, while <code>max_real_part</code> comes from mapping those eigenvalues back to their exact continuous-time equivalents via <img src="https://latex.codecogs.com/png.latex?%5Clambda%20=%20(1%20-%201/%5Cmu)/%5CDelta%20t">. Refine <code>dt</code> and the spectral radius moves; <code>max_real_part</code> is a property of the model.</p>
+font-style: inherit;">#&gt; [1] 5.164816</span></span></code></pre></div></div>
+<p>The leading eigenvalue is complex with a positive real part. A real positive eigenvalue would mean monotone growth away from the steady state; a complex pair means the perturbation grows <em>while oscillating</em>, and the imaginary part sets the period — about 5.2 years.</p>
+<p>One detail is worth dwelling on, because it is easy to get wrong. mizer steps the dynamics with an implicit solver, and implicit solvers artificially damp oscillations. The eigenvalues of the one-step map therefore describe the stability of the <em>numerical scheme</em> at whatever step size you chose, not the stability of the model. <a href="https://sizespectrum.org/mizer/reference/getStability.html"><code>getStability()</code></a> reports both and keeps them apart: <code>spectral_radius</code> is <img src="https://latex.codecogs.com/png.latex?%5Cmax%7C%5Cmu%7C"> for the discrete map at the given <code>dt</code>, while <code>max_real_part</code> comes from mapping those eigenvalues back to continuous time via <img src="https://latex.codecogs.com/png.latex?%5Clambda%20=%20(1%20-%201/%5Cmu)/%5CDelta%20t">. We pass <code>dt = 0.1</code> above because that mapping converges as the step is refined and the default <code>dt = 1</code> is too coarse on this model (<a href="https://github.com/sizespectrum/mizer/issues/556">#556</a>).</p>
 <p>Now project the dynamics and watch the prediction come true. <a href="https://sizespectrum.org/mizer/reference/projectToSteady.html"><code>projectToSteady()</code></a> recognises that it is not converging to a fixed point and reports what it did settle on:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
@@ -291,7 +295,7 @@ font-style: inherit;">type</span></span>
 background-color: null;
 font-style: inherit;">#&gt; [1] "below_tolerance"</span></span></code></pre></div></div>
 <p>The type is deliberately not called <code>"steady"</code>: passing the distance test means the state stopped moving on the scale of the distance function, which is not the same as being a fixed point. That is why the attribute also carries a <code>residual</code> field, measuring the thing itself.</p>
-<p>The detected nonlinear period, 5.4 years, is shorter than the 7.4 years the linear analysis predicted. That is expected — at effort 1.5 we are well beyond the bifurcation, where nonlinearities reshape the cycle. Closer to the bifurcation point the two agree. To see the <em>shape</em> of the oscillation without the growth and the nonlinear distortion, <a href="https://sizespectrum.org/mizer/reference/getLimitCycleSim.html"><code>getLimitCycleSim()</code></a> builds an ordinary <code>MizerSim</code> covering one period of the linearised cycle from the leading eigenvector, which you can then hand to any mizer plotting function.</p>
+<p>The detected period of 5.4 years sits close to the 5.2 years the linear analysis predicted, which is a good deal better than one has any right to expect this far past the bifurcation, where nonlinearities reshape the cycle. To see the <em>shape</em> of the oscillation without the growth and the nonlinear distortion, <a href="https://sizespectrum.org/mizer/reference/getLimitCycleSim.html"><code>getLimitCycleSim()</code></a> builds an ordinary <code>MizerSim</code> covering one period of the linearised cycle from the leading eigenvector, which you can then hand to any mizer plotting function.</p>
 <p>There is one caveat, and it is important enough that 3.3 ships an article about it. All of this rests on the one-step map being differentiable at the steady state. If you have registered a custom rate function with <a href="https://sizespectrum.org/mizer/reference/setRateFunction.html"><code>setRateFunction()</code></a> that jumps as a function of the abundances, <a href="https://sizespectrum.org/mizer/reference/steadyNewton.html"><code>steadyNewton()</code></a> may stall and <a href="https://sizespectrum.org/mizer/reference/getStability.html"><code>getStability()</code></a> can return a plausible-looking number describing neither branch. The new <a href="https://sizespectrum.org/mizer/articles/discontinuous_rates.html"><em>Discontinuous rate functions</em></a> article explains why, and how to give the switch a finite width instead.</p>
 </section><section id="scanning-a-model" class="level2"><h2 class="anchored" data-anchor-id="scanning-a-model">Scanning a model</h2>
 <p>A yield-against-fishing-mortality curve, a bifurcation diagram over effort, and a scan over the resource carrying capacity are all the same computation: vary something, let the model settle, measure something. mizer 3.3 makes that one function, <code>scanModel()</code>. You say what to vary by passing a function that changes the model, and what to measure by passing a function that computes a quantity from a <code>MizerSim</code> — and all of mizer’s summary functions (<a href="https://sizespectrum.org/mizer/reference/getBiomass.html"><code>getBiomass()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getYield.html"><code>getYield()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getSSB.html"><code>getSSB()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getN.html"><code>getN()</code></a>, <a href="https://sizespectrum.org/mizer/reference/sizeIntegral.html"><code>sizeIntegral()</code></a>) work as the measuring function unchanged.</p>
@@ -582,7 +586,7 @@ font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a><
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;"><a href="https://sizespectrum.org/mizerReef/">mizerReef</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">mizerReef</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span>
 <span><span class="kw" style="color: #003B4F;
@@ -778,14 +782,14 @@ font-style: inherit;">)</span></span>
 <span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">#&gt; [1] TRUE</span></span></code></pre></div></div>
-<p><a href="https://rdrr.io/r/base/class.html"><code>class()</code></a> reports the most-derived class, but the object still inherits from <code>mizerReef</code>, so reef generics and multiple-resource generics both dispatch. You can give each species its own preference for each resource, retune with mizerReef’s <a href="https://cmbeese.github.io/mizerReef/reference/reefSteady.html"><code>mizerReef::reefSteady()</code></a> — which is blissfully unaware that the background is now several resources, because mizerMR handles that further down the chain — and plot the combined model with a single <a href="https://sizespectrum.org/mizer/reference/plotSpectra.html"><code>plotSpectra()</code></a> call:</p>
+<p><a href="https://rdrr.io/r/base/class.html"><code>class()</code></a> reports the most-derived class, but the object still inherits from <code>mizerReef</code>, so reef generics and multiple-resource generics both dispatch. You can give each species its own preference for each resource, retune with mizerReef’s <code>mizerReef::reefSteady()</code> — which is blissfully unaware that the background is now several resources, because mizerMR handles that further down the chain — and plot the combined model with a single <a href="https://sizespectrum.org/mizer/reference/plotSpectra.html"><code>plotSpectra()</code></a> call:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">params</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://cmbeese.github.io/mizerReef/reference/reefSteady.html">reefSteady</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">reefSteady</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -805,7 +809,7 @@ background-color: null;
 font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div></div>
-<p>Neither package needs to know the other exists; they only need to be polite about calling <a href="https://rdrr.io/r/base/UseMethod.html"><code>NextMethod()</code></a>. The full worked example, including different per-species resource preferences, is in mizerReef’s <a href="https://cmbeese.github.io/mizerReef/articles/multiple-resources.html"><em>Combining mizerReef with mizerMR</em></a> vignette, and the mechanics of the chain are described in <code>vignette("using-extension-packages", package = "mizer")</code>.</p>
+<p>Neither package needs to know the other exists; they only need to be polite about calling <a href="https://rdrr.io/r/base/UseMethod.html"><code>NextMethod()</code></a>. The full worked example, including different per-species resource preferences, is in mizerReef’s <a href="https://cmbeese.github.io/mizerReef/articles/multiple-resources.html"><em>Combining mizerReef with mizerMR</em></a> vignette, and the mechanics of the chain are described in <a href="https://sizespectrum.org/mizer/articles/using-extension-packages.html"><code>vignette("using-extension-packages", package = "mizer")</code></a>.</p>
 </section><section id="also-in-3.2" class="level2"><h2 class="anchored" data-anchor-id="also-in-3.2">Also in 3.2</h2>
 <p>While the three fixes above were the reason for the release, 3.2 also gathers up a number of improvements:</p>
 <ul>
@@ -3576,14 +3580,14 @@ font-style: inherit;">setup_mizer_agent</span>()</span></code></pre></div></div>
 <p>Run that once in your R project and any agent CLI you open there will immediately have the full mizer context it needs.</p>
 <section id="what-the-package-does" class="level2">
 <h2 class="anchored" data-anchor-id="what-the-package-does">What the package does</h2>
-<p><code>setup_mizer_agent()</code> creates four files in your project directory:</p>
+<p><a href="https://sizespectrum.org/mizer/reference/setup_mizer_agent.html"><code>setup_mizer_agent()</code></a> creates four files in your project directory:</p>
 <ul>
-<li><strong><code>MIZER-AGENTS.md</code></strong> — a concise mizer reference card: the six-step core workflow, the <code>MizerParams</code> and <code>MizerSim</code> object model, a species parameter table, units, the standard plotting functions, and pointers to the full documentation. This file is package-managed and refreshed every time you call <code>setup_mizer_agent()</code>.</li>
+<li><strong><code>MIZER-AGENTS.md</code></strong> — a concise mizer reference card: the six-step core workflow, the <code>MizerParams</code> and <code>MizerSim</code> object model, a species parameter table, units, the standard plotting functions, and pointers to the full documentation. This file is package-managed and refreshed every time you call <a href="https://sizespectrum.org/mizer/reference/setup_mizer_agent.html"><code>setup_mizer_agent()</code></a>.</li>
 <li><strong><code>AGENTS.md</code></strong> — your project-level instruction file, initially containing just <code>@MIZER-AGENTS.md</code> to pull in the reference card. You extend it with notes about your specific model (see below).</li>
 <li><strong><code>CLAUDE.md</code></strong> and <strong><code>GEMINI.md</code></strong> — one-line shims (<code>@AGENTS.md</code>) so that agent tools that look for a tool-specific file also pick up the shared context.</li>
 </ul>
 <p>The package also bundles two larger documentation files, <code>llms.txt</code> (a full API index, ~45 KB) and <code>llms-full.txt</code> (complete prose documentation for every exported function, ~205 KB). <code>MIZER-AGENTS.md</code> instructs the agent to grep these rather than reading them end-to-end.</p>
-<p>The design is deliberately non-invasive. <code>AGENTS.md</code>, <code>CLAUDE.md</code>, and <code>GEMINI.md</code> are only written on the first call — re-running <code>setup_mizer_agent()</code> will not overwrite project notes you have added to those files.</p>
+<p>The design is deliberately non-invasive. <code>AGENTS.md</code>, <code>CLAUDE.md</code>, and <code>GEMINI.md</code> are only written on the first call — re-running <a href="https://sizespectrum.org/mizer/reference/setup_mizer_agent.html"><code>setup_mizer_agent()</code></a> will not overwrite project notes you have added to those files.</p>
 </section>
 <section id="starting-an-agent" class="level2">
 <h2 class="anchored" data-anchor-id="starting-an-agent">Starting an agent</h2>
@@ -3614,7 +3618,7 @@ copilot   # GitHub Copilot CLI</code></pre>
 </section>
 <section id="adding-your-own-project-context" class="level2">
 <h2 class="anchored" data-anchor-id="adding-your-own-project-context">Adding your own project context</h2>
-<p>After running <code>setup_mizer_agent()</code> you have an <code>AGENTS.md</code> that starts with <code>@MIZER-AGENTS.md</code>. Open it and add a short description of your model below:</p>
+<p>After running <a href="https://sizespectrum.org/mizer/reference/setup_mizer_agent.html"><code>setup_mizer_agent()</code></a> you have an <code>AGENTS.md</code> that starts with <code>@MIZER-AGENTS.md</code>. Open it and add a short description of your model below:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1">@MIZER-AGENTS.md</span>
 <span id="cb3-2"></span>
 <span id="cb3-3"><span class="fu" style="color: #4758AB;
@@ -3741,7 +3745,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 <figcaption>Accuracy plot</figcaption></figure>
 </div>
 <hr></section><section id="rich-interactive-return-values" class="level2"><h2 class="anchored" data-anchor-id="rich-interactive-return-values">Rich, interactive return values</h2>
-<p>One of the most user-visible changes in mizer 3.0 is that the arrays returned by mizer’s getter functions are no longer plain matrices — they carry metadata and come with built-in <a href="https://rdrr.io/r/graphics/plot.default.html"><code>plot()</code></a>, <code>ggplotly()</code>, <a href="https://rdrr.io/r/base/print.html"><code>print()</code></a>, <a href="https://rdrr.io/r/base/summary.html"><code>summary()</code></a>, and <a href="https://rdrr.io/r/base/as.data.frame.html"><code>as.data.frame()</code></a> methods.</p>
+<p>One of the most user-visible changes in mizer 3.0 is that the arrays returned by mizer’s getter functions are no longer plain matrices — they carry metadata and come with built-in <a href="https://rdrr.io/r/graphics/plot.default.html"><code>plot()</code></a>, <a href="https://rdrr.io/pkg/plotly/man/ggplotly.html"><code>ggplotly()</code></a>, <a href="https://rdrr.io/r/base/print.html"><code>print()</code></a>, <a href="https://rdrr.io/r/base/summary.html"><code>summary()</code></a>, and <a href="https://rdrr.io/r/base/as.data.frame.html"><code>as.data.frame()</code></a> methods.</p>
 <p>So to get, for example, a plot of the spawning stock biomass, you simply need</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
@@ -3775,7 +3779,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 <tr class="odd">
 <td><code>ArraySpeciesBySize</code></td>
 <td>
-<a href="https://sizespectrum.org/mizer/reference/getEncounter.html"><code>getEncounter()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getFeedingLevel.html"><code>getFeedingLevel()</code></a>, <a href="https://sizespectrum.org/mizer/reference/deprecated_accessors.html"><code>getExtMort()</code></a>, …</td>
+<a href="https://sizespectrum.org/mizer/reference/getEncounter.html"><code>getEncounter()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getFeedingLevel.html"><code>getFeedingLevel()</code></a>, <a href="https://sizespectrum.org/mizer/reference/setExtMort.html"><code>getExtMort()</code></a>, …</td>
 <td>species × size</td>
 </tr>
 <tr class="even">
@@ -3794,7 +3798,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 </tr>
 </tbody>
 </table>
-<p>Each object carries a human-readable <code>value_name</code> and <code>units</code> attribute so that <a href="https://rdrr.io/r/graphics/plot.default.html"><code>plot()</code></a> can produce a labelled graph immediately, without requiring any manual axis annotation. <code>ggplotly()</code> wrappers convert every <code>ggplot2</code> output into a fully interactive plotly figure with a single call.</p>
+<p>Each object carries a human-readable <code>value_name</code> and <code>units</code> attribute so that <a href="https://rdrr.io/r/graphics/plot.default.html"><code>plot()</code></a> can produce a labelled graph immediately, without requiring any manual axis annotation. <a href="https://rdrr.io/pkg/plotly/man/ggplotly.html"><code>ggplotly()</code></a> wrappers convert every <code>ggplot2</code> output into a fully interactive plotly figure with a single call.</p>
 <p>For <code>ArrayTimeBySpeciesBySize</code> objects, an <a href="https://sizespectrum.org/mizer/reference/animate.html"><code>animate()</code></a> method produces a smooth animation of the evolving size spectrum, supporting axis limits, interpolation, and background species. So if you want to see how the size-dependent mortality in the North Sea model has changed over the years you can simply do:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
@@ -3887,7 +3891,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">ggplotly</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/plotly/man/ggplotly.html">ggplotly</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -3906,7 +3910,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 </div>
 <p><strong><a href="https://sizespectrum.org/mizer/reference/expandSizeGrid.html"><code>expandSizeGrid()</code></a></strong> extends the size grid of a <code>MizerParams</code> object to a new minimum and/or maximum size while preserving all existing species data. This is for example used by <a href="https://sizespectrum.org/mizer/reference/addSpecies.html"><code>addSpecies()</code></a> when you add a new species to an existing model that grows to sizes larger than previously includes species.</p>
-<p><strong>Verbosity control</strong>: an <code>info_level</code> argument has been added to <a href="https://sizespectrum.org/mizer/reference/projectToSteady.html"><code>projectToSteady()</code></a>, <a href="https://sizespectrum.org/mizer/reference/steady.html"><code>steady()</code></a>, <a href="https://sizespectrum.org/mizer/reference/setParams.html"><code>setParams()</code></a>, <a href="https://sizespectrum.org/mizer/reference/addSpecies.html"><code>addSpecies()</code></a>, <a href="https://sizespectrum.org/mizer/reference/newCommunityParams.html"><code>newCommunityParams()</code></a>, <a href="https://sizespectrum.org/mizer/reference/newTraitParams.html"><code>newTraitParams()</code></a>, and the <a href="https://sizespectrum.org/mizer/reference/matchBiomasses.html"><code>matchBiomasses()</code></a>/<a href="https://sizespectrum.org/mizer/reference/matchNumbers.html"><code>matchNumbers()</code></a>/<code>matchYields()</code> family. Set <code>info_level = 0</code> to run these functions silently in pipelines or automated scripts.</p>
+<p><strong>Verbosity control</strong>: an <code>info_level</code> argument has been added to <a href="https://sizespectrum.org/mizer/reference/projectToSteady.html"><code>projectToSteady()</code></a>, <a href="https://sizespectrum.org/mizer/reference/steady.html"><code>steady()</code></a>, <a href="https://sizespectrum.org/mizer/reference/setParams.html"><code>setParams()</code></a>, <a href="https://sizespectrum.org/mizer/reference/addSpecies.html"><code>addSpecies()</code></a>, <a href="https://sizespectrum.org/mizer/reference/newCommunityParams.html"><code>newCommunityParams()</code></a>, <a href="https://sizespectrum.org/mizer/reference/newTraitParams.html"><code>newTraitParams()</code></a>, and the <a href="https://sizespectrum.org/mizer/reference/matchBiomasses.html"><code>matchBiomasses()</code></a>/<a href="https://sizespectrum.org/mizer/reference/matchNumbers.html"><code>matchNumbers()</code></a>/<a href="https://sizespectrum.org/mizer/reference/matchYields.html"><code>matchYields()</code></a> family. Set <code>info_level = 0</code> to run these functions silently in pipelines or automated scripts.</p>
 <p><strong><a href="https://sizespectrum.org/mizer/reference/compareParams.html"><code>compareParams()</code></a></strong> output has been reformatted for readability, with each differing slot shown as a separate block and per-species max differences reported for array slots.</p>
 <p><strong>A new cheatsheet vignette</strong> — <a href="https://sizespectrum.org/mizer/articles/cheatsheet-analysis-and-plotting.html">Analysis and Plotting</a> — provides a compact quick-reference for all functions that access simulation arrays, compute summaries, calculate indicators, and create plots.</p>
 <p>For more changes see the <a href="https://sizespectrum.org/mizer/news/index.html">Changelog</a>.</p>
@@ -5394,7 +5398,7 @@ font-style: inherit;">FSAdata</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">::</span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">Croaker2</span> <span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://fishr-core-team.github.io/FSAdata/reference/Croaker2.html">Croaker2</a></span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
 <span>    <span class="fu" style="color: #4758AB;
@@ -10557,7 +10561,7 @@ font-style: inherit;">]</span></span></code></pre></div></div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/deprecated_accessors.html">getMaxIntakeRate</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -10604,7 +10608,7 @@ font-style: inherit;">20</span></span></code></pre></div></div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/deprecated_accessors.html">getMaxIntakeRate</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -10654,7 +10658,7 @@ font-style: inherit;">20</span></span></code></pre></div></div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/deprecated_accessors.html">getMaxIntakeRate</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -10860,7 +10864,7 @@ font-style: inherit;"><a href="https://rdrr.io/r/base/identical.html">identical<
 background-color: null;
 font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/deprecated_accessors.html">getMaxIntakeRate</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -10879,7 +10883,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 <pre><code>[1] FALSE</code></pre>
 </div>
 </div>
-<p>You may wonder, why the function is called <a href="https://sizespectrum.org/mizer/reference/deprecated_accessors.html"><code>getMaxIntakeRate()</code></a> rather than <a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html"><code>intake_max()</code></a>, and I am wondering too. Naming things is difficult, and I now think that I made a bad choice when choosing those names. It gets worse when we now look at the syntax for changing <code>intake_max</code>.</p>
+<p>You may wonder, why the function is called <a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html"><code>getMaxIntakeRate()</code></a> rather than <a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html"><code>intake_max()</code></a>, and I am wondering too. Naming things is difficult, and I now think that I made a bad choice when choosing those names. It gets worse when we now look at the syntax for changing <code>intake_max</code>.</p>
 <p>We can either do it with the <code>@</code> notation, for example</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
@@ -10922,7 +10926,7 @@ font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/deprecated_accessors.html">getMaxIntakeRate</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -11057,7 +11061,7 @@ font-style: inherit;">metab</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/deprecated_accessors.html">getMetabolicRate</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/setMetabolicRate.html">getMetabolicRate</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -11269,7 +11273,7 @@ font-style: inherit;">]</span></span></code></pre></div></div>
   <title>Density-dependence in reproduction</title>
   <dc:creator>Gustav Delius</dc:creator>
   <link>https://blog.mizer.sizespectrum.org/posts/2021-08-03-density-dependence-in-reproduction/</link>
-  <description><![CDATA[ <p>In this blog post I want to discuss the purpose of the <a href="https://sizespectrum.org/mizer/reference/setBevertonHolt.html"><code>setBevertonHolt()</code></a> function, which was improved in the latest <a href="https://sizespectrum.org/mizer/news/index.html">version 2.2.1</a> of mizer to make it convenient to control the density-dependence in reproduction. We’ll introduce the new concept of the reproduction level and meet the related new function <a href="https://sizespectrum.org/mizer/reference/deprecated_accessors.html"><code>getReproductionLevel()</code></a>.</p>
+  <description><![CDATA[ <p>In this blog post I want to discuss the purpose of the <a href="https://sizespectrum.org/mizer/reference/setBevertonHolt.html"><code>setBevertonHolt()</code></a> function, which was improved in the latest <a href="https://sizespectrum.org/mizer/news/index.html">version 2.2.1</a> of mizer to make it convenient to control the density-dependence in reproduction. We’ll introduce the new concept of the reproduction level and meet the related new function <a href="https://sizespectrum.org/mizer/reference/getReproductionLevel.html"><code>getReproductionLevel()</code></a>.</p>
 <p>Before we get started we need to clarify what we mean by density dependence in reproduction in a mizer model.</p>
 <section id="stock-recruitment-relationship" class="level1"><h1>Stock-recruitment relationship</h1>
 <p>Usually, in a fisheries model, density dependence is specified via a stock-recruitment relationship, which gives a non-linear relationship between the spawning stock biomass and the recruitment. This relationship could, for example, be described by a Beverton-Holt curve. In that case for low spawning stock biomass the recruitment is assumed to be linearly proportional to the spawning stock biomass but for higher spawning stock biomass the curve flattens and asymptotically approaches a maximum recruitment rate that will never be exceeded, no matter how high the spawning stock biomass.</p>
@@ -11835,7 +11839,7 @@ Gurnard      1 1.65e+12</code></pre>
 </div>
 </section><section id="the-reproduction-level" class="level1"><h1>The reproduction level</h1>
 <p>We define the <strong>reproduction level</strong> as the ratio between the current reproduction rate and the maximum reproduction rate. Thus it is a number between 0 and 1. It is similar to the <strong>feeding level</strong> which in mizer is defined as the ratio between tha actual feeding rate and the maximum feeding rate.</p>
-<p>Since version 2.2.1 of mizer there is a function <a href="https://sizespectrum.org/mizer/reference/deprecated_accessors.html"><code>getReproductionLevel()</code></a> for calculating the reproduction level.</p>
+<p>Since version 2.2.1 of mizer there is a function <a href="https://sizespectrum.org/mizer/reference/getReproductionLevel.html"><code>getReproductionLevel()</code></a> for calculating the reproduction level.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
@@ -11843,7 +11847,7 @@ font-style: inherit;">reproduction_level</span> <span class="op" style="color: #
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/deprecated_accessors.html">getReproductionLevel</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/getReproductionLevel.html">getReproductionLevel</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -11959,7 +11963,7 @@ background-color: null;
 font-style: inherit;">]</span></span>
 <span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/deprecated_accessors.html">getReproductionLevel</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://sizespectrum.org/mizer/reference/getReproductionLevel.html">getReproductionLevel</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
