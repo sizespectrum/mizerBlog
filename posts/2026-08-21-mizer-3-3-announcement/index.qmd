@@ -1,0 +1,254 @@
+---
+title: "Announcing mizer 3.3"
+description: |
+  mizer 3.3 can tell you whether your model is actually at its steady state,
+  find steady states that are dynamically unstable and analyse why, and scan a
+  model over a range of parameter values to produce yield curves and
+  bifurcation diagrams. The topic articles and the AI-agent skills have also
+  become one set of documents: there is now one guide per stage of the
+  modelling workflow, and your agent reads the same text you do.
+image: preview.png
+author:
+  - name: Gustav Delius
+date: 2026-08-21
+categories: [release]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+Where mizer 3.2 was a quick corrective release, 3.3 adds capability. Three themes run through it.
+
+The first is a question mizer could not previously answer about itself: **is this model at its steady state?** Every calibration workflow depends on the answer, and until now you had to keep track of it in your head.
+
+The second is what to do when the steady state is **dynamically unstable** — when the model does not settle down but oscillates. mizer can now find such a steady state anyway, tell you that it is unstable, tell you the period of the oscillation you should expect, and detect the limit cycle when you project the dynamics.
+
+The third is **scanning**: running a model over a range of values of anything and measuring anything on whatever attractor it settles on. That gives yield-against-fishing-mortality curves with $F_{MSY}$ marked, bifurcation diagrams, and scans over any species or resource parameter, all from one function.
+
+Alongside these, the documentation has been reorganised: the topic articles and the AI-agent skills are now literally the same files, so there is one **guide** per stage of the modelling workflow and an agent working in your project reads exactly what you read.
+
+## Is your model at its steady state?
+
+Almost every mizer workflow assumes the model is sitting at a fixed point. Calibration steps move it off; `steady()` puts it back. Forgetting a `steady()` call after a `match…()` step is the most common way a calibration goes quietly wrong, because nothing in the model's printout used to reveal it.
+
+Three new things fix that. `isSteady()` answers the question directly:
+
+``` r
+isSteady(NS_params)
+#> [1] TRUE
+```
+
+`summary()` on a `MizerParams` object now reports the model's biomass drift along with everything else it shows:
+
+```
+Steady state:
+	biomass drift:	0.014 /year	(at steady state)
+```
+
+And the matching functions now say when they have moved the model:
+
+``` r
+params <- matchGrowth(NS_params)
+#> `matchGrowth()` has rescaled the model and so moved it off its steady state.
+#> Run `steady()` to settle it again. You can check with `getSteadyResidual()`.
+```
+
+The same `summary()` on that model now reads
+
+```
+Steady state:
+	biomass drift:	4.6 /year	(not at steady state - run steady())
+```
+
+The `calibrate…()` functions and `scaleModel()` deliberately stay quiet, because an overall scaling factor is an exact symmetry of the model and leaves the steady state untouched.
+
+When the answer is "no", `getSteadyResidual()` tells you *where*. It returns the rate at which each species' abundance would change if the model were projected forward, as a per-capita rate in 1/year, so zero means the model is on a fixed point:
+
+``` r
+plot(getSteadyResidual(params))
+```
+
+![](residual.png)
+
+Every species is losing abundance around 0.1–1 g and Haddock is doing so at nearly 12 per year: `matchGrowth()` has rescaled the growth rates, and the small end of every spectrum is now emptying faster than recruitment fills it. For the consumers the value is exact rather than a finite difference — the backward-Euler transport coefficients that `project()` uses satisfy $AN - S = -\Delta t\, dN/dt$ identically — and everything is evaluated with the model's own reproduction function and its own resource dynamics, so it works whatever those are.
+
+If you would rather be warned than have to remember to ask, `project()` gains an experimental `check_steady` argument that warns when it is handed a model that is not settled.
+
+## Steady states you cannot reach by projecting
+
+`steady()` finds a steady state by running the dynamics until they stop changing. That only works if the steady state is *stable*. Push a model hard enough — with fishing, usually — and it crosses a Hopf bifurcation: the steady state still exists, but every trajectory spirals away from it, and `steady()` has nothing to converge to.
+
+The new `steadyNewton()` solves the steady-state equations directly with a Newton-type root finder rather than by projecting, so it finds the steady state regardless of its stability. Take the North Sea model and raise every gear's effort to 1.5:
+
+``` r
+params_f15 <- steadyNewton(NS_params, effort = 1.5)
+```
+
+Is that state stable? `getStability()` computes the eigenvalues of the linearised one-step map at the fixed point:
+
+``` r
+stab <- getStability(params_f15, effort = 1.5, include_resource = TRUE)
+stab$stable
+#> [1] FALSE
+stab$max_real_part
+#> [1] 1.235902
+stab$eigenvalues[1]
+#> [1] 1.235902+0.847932i
+stab$dominant_period
+#> [1] 7.410008
+```
+
+The leading eigenvalue is complex with a positive real part. A real positive eigenvalue would mean monotone growth away from the steady state; a complex pair means the perturbation grows *while oscillating*, and the imaginary part sets the period — about 7.4 years.
+
+One detail is worth dwelling on, because it is easy to get wrong. mizer steps the dynamics with an implicit solver, and implicit solvers artificially damp oscillations. The eigenvalues of the one-step map therefore describe the stability of the *numerical scheme* at whatever step size you chose, not the stability of the model. `getStability()` reports both, and keeps them apart: `spectral_radius` is $\max|\mu|$ for the discrete map at the given `dt`, while `max_real_part` comes from mapping those eigenvalues back to their exact continuous-time equivalents via $\lambda = (1 - 1/\mu)/\Delta t$. Refine `dt` and the spectral radius moves; `max_real_part` is a property of the model.
+
+Now project the dynamics and watch the prediction come true. `projectToSteady()` recognises that it is not converging to a fixed point and reports what it did settle on:
+
+``` r
+sim <- projectToSteady(NS_params, effort = 1.5, t_max = 200, t_per = 0.2,
+                       return_sim = TRUE, method = "tr_bdf2")
+#> Settled onto a limit cycle of period 5.4 years (relative amplitude 0.66)
+#> after 29.8 years.
+plotBiomass(sim)
+```
+
+![](limit-cycle.png)
+
+The nature of the attractor is recorded in a `"convergence"` attribute on the result, so code can branch on it:
+
+``` r
+attr(sim, "convergence")$type
+#> [1] "cycle"
+attr(sim, "convergence")$period
+#> [1] 5.4
+
+attr(projectToSteady(NS_params, t_max = 100), "convergence")$type
+#> [1] "below_tolerance"
+```
+
+The type is deliberately not called `"steady"`: passing the distance test means the state stopped moving on the scale of the distance function, which is not the same as being a fixed point. That is why the attribute also carries a `residual` field, measuring the thing itself.
+
+The detected nonlinear period, 5.4 years, is shorter than the 7.4 years the linear analysis predicted. That is expected — at effort 1.5 we are well beyond the bifurcation, where nonlinearities reshape the cycle. Closer to the bifurcation point the two agree. To see the *shape* of the oscillation without the growth and the nonlinear distortion, `getLimitCycleSim()` builds an ordinary `MizerSim` covering one period of the linearised cycle from the leading eigenvector, which you can then hand to any mizer plotting function.
+
+There is one caveat, and it is important enough that 3.3 ships an article about it. All of this rests on the one-step map being differentiable at the steady state. If you have registered a custom rate function with `setRateFunction()` that jumps as a function of the abundances, `steadyNewton()` may stall and `getStability()` can return a plausible-looking number describing neither branch. The new [*Discontinuous rate functions*](https://sizespectrum.org/mizer/articles/discontinuous_rates.html) article explains why, and how to give the switch a finite width instead.
+
+## Scanning a model
+
+A yield-against-fishing-mortality curve, a bifurcation diagram over effort, and a scan over the resource carrying capacity are all the same computation: vary something, let the model settle, measure something. mizer 3.3 makes that one function, `scanModel()`. You say what to vary by passing a function that changes the model, and what to measure by passing a function that computes a quantity from a `MizerSim` — and all of mizer's summary functions (`getBiomass()`, `getYield()`, `getSSB()`, `getN()`, `sizeIntegral()`) work as the measuring function unchanged.
+
+The reason this belongs in the same release as the stability tools is that measuring a quantity on an attractor is only well defined once you know what the attractor *is*. On a fixed point, `scanModel()` reads the value straight off the settled state with no further projection at all. On a limit cycle it projects for **exactly one period** of the detected cycle and averages over it, which is the long-term average; a window that is not a whole number of periods leaves a residue of the oscillation in the average and shows up as a jagged curve. When the model settles on neither, the quantity is averaged over `t_sample` years and the affected scan values are named in a message, because those points should not be relied on.
+
+`plotYieldVsF()` has moved into mizer from mizerExperimental, rebuilt as a thin wrapper over `scanModel()`. It varies the fishing mortality on one species, leaving the fishing on every other species alone, and marks the mortality at which the yield is largest — which is $F_{MSY}$:
+
+``` r
+plotYieldVsF(NS_params, species = "Cod")
+```
+
+![](yield-vs-f.png)
+
+The scan behind the plot is a `MizerScan` object, a data frame carrying the axis labels, the model it started from and the location of each series' maximum:
+
+``` r
+scan <- plotYieldVsF(NS_params, species = "Cod", return_data = TRUE)
+summary(scan)
+#> Yield rate [g/year] vs Fishing mortality on Cod [1/year]
+#> 16 scan values from 0 to 1.5
+#>
+#>  Species Min          Max at_max
+#>      Cod   0 298473714340    0.9
+#>
+#> `at_max` is the scanned value with the largest value, over the
+#> values that were scanned. Scan a finer grid to sharpen it.
+#>
+#> Attractors reached:
+#>
+#> below_tolerance
+#>              16
+```
+
+`scanEffort()`, `scanFishingMortality()` and `scanSpeciesParam()` build the function that applies each scan value; any function of `(params, value)` returning a `MizerParams` will do, as long as it is idempotent.
+
+## Plots that know what they are showing
+
+Mizer arrays now state what kind of quantity they hold — a value, a density, or a proportion — and two useful things follow.
+
+A density is multiplied by the appropriate Jacobian when plotted against a length axis and has its units restated from `1/g` to `1/cm`, instead of mizer guessing from the array's name. A proportion — the feeding level, `maturity()`, `repro_prop()`, `resource_level()` — is plotted on a linear axis showing the whole of the interval from 0 to 1, widened where the data need it, so the value can be read against the scale it belongs to.
+
+Length-based plots gained two things they had been silently dropping. The resource now appears on them, because `resource_params()` carries weight-length parameters (defaulting to the equivalent spherical diameter of an organism with the density of water, the convention plankton ecology uses). And the total is shown, summed *after* the conversion — at equal length rather than at equal weight, since each species converts weight to length with its own allometry:
+
+``` r
+plotSpectra(NS_params, size_axis = "l", power = 2, total = TRUE)
+```
+
+![](length-spectra.png)
+
+Finally, `plotSpectra()` and friends let you choose the plotted quantity with two independent arguments instead of the single `power`: `biomass` selects a biomass rather than a number density, and the new `per_log_size` selects a density with respect to logarithmic size. The power of the weight is the sum of the two, which is why `power = 1` was ambiguous — it is both the biomass density and the number density in log size, and mizer had to guess which you meant when labelling the axis. `power` keeps working, so nothing you have written breaks.
+
+## One guide per stage — and the skills behind them
+
+mizer's topic articles and its AI-agent skills used to be two sets of documents covering the same ground, which is exactly the arrangement in which two documents drift apart. They are now one. Each `inst/skills/<topic>/SKILL.md` is shipped as an agent skill *and* is the source of the matching `guide-*` article on the website. Editing one edits the other.
+
+They are no longer called cheatsheets, either. A cheatsheet reminds you of something you already know; these assume no prior knowledge. So there is now one **guide** per stage of the modelling workflow:
+
+| Stage | Guide |
+|-------------------|-----------------------------------------------------|
+| Build a model | [Building a mizer model](https://sizespectrum.org/mizer/articles/guide-build-model.html) |
+| Settle and calibrate it | [Reaching steady state and calibrating](https://sizespectrum.org/mizer/articles/guide-calibrate-model.html) |
+| Change its parameters | [Changing model parameters](https://sizespectrum.org/mizer/articles/guide-change-parameters.html) |
+| Set up fishing | [Setting up fishing](https://sizespectrum.org/mizer/articles/guide-set-up-fishing.html) |
+| Run simulations | [Running a mizer simulation](https://sizespectrum.org/mizer/articles/guide-run-simulation.html) |
+| Analyse and plot | [Analysing and plotting mizer results](https://sizespectrum.org/mizer/articles/guide-analyse-and-plot.html) |
+| Analyse stability | [Analysing dynamic stability](https://sizespectrum.org/mizer/articles/guide-analyse-stability.html) |
+| Understand the dynamics | [Understanding size-spectrum dynamics](https://sizespectrum.org/mizer/articles/guide-understand-size-spectrum-dynamics.html) |
+| Extend mizer | [Extending mizer](https://sizespectrum.org/mizer/articles/guide-extend-mizer.html) |
+| Package an extension | [Creating a mizer extension package](https://sizespectrum.org/mizer/articles/guide-create-extension-package.html) |
+| Use someone else's extension | [Using mizer extension packages](https://sizespectrum.org/mizer/articles/guide-use-extension-packages.html) |
+| Fix code after an upgrade | [Upgrading mizer](https://sizespectrum.org/mizer/articles/upgrading.html) |
+
+Four of these are new. *Running a mizer simulation* and *Extending mizer* previously had a skill but no article. *Understanding size-spectrum dynamics* is new on both sides and is the one to read if you want to know how mizer models *behave* rather than which function to call: which quantities you impose and which the model produces for itself, the feedback loops that couple species, what sets the slope of the steady-state spectrum, and a table mapping a symptom you actually see — a species that collapses, oscillates, stops growing before `w_mat`, or refuses to respond to fishing — to what to inspect. *Analysing dynamic stability* covers the tools described above.
+
+Every old address redirects, but `vignette("cheatsheet-fishing")` does not; the [*Upgrading mizer*](https://sizespectrum.org/mizer/articles/upgrading.html) article has the full table of old and new names.
+
+### Your agent reads the same text
+
+If you use an AI coding agent — Claude Code, Gemini CLI, Codex — the [**mizerAgents**](https://sizespectrum.github.io/mizerAgents/) package installs these skills into your project:
+
+``` r
+pak::pak("sizespectrum/mizerAgents")
+mizerAgents::setup_mizer_agent()
+```
+
+The important change is *where they come from*. `setup_mizer_agent()` now reads the skills from the mizer you have installed, via `system.file("skills", package = "mizer")`, rather than carrying its own copies. So an agent's guidance describes the version of mizer your project actually runs — including, in 3.3, the API index it greps for function names. When you upgrade mizer, your agent's knowledge upgrades with it, with no release of mizerAgents needed.
+
+The *Upgrading mizer* article is shipped as a skill too. Vignettes are not installed with a package, so an agent helping you fix a script that broke after an upgrade previously had no access to that information and would debug a deliberate, documented change from first principles. The skill carries a symptom index — an "unused argument" error, a deprecation warning, a plot that changed, an `identical()` comparison that now fails — mapping each to the release that caused it and the fix.
+
+Skills are refreshed file by file, and each has a `NOTES.md` that the package never touches, where an agent records what it learns about *your* model. Commit it, and your collaborators' agents inherit it.
+
+## Also in 3.3
+
+- **`sizeIntegral()`** calculates any integral $\int N_i(w) K_i(w)\,dw$ over the size spectrum, and is now the recommended way to write your own summary or indicator function: it selects the size range, applies the quadrature scheme the model is actually on, and wraps the result in the right array class. `getBiomass()`, `getN()`, `getSSB()`, `getYield()`, `getYieldGear()` and `getProportionOfLargeFish()` are all implemented with it.
+
+- **One name per accessor.** Seventeen accessors that return a value stored in the `MizerParams` object had two names doing exactly the same thing. The `get`-prefixed name is now superseded in favour of the bare name — the one that also has a replacement function: `getMetabolicRate()` → `metab()`, `getExtMort()` → `ext_mort()`, `getInteraction()` → `interaction_matrix()`, and so on. The `get` prefix is now reserved for functions that *calculate* something from the current state, like `getEncounter()`. The old names are kept as plain aliases that do not warn and will not be removed.
+
+- **One switch for everything mizer tells you.** Nearly every message and warning mizer gives while building or changing a model now goes through a single mechanism, collected into one report rather than a stream, and controlled by `info_level` — or by the new `mizer_info_level` option, which quietens mizer as a whole including the functions that have no `info_level` argument of their own. The mechanism is exported, so an extension package can report through the same channel and obey the same switch.
+
+- **A frozen array no longer swallows your changes silently.** If you set a rate array by hand and then change a species or resource parameter that feeds it, mizer now warns that the change has no effect, names the parameters that were ignored and the quantity holding them back, and tells you the call that hands control back — for example `setMetabolicRate(params, reset = TRUE)`.
+
+- **`validParams()` is about 15 times faster** on an object that is already valid, recognised by a fingerprint of the slots the validation actually depends on. The fingerprint is recalculated on every call and never stored, so it cannot go stale.
+
+- **`knife_edge_length()`** applies a knife-edge selectivity cut at a given length rather than a weight.
+
+- **Quadrature fixes.** `getDiet(proportion = FALSE)` and `getTrophicLevel()` were applying a bin quadrature twice under `second_order_w()`; the calibration and matching functions and `plotYieldObservedVsModel()` had each hand-rolled their size integral and stayed on the first-order scheme. Results on the default scheme are unchanged.
+
+For the complete list see the [changelog](https://sizespectrum.org/mizer/news/index.html).
+
+## Upgrading
+
+``` r
+install.packages("mizer")
+```
+
+Existing `MizerParams` and `MizerSim` objects are upgraded automatically when you load them with `readParams()` or `readSim()`. Anything that may affect scripts you have already written is described in the [*Upgrading mizer*](https://sizespectrum.org/mizer/articles/upgrading.html) article — and, if you work with an agent, in the skill built from it.
+
+As always, we welcome bug reports and feature requests on [GitHub](https://github.com/sizespectrum/mizer/issues).

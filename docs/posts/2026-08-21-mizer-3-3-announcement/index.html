@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Gustav Delius">
+<meta name="dcterms.date" content="2026-08-21">
+<meta name="description" content="mizer 3.3 can tell you whether your model is actually at its steady state, find steady states that are dynamically unstable and analyse why, and scan a model over a range of parameter values to produce yield curves and bifurcation diagrams. The topic articles and the AI-agent skills have also become one set of documents: there is now one guide per stage of the modelling workflow, and your agent reads the same text you do.">
+<title>Announcing mizer 3.3 – mizer blog</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/favicon-16x16.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6a6036f04502f492f84cc75b9eb3b61a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="../../mizer.css">
+<meta property="og:title" content="Announcing mizer 3.3 – mizer blog">
+<meta property="og:description" content="mizer 3.3 can tell you whether your model is actually at its steady state, find steady states that are dynamically unstable and analyse why, and scan a model over a range of parameter values to produce yield curves and bifurcation diagrams. The topic articles and the AI-agent skills have also become one set of documents: there is now one guide per stage of the modelling workflow, and your agent reads the same text you do.">
+<meta property="og:image" content="https://blog.mizer.sizespectrum.org/posts/2026-08-21-mizer-3-3-announcement/preview.png">
+<meta property="og:site_name" content="mizer blog">
+<meta property="og:image:height" content="675">
+<meta property="og:image:width" content="1050">
+<meta name="twitter:title" content="Announcing mizer 3.3 – mizer blog">
+<meta name="twitter:description" content="mizer 3.3 can tell you whether your model is actually at its steady state, find steady states that are dynamically unstable and analyse why, and scan a model over a range of parameter values to produce yield curves and bifurcation diagrams. The topic articles and the AI-agent skills have also become one set of documents: there is now one guide per stage of the modelling workflow, and your agent reads the same text you do.">
+<meta name="twitter:image" content="https://blog.mizer.sizespectrum.org/posts/2026-08-21-mizer-3-3-announcement/preview.png">
+<meta name="twitter:site" content="@mizer_model">
+<meta name="twitter:image-height" content="675">
+<meta name="twitter:image-width" content="1050">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">mizer blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link" href="https://sizespectrum.org/mizer/"> 
+<span class="menu-text">mizer home</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/mizer_model"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/sizespectrum/mizerBlog"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#is-your-model-at-its-steady-state" id="toc-is-your-model-at-its-steady-state" class="nav-link active" data-scroll-target="#is-your-model-at-its-steady-state">Is your model at its steady state?</a></li>
+  <li><a href="#steady-states-you-cannot-reach-by-projecting" id="toc-steady-states-you-cannot-reach-by-projecting" class="nav-link" data-scroll-target="#steady-states-you-cannot-reach-by-projecting">Steady states you cannot reach by projecting</a></li>
+  <li><a href="#scanning-a-model" id="toc-scanning-a-model" class="nav-link" data-scroll-target="#scanning-a-model">Scanning a model</a></li>
+  <li><a href="#plots-that-know-what-they-are-showing" id="toc-plots-that-know-what-they-are-showing" class="nav-link" data-scroll-target="#plots-that-know-what-they-are-showing">Plots that know what they are showing</a></li>
+  <li>
+<a href="#one-guide-per-stage-and-the-skills-behind-them" id="toc-one-guide-per-stage-and-the-skills-behind-them" class="nav-link" data-scroll-target="#one-guide-per-stage-and-the-skills-behind-them">One guide per stage — and the skills behind them</a>
+  <ul class="collapse">
+<li><a href="#your-agent-reads-the-same-text" id="toc-your-agent-reads-the-same-text" class="nav-link" data-scroll-target="#your-agent-reads-the-same-text">Your agent reads the same text</a></li>
+  </ul>
+</li>
+  <li><a href="#also-in-3.3" id="toc-also-in-3.3" class="nav-link" data-scroll-target="#also-in-3.3">Also in 3.3</a></li>
+  <li><a href="#upgrading" id="toc-upgrading" class="nav-link" data-scroll-target="#upgrading">Upgrading</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">Announcing mizer 3.3</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">release</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    <p>mizer 3.3 can tell you whether your model is actually at its steady state, find steady states that are dynamically unstable and analyse why, and scan a model over a range of parameter values to produce yield curves and bifurcation diagrams. The topic articles and the AI-agent skills have also become one set of documents: there is now one guide per stage of the modelling workflow, and your agent reads the same text you do.</p>
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Gustav Delius </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 21, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header><p>Where mizer 3.2 was a quick corrective release, 3.3 adds capability. Three themes run through it.</p>
+<p>The first is a question mizer could not previously answer about itself: <strong>is this model at its steady state?</strong> Every calibration workflow depends on the answer, and until now you had to keep track of it in your head.</p>
+<p>The second is what to do when the steady state is <strong>dynamically unstable</strong> — when the model does not settle down but oscillates. mizer can now find such a steady state anyway, tell you that it is unstable, tell you the period of the oscillation you should expect, and detect the limit cycle when you project the dynamics.</p>
+<p>The third is <strong>scanning</strong>: running a model over a range of values of anything and measuring anything on whatever attractor it settles on. That gives yield-against-fishing-mortality curves with <span class="math inline">\(F_{MSY}\)</span> marked, bifurcation diagrams, and scans over any species or resource parameter, all from one function.</p>
+<p>Alongside these, the documentation has been reorganised: the topic articles and the AI-agent skills are now literally the same files, so there is one <strong>guide</strong> per stage of the modelling workflow and an agent working in your project reads exactly what you read.</p>
+<section id="is-your-model-at-its-steady-state" class="level2"><h2 class="anchored" data-anchor-id="is-your-model-at-its-steady-state">Is your model at its steady state?</h2>
+<p>Almost every mizer workflow assumes the model is sitting at a fixed point. Calibration steps move it off; <a href="https://sizespectrum.org/mizer/reference/steady.html"><code>steady()</code></a> puts it back. Forgetting a <a href="https://sizespectrum.org/mizer/reference/steady.html"><code>steady()</code></a> call after a <code>match…()</code> step is the most common way a calibration goes quietly wrong, because nothing in the model’s printout used to reveal it.</p>
+<p>Three new things fix that. <a href="https://sizespectrum.org/mizer/reference/isSteady.html"><code>isSteady()</code></a> answers the question directly:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">isSteady</span><span class="op">(</span><span class="va">NS_params</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://rdrr.io/r/base/summary.html"><code>summary()</code></a> on a <code>MizerParams</code> object now reports the model’s biomass drift along with everything else it shows:</p>
+<pre><code>Steady state:
+    biomass drift:  0.014 /year (at steady state)</code></pre>
+<p>And the matching functions now say when they have moved the model:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">matchGrowth</span><span class="op">(</span><span class="va">NS_params</span><span class="op">)</span></span>
+<span><span class="co">#&gt; `matchGrowth()` has rescaled the model and so moved it off its steady state.</span></span>
+<span><span class="co">#&gt; Run `steady()` to settle it again. You can check with `getSteadyResidual()`.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The same <a href="https://rdrr.io/r/base/summary.html"><code>summary()</code></a> on that model now reads</p>
+<pre><code>Steady state:
+    biomass drift:  4.6 /year   (not at steady state - run steady())</code></pre>
+<p>The <code>calibrate…()</code> functions and <a href="https://sizespectrum.org/mizer/reference/scaleModel.html"><code>scaleModel()</code></a> deliberately stay quiet, because an overall scaling factor is an exact symmetry of the model and leaves the steady state untouched.</p>
+<p>When the answer is “no”, <a href="https://sizespectrum.org/mizer/reference/getSteadyResidual.html"><code>getSteadyResidual()</code></a> tells you <em>where</em>. It returns the rate at which each species’ abundance would change if the model were projected forward, as a per-capita rate in 1/year, so zero means the model is on a fixed point:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu">getSteadyResidual</span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="residual.png" class="img-fluid"></p>
+<p>Every species is losing abundance around 0.1–1 g and Haddock is doing so at nearly 12 per year: <a href="https://sizespectrum.org/mizer/reference/matchGrowth.html"><code>matchGrowth()</code></a> has rescaled the growth rates, and the small end of every spectrum is now emptying faster than recruitment fills it. For the consumers the value is exact rather than a finite difference — the backward-Euler transport coefficients that <a href="https://sizespectrum.org/mizer/reference/project.html"><code>project()</code></a> uses satisfy <span class="math inline">\(AN - S = -\Delta t\, dN/dt\)</span> identically — and everything is evaluated with the model’s own reproduction function and its own resource dynamics, so it works whatever those are.</p>
+<p>If you would rather be warned than have to remember to ask, <a href="https://sizespectrum.org/mizer/reference/project.html"><code>project()</code></a> gains an experimental <code>check_steady</code> argument that warns when it is handed a model that is not settled.</p>
+</section><section id="steady-states-you-cannot-reach-by-projecting" class="level2"><h2 class="anchored" data-anchor-id="steady-states-you-cannot-reach-by-projecting">Steady states you cannot reach by projecting</h2>
+<p><a href="https://sizespectrum.org/mizer/reference/steady.html"><code>steady()</code></a> finds a steady state by running the dynamics until they stop changing. That only works if the steady state is <em>stable</em>. Push a model hard enough — with fishing, usually — and it crosses a Hopf bifurcation: the steady state still exists, but every trajectory spirals away from it, and <a href="https://sizespectrum.org/mizer/reference/steady.html"><code>steady()</code></a> has nothing to converge to.</p>
+<p>The new <a href="https://sizespectrum.org/mizer/reference/steadyNewton.html"><code>steadyNewton()</code></a> solves the steady-state equations directly with a Newton-type root finder rather than by projecting, so it finds the steady state regardless of its stability. Take the North Sea model and raise every gear’s effort to 1.5:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params_f15</span> <span class="op">&lt;-</span> <span class="fu">steadyNewton</span><span class="op">(</span><span class="va">NS_params</span>, effort <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Is that state stable? <a href="https://sizespectrum.org/mizer/reference/getStability.html"><code>getStability()</code></a> computes the eigenvalues of the linearised one-step map at the fixed point:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stab</span> <span class="op">&lt;-</span> <span class="fu">getStability</span><span class="op">(</span><span class="va">params_f15</span>, effort <span class="op">=</span> <span class="fl">1.5</span>, include_resource <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">stab</span><span class="op">$</span><span class="va">stable</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span>
+<span><span class="va">stab</span><span class="op">$</span><span class="va">max_real_part</span></span>
+<span><span class="co">#&gt; [1] 1.235902</span></span>
+<span><span class="va">stab</span><span class="op">$</span><span class="va">eigenvalues</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] 1.235902+0.847932i</span></span>
+<span><span class="va">stab</span><span class="op">$</span><span class="va">dominant_period</span></span>
+<span><span class="co">#&gt; [1] 7.410008</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The leading eigenvalue is complex with a positive real part. A real positive eigenvalue would mean monotone growth away from the steady state; a complex pair means the perturbation grows <em>while oscillating</em>, and the imaginary part sets the period — about 7.4 years.</p>
+<p>One detail is worth dwelling on, because it is easy to get wrong. mizer steps the dynamics with an implicit solver, and implicit solvers artificially damp oscillations. The eigenvalues of the one-step map therefore describe the stability of the <em>numerical scheme</em> at whatever step size you chose, not the stability of the model. <a href="https://sizespectrum.org/mizer/reference/getStability.html"><code>getStability()</code></a> reports both, and keeps them apart: <code>spectral_radius</code> is <span class="math inline">\(\max|\mu|\)</span> for the discrete map at the given <code>dt</code>, while <code>max_real_part</code> comes from mapping those eigenvalues back to their exact continuous-time equivalents via <span class="math inline">\(\lambda = (1 - 1/\mu)/\Delta t\)</span>. Refine <code>dt</code> and the spectral radius moves; <code>max_real_part</code> is a property of the model.</p>
+<p>Now project the dynamics and watch the prediction come true. <a href="https://sizespectrum.org/mizer/reference/projectToSteady.html"><code>projectToSteady()</code></a> recognises that it is not converging to a fixed point and reports what it did settle on:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">projectToSteady</span><span class="op">(</span><span class="va">NS_params</span>, effort <span class="op">=</span> <span class="fl">1.5</span>, t_max <span class="op">=</span> <span class="fl">200</span>, t_per <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>                       return_sim <span class="op">=</span> <span class="cn">TRUE</span>, method <span class="op">=</span> <span class="st">"tr_bdf2"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Settled onto a limit cycle of period 5.4 years (relative amplitude 0.66)</span></span>
+<span><span class="co">#&gt; after 29.8 years.</span></span>
+<span><span class="fu">plotBiomass</span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="limit-cycle.png" class="img-fluid"></p>
+<p>The nature of the attractor is recorded in a <code>"convergence"</code> attribute on the result, so code can branch on it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">sim</span>, <span class="st">"convergence"</span><span class="op">)</span><span class="op">$</span><span class="va">type</span></span>
+<span><span class="co">#&gt; [1] "cycle"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">sim</span>, <span class="st">"convergence"</span><span class="op">)</span><span class="op">$</span><span class="va">period</span></span>
+<span><span class="co">#&gt; [1] 5.4</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="fu">projectToSteady</span><span class="op">(</span><span class="va">NS_params</span>, t_max <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>, <span class="st">"convergence"</span><span class="op">)</span><span class="op">$</span><span class="va">type</span></span>
+<span><span class="co">#&gt; [1] "below_tolerance"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The type is deliberately not called <code>"steady"</code>: passing the distance test means the state stopped moving on the scale of the distance function, which is not the same as being a fixed point. That is why the attribute also carries a <code>residual</code> field, measuring the thing itself.</p>
+<p>The detected nonlinear period, 5.4 years, is shorter than the 7.4 years the linear analysis predicted. That is expected — at effort 1.5 we are well beyond the bifurcation, where nonlinearities reshape the cycle. Closer to the bifurcation point the two agree. To see the <em>shape</em> of the oscillation without the growth and the nonlinear distortion, <a href="https://sizespectrum.org/mizer/reference/getLimitCycleSim.html"><code>getLimitCycleSim()</code></a> builds an ordinary <code>MizerSim</code> covering one period of the linearised cycle from the leading eigenvector, which you can then hand to any mizer plotting function.</p>
+<p>There is one caveat, and it is important enough that 3.3 ships an article about it. All of this rests on the one-step map being differentiable at the steady state. If you have registered a custom rate function with <a href="https://sizespectrum.org/mizer/reference/setRateFunction.html"><code>setRateFunction()</code></a> that jumps as a function of the abundances, <a href="https://sizespectrum.org/mizer/reference/steadyNewton.html"><code>steadyNewton()</code></a> may stall and <a href="https://sizespectrum.org/mizer/reference/getStability.html"><code>getStability()</code></a> can return a plausible-looking number describing neither branch. The new <a href="https://sizespectrum.org/mizer/articles/discontinuous_rates.html"><em>Discontinuous rate functions</em></a> article explains why, and how to give the switch a finite width instead.</p>
+</section><section id="scanning-a-model" class="level2"><h2 class="anchored" data-anchor-id="scanning-a-model">Scanning a model</h2>
+<p>A yield-against-fishing-mortality curve, a bifurcation diagram over effort, and a scan over the resource carrying capacity are all the same computation: vary something, let the model settle, measure something. mizer 3.3 makes that one function, <code>scanModel()</code>. You say what to vary by passing a function that changes the model, and what to measure by passing a function that computes a quantity from a <code>MizerSim</code> — and all of mizer’s summary functions (<a href="https://sizespectrum.org/mizer/reference/getBiomass.html"><code>getBiomass()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getYield.html"><code>getYield()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getSSB.html"><code>getSSB()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getN.html"><code>getN()</code></a>, <a href="https://sizespectrum.org/mizer/reference/sizeIntegral.html"><code>sizeIntegral()</code></a>) work as the measuring function unchanged.</p>
+<p>The reason this belongs in the same release as the stability tools is that measuring a quantity on an attractor is only well defined once you know what the attractor <em>is</em>. On a fixed point, <code>scanModel()</code> reads the value straight off the settled state with no further projection at all. On a limit cycle it projects for <strong>exactly one period</strong> of the detected cycle and averages over it, which is the long-term average; a window that is not a whole number of periods leaves a residue of the oscillation in the average and shows up as a jagged curve. When the model settles on neither, the quantity is averaged over <code>t_sample</code> years and the affected scan values are named in a message, because those points should not be relied on.</p>
+<p><code>plotYieldVsF()</code> has moved into mizer from mizerExperimental, rebuilt as a thin wrapper over <code>scanModel()</code>. It varies the fishing mortality on one species, leaving the fishing on every other species alone, and marks the mortality at which the yield is largest — which is <span class="math inline">\(F_{MSY}\)</span>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">plotYieldVsF</span><span class="op">(</span><span class="va">NS_params</span>, species <span class="op">=</span> <span class="st">"Cod"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="yield-vs-f.png" class="img-fluid"></p>
+<p>The scan behind the plot is a <code>MizerScan</code> object, a data frame carrying the axis labels, the model it started from and the location of each series’ maximum:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scan</span> <span class="op">&lt;-</span> <span class="fu">plotYieldVsF</span><span class="op">(</span><span class="va">NS_params</span>, species <span class="op">=</span> <span class="st">"Cod"</span>, return_data <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">scan</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Yield rate [g/year] vs Fishing mortality on Cod [1/year]</span></span>
+<span><span class="co">#&gt; 16 scan values from 0 to 1.5</span></span>
+<span><span class="co">#&gt;</span></span>
+<span><span class="co">#&gt;  Species Min          Max at_max</span></span>
+<span><span class="co">#&gt;      Cod   0 298473714340    0.9</span></span>
+<span><span class="co">#&gt;</span></span>
+<span><span class="co">#&gt; `at_max` is the scanned value with the largest value, over the</span></span>
+<span><span class="co">#&gt; values that were scanned. Scan a finer grid to sharpen it.</span></span>
+<span><span class="co">#&gt;</span></span>
+<span><span class="co">#&gt; Attractors reached:</span></span>
+<span><span class="co">#&gt;</span></span>
+<span><span class="co">#&gt; below_tolerance</span></span>
+<span><span class="co">#&gt;              16</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>scanEffort()</code>, <code>scanFishingMortality()</code> and <code>scanSpeciesParam()</code> build the function that applies each scan value; any function of <code>(params, value)</code> returning a <code>MizerParams</code> will do, as long as it is idempotent.</p>
+</section><section id="plots-that-know-what-they-are-showing" class="level2"><h2 class="anchored" data-anchor-id="plots-that-know-what-they-are-showing">Plots that know what they are showing</h2>
+<p>Mizer arrays now state what kind of quantity they hold — a value, a density, or a proportion — and two useful things follow.</p>
+<p>A density is multiplied by the appropriate Jacobian when plotted against a length axis and has its units restated from <code>1/g</code> to <code>1/cm</code>, instead of mizer guessing from the array’s name. A proportion — the feeding level, <a href="https://sizespectrum.org/mizer/reference/setReproduction.html"><code>maturity()</code></a>, <a href="https://sizespectrum.org/mizer/reference/setReproduction.html"><code>repro_prop()</code></a>, <a href="https://sizespectrum.org/mizer/reference/setResource.html"><code>resource_level()</code></a> — is plotted on a linear axis showing the whole of the interval from 0 to 1, widened where the data need it, so the value can be read against the scale it belongs to.</p>
+<p>Length-based plots gained two things they had been silently dropping. The resource now appears on them, because <a href="https://sizespectrum.org/mizer/reference/resource_params.html"><code>resource_params()</code></a> carries weight-length parameters (defaulting to the equivalent spherical diameter of an organism with the density of water, the convention plankton ecology uses). And the total is shown, summed <em>after</em> the conversion — at equal length rather than at equal weight, since each species converts weight to length with its own allometry:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">plotSpectra</span><span class="op">(</span><span class="va">NS_params</span>, size_axis <span class="op">=</span> <span class="st">"l"</span>, power <span class="op">=</span> <span class="fl">2</span>, total <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="length-spectra.png" class="img-fluid"></p>
+<p>Finally, <a href="https://sizespectrum.org/mizer/reference/plotSpectra.html"><code>plotSpectra()</code></a> and friends let you choose the plotted quantity with two independent arguments instead of the single <code>power</code>: <code>biomass</code> selects a biomass rather than a number density, and the new <code>per_log_size</code> selects a density with respect to logarithmic size. The power of the weight is the sum of the two, which is why <code>power = 1</code> was ambiguous — it is both the biomass density and the number density in log size, and mizer had to guess which you meant when labelling the axis. <code>power</code> keeps working, so nothing you have written breaks.</p>
+</section><section id="one-guide-per-stage-and-the-skills-behind-them" class="level2"><h2 class="anchored" data-anchor-id="one-guide-per-stage-and-the-skills-behind-them">One guide per stage — and the skills behind them</h2>
+<p>mizer’s topic articles and its AI-agent skills used to be two sets of documents covering the same ground, which is exactly the arrangement in which two documents drift apart. They are now one. Each <code>inst/skills/&lt;topic&gt;/SKILL.md</code> is shipped as an agent skill <em>and</em> is the source of the matching <code>guide-*</code> article on the website. Editing one edits the other.</p>
+<p>They are no longer called cheatsheets, either. A cheatsheet reminds you of something you already know; these assume no prior knowledge. So there is now one <strong>guide</strong> per stage of the modelling workflow:</p>
+<table class="caption-top table">
+<thead><tr class="header">
+<th>Stage</th>
+<th>Guide</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Build a model</td>
+<td><a href="https://sizespectrum.org/mizer/articles/guide-build-model.html">Building a mizer model</a></td>
+</tr>
+<tr class="even">
+<td>Settle and calibrate it</td>
+<td><a href="https://sizespectrum.org/mizer/articles/guide-calibrate-model.html">Reaching steady state and calibrating</a></td>
+</tr>
+<tr class="odd">
+<td>Change its parameters</td>
+<td><a href="https://sizespectrum.org/mizer/articles/guide-change-parameters.html">Changing model parameters</a></td>
+</tr>
+<tr class="even">
+<td>Set up fishing</td>
+<td><a href="https://sizespectrum.org/mizer/articles/guide-set-up-fishing.html">Setting up fishing</a></td>
+</tr>
+<tr class="odd">
+<td>Run simulations</td>
+<td><a href="https://sizespectrum.org/mizer/articles/guide-run-simulation.html">Running a mizer simulation</a></td>
+</tr>
+<tr class="even">
+<td>Analyse and plot</td>
+<td><a href="https://sizespectrum.org/mizer/articles/guide-analyse-and-plot.html">Analysing and plotting mizer results</a></td>
+</tr>
+<tr class="odd">
+<td>Analyse stability</td>
+<td><a href="https://sizespectrum.org/mizer/articles/guide-analyse-stability.html">Analysing dynamic stability</a></td>
+</tr>
+<tr class="even">
+<td>Understand the dynamics</td>
+<td><a href="https://sizespectrum.org/mizer/articles/guide-understand-size-spectrum-dynamics.html">Understanding size-spectrum dynamics</a></td>
+</tr>
+<tr class="odd">
+<td>Extend mizer</td>
+<td><a href="https://sizespectrum.org/mizer/articles/guide-extend-mizer.html">Extending mizer</a></td>
+</tr>
+<tr class="even">
+<td>Package an extension</td>
+<td><a href="https://sizespectrum.org/mizer/articles/guide-create-extension-package.html">Creating a mizer extension package</a></td>
+</tr>
+<tr class="odd">
+<td>Use someone else’s extension</td>
+<td><a href="https://sizespectrum.org/mizer/articles/guide-use-extension-packages.html">Using mizer extension packages</a></td>
+</tr>
+<tr class="even">
+<td>Fix code after an upgrade</td>
+<td><a href="https://sizespectrum.org/mizer/articles/upgrading.html">Upgrading mizer</a></td>
+</tr>
+</tbody>
+</table>
+<p>Four of these are new. <em>Running a mizer simulation</em> and <em>Extending mizer</em> previously had a skill but no article. <em>Understanding size-spectrum dynamics</em> is new on both sides and is the one to read if you want to know how mizer models <em>behave</em> rather than which function to call: which quantities you impose and which the model produces for itself, the feedback loops that couple species, what sets the slope of the steady-state spectrum, and a table mapping a symptom you actually see — a species that collapses, oscillates, stops growing before <code>w_mat</code>, or refuses to respond to fishing — to what to inspect. <em>Analysing dynamic stability</em> covers the tools described above.</p>
+<p>Every old address redirects, but <code>vignette("cheatsheet-fishing")</code> does not; the <a href="https://sizespectrum.org/mizer/articles/upgrading.html"><em>Upgrading mizer</em></a> article has the full table of old and new names.</p>
+<section id="your-agent-reads-the-same-text" class="level3"><h3 class="anchored" data-anchor-id="your-agent-reads-the-same-text">Your agent reads the same text</h3>
+<p>If you use an AI coding agent — Claude Code, Gemini CLI, Codex — the <a href="https://sizespectrum.github.io/mizerAgents/"><strong>mizerAgents</strong></a> package installs these skills into your project:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html">pak</a></span><span class="op">(</span><span class="st">"sizespectrum/mizerAgents"</span><span class="op">)</span></span>
+<span><span class="fu">mizerAgents</span><span class="fu">::</span><span class="fu"><a href="https://sizespectrum.github.io/mizerAgents/reference/setup_mizer_agent.html">setup_mizer_agent</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The important change is <em>where they come from</em>. <code>setup_mizer_agent()</code> now reads the skills from the mizer you have installed, via <code>system.file("skills", package = "mizer")</code>, rather than carrying its own copies. So an agent’s guidance describes the version of mizer your project actually runs — including, in 3.3, the API index it greps for function names. When you upgrade mizer, your agent’s knowledge upgrades with it, with no release of mizerAgents needed.</p>
+<p>The <em>Upgrading mizer</em> article is shipped as a skill too. Vignettes are not installed with a package, so an agent helping you fix a script that broke after an upgrade previously had no access to that information and would debug a deliberate, documented change from first principles. The skill carries a symptom index — an “unused argument” error, a deprecation warning, a plot that changed, an <a href="https://rdrr.io/r/base/identical.html"><code>identical()</code></a> comparison that now fails — mapping each to the release that caused it and the fix.</p>
+<p>Skills are refreshed file by file, and each has a <code>NOTES.md</code> that the package never touches, where an agent records what it learns about <em>your</em> model. Commit it, and your collaborators’ agents inherit it.</p>
+</section></section><section id="also-in-3.3" class="level2"><h2 class="anchored" data-anchor-id="also-in-3.3">Also in 3.3</h2>
+<ul>
+<li><p><strong><a href="https://sizespectrum.org/mizer/reference/sizeIntegral.html"><code>sizeIntegral()</code></a></strong> calculates any integral <span class="math inline">\(\int N_i(w) K_i(w)\,dw\)</span> over the size spectrum, and is now the recommended way to write your own summary or indicator function: it selects the size range, applies the quadrature scheme the model is actually on, and wraps the result in the right array class. <a href="https://sizespectrum.org/mizer/reference/getBiomass.html"><code>getBiomass()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getN.html"><code>getN()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getSSB.html"><code>getSSB()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getYield.html"><code>getYield()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getYieldGear.html"><code>getYieldGear()</code></a> and <a href="https://sizespectrum.org/mizer/reference/getProportionOfLargeFish.html"><code>getProportionOfLargeFish()</code></a> are all implemented with it.</p></li>
+<li><p><strong>One name per accessor.</strong> Seventeen accessors that return a value stored in the <code>MizerParams</code> object had two names doing exactly the same thing. The <code>get</code>-prefixed name is now superseded in favour of the bare name — the one that also has a replacement function: <a href="https://sizespectrum.org/mizer/reference/deprecated_accessors.html"><code>getMetabolicRate()</code></a> → <a href="https://sizespectrum.org/mizer/reference/setMetabolicRate.html"><code>metab()</code></a>, <a href="https://sizespectrum.org/mizer/reference/deprecated_accessors.html"><code>getExtMort()</code></a> → <a href="https://sizespectrum.org/mizer/reference/setExtMort.html"><code>ext_mort()</code></a>, <a href="https://sizespectrum.org/mizer/reference/getInteraction.html"><code>getInteraction()</code></a> → <a href="https://sizespectrum.org/mizer/reference/setInteraction.html"><code>interaction_matrix()</code></a>, and so on. The <code>get</code> prefix is now reserved for functions that <em>calculate</em> something from the current state, like <a href="https://sizespectrum.org/mizer/reference/getEncounter.html"><code>getEncounter()</code></a>. The old names are kept as plain aliases that do not warn and will not be removed.</p></li>
+<li><p><strong>One switch for everything mizer tells you.</strong> Nearly every message and warning mizer gives while building or changing a model now goes through a single mechanism, collected into one report rather than a stream, and controlled by <code>info_level</code> — or by the new <code>mizer_info_level</code> option, which quietens mizer as a whole including the functions that have no <code>info_level</code> argument of their own. The mechanism is exported, so an extension package can report through the same channel and obey the same switch.</p></li>
+<li><p><strong>A frozen array no longer swallows your changes silently.</strong> If you set a rate array by hand and then change a species or resource parameter that feeds it, mizer now warns that the change has no effect, names the parameters that were ignored and the quantity holding them back, and tells you the call that hands control back — for example <code>setMetabolicRate(params, reset = TRUE)</code>.</p></li>
+<li><p><strong><a href="https://sizespectrum.org/mizer/reference/validParams.html"><code>validParams()</code></a> is about 15 times faster</strong> on an object that is already valid, recognised by a fingerprint of the slots the validation actually depends on. The fingerprint is recalculated on every call and never stored, so it cannot go stale.</p></li>
+<li><p><strong><a href="https://sizespectrum.org/mizer/reference/knife_edge_length.html"><code>knife_edge_length()</code></a></strong> applies a knife-edge selectivity cut at a given length rather than a weight.</p></li>
+<li><p><strong>Quadrature fixes.</strong> <code>getDiet(proportion = FALSE)</code> and <a href="https://sizespectrum.org/mizer/reference/getTrophicLevel.html"><code>getTrophicLevel()</code></a> were applying a bin quadrature twice under <a href="https://sizespectrum.org/mizer/reference/second_order_w.html"><code>second_order_w()</code></a>; the calibration and matching functions and <a href="https://sizespectrum.org/mizer/reference/plotYieldObservedVsModel.html"><code>plotYieldObservedVsModel()</code></a> had each hand-rolled their size integral and stayed on the first-order scheme. Results on the default scheme are unchanged.</p></li>
+</ul>
+<p>For the complete list see the <a href="https://sizespectrum.org/mizer/news/index.html">changelog</a>.</p>
+</section><section id="upgrading" class="level2"><h2 class="anchored" data-anchor-id="upgrading">Upgrading</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"mizer"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Existing <code>MizerParams</code> and <code>MizerSim</code> objects are upgraded automatically when you load them with <a href="https://sizespectrum.org/mizer/reference/saveParams.html"><code>readParams()</code></a> or <a href="https://sizespectrum.org/mizer/reference/saveParams.html"><code>readSim()</code></a>. Anything that may affect scripts you have already written is described in the <a href="https://sizespectrum.org/mizer/articles/upgrading.html"><em>Upgrading mizer</em></a> article — and, if you work with an agent, in the skill built from it.</p>
+<p>As always, we welcome bug reports and feature requests on <a href="https://github.com/sizespectrum/mizer/issues">GitHub</a>.</p>
+
+
+</section></main><!-- /main --><div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = window.location.href;  
+        this.page.identifier = window.location.pathname; 
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://mizer.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/blog\.mizer\.sizespectrum\.org");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+</body></html>
