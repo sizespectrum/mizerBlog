@@ -41,9 +41,9 @@ isSteady(NS_params)
 
 `summary()` on a `MizerParams` object now reports the model's biomass drift along with everything else it shows:
 
-```
+```         
 Steady state:
-	biomass drift:	0.014 /year	(at steady state)
+    biomass drift:  0.014 /year (at steady state)
 ```
 
 And the matching functions now say when they have moved the model:
@@ -56,9 +56,9 @@ params <- matchGrowth(NS_params)
 
 The same `summary()` on that model now reads
 
-```
+```         
 Steady state:
-	biomass drift:	4.6 /year	(not at steady state - run steady())
+    biomass drift:  4.6 /year   (not at steady state - run steady())
 ```
 
 The `calibrate…()` functions and `scaleModel()` deliberately stay quiet, because an overall scaling factor is an exact symmetry of the model and leaves the steady state untouched.
@@ -85,23 +85,34 @@ The new `steadyNewton()` solves the steady-state equations directly with a Newto
 params_f15 <- steadyNewton(NS_params, effort = 1.5)
 ```
 
-Is that state stable? `getStability()` computes the eigenvalues of the linearised one-step map at the fixed point:
+Is that state stable? mizer discretises the size axis but leaves time continuous, so on the size grid the model is a system of ordinary differential equations $dN/dt = F(N)$, and a steady state is a state at which $F$ vanishes. `getStability()` differentiates $F$ at that point and returns the eigenvalues of the resulting Jacobian:
 
 ``` r
-stab <- getStability(params_f15, effort = 1.5, include_resource = TRUE, dt = 0.1)
+stab <- getStability(params_f15, effort = 1.5)
 stab$stable
 #> [1] FALSE
 stab$max_real_part
-#> [1] 0.07209386
+#> [1] 0.07473097
 stab$eigenvalues[1]
-#> [1] 0.07209386+1.216536i
+#> [1] 0.07473097+1.249195i
 stab$dominant_period
-#> [1] 5.164816
+#> [1] 5.029789
 ```
 
-The leading eigenvalue is complex with a positive real part. A real positive eigenvalue would mean monotone growth away from the steady state; a complex pair means the perturbation grows *while oscillating*, and the imaginary part sets the period — about 5.2 years.
+The leading eigenvalue is complex with a positive real part. A real positive eigenvalue would mean monotone growth away from the steady state; a complex pair means the perturbation grows *while oscillating* — here by a factor of $e$ every thirteen years or so — and the imaginary part sets the period, about 5.0 years. Fish and resource are perturbed together, so this rests on nothing but the model.
 
-One detail is worth dwelling on, because it is easy to get wrong. mizer steps the dynamics with an implicit solver, and implicit solvers artificially damp oscillations. The eigenvalues of the one-step map therefore describe the stability of the *numerical scheme* at whatever step size you chose, not the stability of the model. `getStability()` reports both and keeps them apart: `spectral_radius` is $\max|\mu|$ for the discrete map at the given `dt`, while `max_real_part` comes from mapping those eigenvalues back to continuous time via $\lambda = (1 - 1/\mu)/\Delta t$. We pass `dt = 0.1` above because that mapping converges as the step is refined and the default `dt = 1` is too coarse on this model ([#556](https://github.com/sizespectrum/mizer/issues/556)).
+**No time step enters that calculation.** The eigenvalues are a property of the model rather than of a solver, and they are what a simulation converges to as you refine its step. That is worth dwelling on, because there is a second and quite different question one can ask: not whether the *model* is stable, but whether *mizer's numerical step* is. `getDiscreteStability()` answers that one. It linearises the one-step map $N(t + \Delta t) = G(N(t))$ that `project(method = "euler")` takes at a given `dt` and reports its spectral radius $\max_i|\mu_i|$, which is below 1 exactly when the scheme does not amplify a perturbation:
+
+``` r
+getDiscreteStability(params_f15, effort = 1.5, dt = 0.1)$spectral_radius
+#> [1] 0.9997816
+```
+
+Below one. mizer's default `euler` step at `dt = 0.1` does not merely mis-state this instability, it very nearly cancels it: the model grows at $+0.075$ per year, the scheme at $-0.002$ per year. Project the model that way for a century and it sits flat, looking for all the world like a stable steady state. mizer solves the transport implicitly, and implicit schemes damp oscillations artificially; here the artificial damping happens to be almost exactly the size of the thing being measured. Nor does it fail in a tidy direction as the step coarsens — at $\Delta t = 1$ the same map is unstable again, with a spectral radius of 1.14, but oscillating at a 3.4-year period belonging to no mode of the model. That is why the run below uses `method = "tr_bdf2"`, and why `getStability()` no longer goes anywhere near the one-step map.
+
+(Both functions perturb the resource alongside the fish. An earlier design let you substitute it at its quasi-static equilibrium instead, which is harmless for the model — it moves the leading eigenvalue by 3% — but not for a one-step map, whose resource responds with a whole step's lag rather than instantly; at $\Delta t = 1$ that shortcut flips the verdict. The option is gone.)
+
+The two numbers cannot be converted into one another by any exact algebraic relation, which is why `getStability()` differentiates the rates of change directly instead of going through the one-step map. Were mizer's step fully implicit, $\mu = 1/(1 - \Delta t\,\lambda)$ would let you invert it — but the rates are evaluated at the state at the *start* of the step and only the transport solve that follows is implicit, so that inversion is correct only to first order in $\Delta t$, and at $\Delta t = 1$ it is wrong by more than an order of magnitude ([#556](https://github.com/sizespectrum/mizer/issues/556)).
 
 Now project the dynamics and watch the prediction come true. `projectToSteady()` recognises that it is not converging to a fixed point and reports what it did settle on:
 
@@ -129,9 +140,9 @@ attr(projectToSteady(NS_params, t_max = 100), "convergence")$type
 
 The type is deliberately not called `"steady"`: passing the distance test means the state stopped moving on the scale of the distance function, which is not the same as being a fixed point. That is why the attribute also carries a `residual` field, measuring the thing itself.
 
-The detected period of 5.4 years sits close to the 5.2 years the linear analysis predicted, which is a good deal better than one has any right to expect this far past the bifurcation, where nonlinearities reshape the cycle. To see the *shape* of the oscillation without the growth and the nonlinear distortion, `getLimitCycleSim()` builds an ordinary `MizerSim` covering one period of the linearised cycle from the leading eigenvector, which you can then hand to any mizer plotting function.
+The detected period of 5.4 years is within seven percent of the 5.03 years the linear analysis predicted, even though the cycle we are looking at is anything but small: its relative amplitude is 66% of the mean. The linear prediction is a statement about infinitesimal perturbations of the steady state, so that remaining gap is what the nonlinearity does to the shape of a large-amplitude cycle; closer to the bifurcation the two agree more closely still. To see the *shape* of the oscillation without the growth and the nonlinear distortion, `getLimitCycleSim()` builds an ordinary `MizerSim` covering one period of the linearised cycle from the leading eigenvector, which you can then hand to any mizer plotting function.
 
-There is one caveat, and it is important enough that 3.3 ships an article about it. All of this rests on the one-step map being differentiable at the steady state. If you have registered a custom rate function with `setRateFunction()` that jumps as a function of the abundances, `steadyNewton()` may stall and `getStability()` can return a plausible-looking number describing neither branch. The new [*Discontinuous rate functions*](https://sizespectrum.org/mizer/articles/discontinuous_rates.html) article explains why, and how to give the switch a finite width instead.
+There is one caveat, and it is important enough that 3.3 ships an article about it. All of this rests on the rates being differentiable functions of the abundances at the steady state. If you have registered a custom rate function with `setRateFunction()` that jumps as a function of the abundances, `steadyNewton()` may stall and `getStability()` can return a plausible-looking number describing neither branch. Re-running with a different finite-difference step `h` is the cheapest check that a model is smooth enough for the analysis to mean anything: if the answer moves, do not trust it. The new [*Discontinuous rate functions*](https://sizespectrum.org/mizer/articles/discontinuous_rates.html) article explains why, and how to give the switch a finite width instead.
 
 ## Scanning a model
 
@@ -192,7 +203,7 @@ mizer's topic articles and its AI-agent skills used to be two sets of documents 
 They are no longer called cheatsheets, either. A cheatsheet reminds you of something you already know; these assume no prior knowledge. So there is now one **guide** per stage of the modelling workflow:
 
 | Stage | Guide |
-|-------------------|-----------------------------------------------------|
+|----|----|
 | Build a model | [Building a mizer model](https://sizespectrum.org/mizer/articles/guide-build-model.html) |
 | Settle and calibrate it | [Reaching steady state and calibrating](https://sizespectrum.org/mizer/articles/guide-calibrate-model.html) |
 | Change its parameters | [Changing model parameters](https://sizespectrum.org/mizer/articles/guide-change-parameters.html) |
