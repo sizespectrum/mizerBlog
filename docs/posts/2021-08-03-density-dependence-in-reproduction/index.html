@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.36">
+<meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Gustav Delius">
 <meta name="dcterms.date" content="2021-08-03">
@@ -74,7 +74,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap-1d4ab30d7b042ad80aa203d2f9b2bdb2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
@@ -232,7 +232,7 @@ window.Quarto = {
   
 
 
-</header><p>In this blog post I want to discuss the purpose of the <a href="https://sizespectrum.org/mizer/reference/setBevertonHolt.html"><code>setBevertonHolt()</code></a> function, which was improved in the latest <a href="https://sizespectrum.org/mizer/news/index.html">version 2.2.1</a> of mizer to make it convenient to control the density-dependence in reproduction. We’ll introduce the new concept of the reproduction level and meet the related new function <a href="https://sizespectrum.org/mizer/reference/getReproductionLevel.html"><code>getReproductionLevel()</code></a>.</p>
+</header><p>In this blog post I want to discuss the purpose of the <a href="https://sizespectrum.org/mizer/reference/setBevertonHolt.html"><code>setBevertonHolt()</code></a> function, which was improved in the latest <a href="https://sizespectrum.org/mizer/news/index.html">version 2.2.1</a> of mizer to make it convenient to control the density-dependence in reproduction. We’ll introduce the new concept of the reproduction level and meet the related new function <a href="https://sizespectrum.org/mizer/reference/superseded_accessors.html"><code>getReproductionLevel()</code></a>.</p>
 <p>Before we get started we need to clarify what we mean by density dependence in reproduction in a mizer model.</p>
 <section id="stock-recruitment-relationship" class="level1"><h1>Stock-recruitment relationship</h1>
 <p>Usually, in a fisheries model, density dependence is specified via a stock-recruitment relationship, which gives a non-linear relationship between the spawning stock biomass and the recruitment. This relationship could, for example, be described by a Beverton-Holt curve. In that case for low spawning stock biomass the recruitment is assumed to be linearly proportional to the spawning stock biomass but for higher spawning stock biomass the curve flattens and asymptotically approaches a maximum recruitment rate that will never be exceeded, no matter how high the spawning stock biomass.</p>
@@ -329,9 +329,9 @@ Gurnard      1 1.65e+12</code></pre>
 </div>
 </section><section id="the-reproduction-level" class="level1"><h1>The reproduction level</h1>
 <p>We define the <strong>reproduction level</strong> as the ratio between the current reproduction rate and the maximum reproduction rate. Thus it is a number between 0 and 1. It is similar to the <strong>feeding level</strong> which in mizer is defined as the ratio between tha actual feeding rate and the maximum feeding rate.</p>
-<p>Since version 2.2.1 of mizer there is a function <a href="https://sizespectrum.org/mizer/reference/getReproductionLevel.html"><code>getReproductionLevel()</code></a> for calculating the reproduction level.</p>
+<p>Since version 2.2.1 of mizer there is a function <a href="https://sizespectrum.org/mizer/reference/superseded_accessors.html"><code>getReproductionLevel()</code></a> for calculating the reproduction level.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">reproduction_level</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/getReproductionLevel.html">getReproductionLevel</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">reproduction_level</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/superseded_accessors.html">getReproductionLevel</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
 <span><span class="va">reproduction_level</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     Sprat    Sandeel     N.pout    Herring        Dab    Whiting       Sole 
@@ -359,7 +359,7 @@ Gurnard      1 1.65e+12</code></pre>
 <span><span class="va">params_changed_R_max</span> <span class="op">&lt;-</span> <span class="va">params</span></span>
 <span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/species_params.html">species_params</a></span><span class="op">(</span><span class="va">params_changed_R_max</span><span class="op">)</span><span class="op">$</span><span class="va">R_max</span><span class="op">[</span><span class="va">select_cod</span><span class="op">]</span> <span class="op">&lt;-</span> </span>
 <span>    <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/species_params.html">species_params</a></span><span class="op">(</span><span class="va">params_changed_R_max</span><span class="op">)</span><span class="op">$</span><span class="va">R_max</span><span class="op">[</span><span class="va">select_cod</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/getReproductionLevel.html">getReproductionLevel</a></span><span class="op">(</span><span class="va">params_changed_R_max</span><span class="op">)</span><span class="op">[</span><span class="va">select_cod</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/superseded_accessors.html">getReproductionLevel</a></span><span class="op">(</span><span class="va">params_changed_R_max</span><span class="op">)</span><span class="op">[</span><span class="va">select_cod</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      Cod 
 0.9998732 </code></pre>
@@ -486,7 +486,7 @@ Cod 0.0001270809 16549691091</code></pre>
 </div>
 </section><section id="sensitivity-to-fishing" class="level1"><h1>Sensitivity to fishing</h1>
 <p>The reason why it matters what level of density dependence in reproduction is chosen for the model is that it affects the sensitivity of the model to perturbations, for example to changes in fishing pressure. To illustrate this we will plot the sustainable fishing yield as a function of fishing mortality.</p>
-<p>The <code>mizerExperimental</code> package contains a function <code><a href="https://sizespectrum.org/mizerExperimental/reference/plotYieldVsF.html">plotYieldVsF()</a></code> that creates such a Yield versus F plot. The <code>mizerExperimental</code> package is updated frequently and thus it is a good idea to install the latest version</p>
+<p>The <code>mizerExperimental</code> package contains a function <a href="https://sizespectrum.org/mizer/reference/plotYieldVsF.html"><code>plotYieldVsF()</code></a> that creates such a Yield versus F plot. The <code>mizerExperimental</code> package is updated frequently and thus it is a good idea to install the latest version</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"sizespectrum/mizerExperimental"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -499,7 +499,7 @@ Cod 0.0001270809 16549691091</code></pre>
 </div>
 <p>Here is the Yield versus F plot for Cod in the old model with the high reproduction level:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizerExperimental/reference/plotYieldVsF.html">plotYieldVsF</a></span><span class="op">(</span><span class="va">params</span>, <span class="st">"Cod"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/plotYieldVsF.html">plotYieldVsF</a></span><span class="op">(</span><span class="va">params</span>, <span class="st">"Cod"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="density-dependence-in-reproduction_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
@@ -510,7 +510,7 @@ Cod 0.0001270809 16549691091</code></pre>
 <p>This plot shows the <em>sustainable</em> fishing yields at different levels of imposed fishing mortality. This is calculated by running the model with each level of fishing mortalit for long enough to reach a steady state. Then the yield in that steady state is plotted. For high fishing mortality the stock should collapse and the yield in the steady state should therefore be very low at high fishing mortalities. However in this model we see that the stock can sustain unrealistically high fishing mortalities without collapsing.</p>
 <p>For the new model, with a reproduction level of 1/2, the curve looks more realistic:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizerExperimental/reference/plotYieldVsF.html">plotYieldVsF</a></span><span class="op">(</span><span class="va">params2</span>, <span class="st">"Cod"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/plotYieldVsF.html">plotYieldVsF</a></span><span class="op">(</span><span class="va">params2</span>, <span class="st">"Cod"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="density-dependence-in-reproduction_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>

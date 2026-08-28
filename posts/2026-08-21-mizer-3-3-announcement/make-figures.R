@@ -14,9 +14,10 @@ params_matched <- matchGrowth(NS_params)
 save_fig("residual.png", plot(getSteadyResidual(params_matched)))
 
 ## 2. The limit cycle beyond the Hopf bifurcation ---------------------------
-sim_cycle <- projectToSteady(NS_params, effort = 1.5, t_max = 200, t_per = 0.2,
-                             return_sim = TRUE, method = "tr_bdf2")
+sim_cycle <- projectUntilSettled(NS_params, effort = 1.5, t_max = 200,
+                                 t_save = 0.2, method = "tr_bdf2")
 save_fig("limit-cycle.png", plotBiomass(sim_cycle))
+save_fig("preview.png", plotBiomass(sim_cycle))
 
 ## 3. Yield against fishing mortality, with F_MSY marked --------------------
 save_fig("yield-vs-f.png",

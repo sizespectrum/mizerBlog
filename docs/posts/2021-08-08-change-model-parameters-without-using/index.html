@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.36">
+<meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Gustav Delius">
 <meta name="dcterms.date" content="2021-08-08">
@@ -74,7 +74,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap-1d4ab30d7b042ad80aa203d2f9b2bdb2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
@@ -282,7 +282,7 @@ window.Quarto = {
 </div>
 <p>As you know, this parameter <code>h</code> is used to calculate the maximum intake rate <span class="math inline">\(h(w)\)</span> as a power-law function of size: <span class="math inline">\(h(w) = h w^n\)</span>. So for example the maximum intake rate at the smallest size is</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/superseded_accessors.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.1820276</code></pre>
 </div>
@@ -293,7 +293,7 @@ window.Quarto = {
 </div>
 <p>If we look at the maximum intake rate, we see that it has not changed:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/superseded_accessors.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.1820276</code></pre>
 </div>
@@ -305,7 +305,7 @@ window.Quarto = {
 <p>Take a look at the syntax, which is really a bit weird when compared to other programming languages. If you want to dig deeper into this, a good place to look is https://adv-r.hadley.nz/functions.html#replacement-functions.</p>
 <p>This way of changing <span class="math inline">\(h\)</span> does indeed change the maximum intake rate:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/superseded_accessors.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.2</code></pre>
 </div>
@@ -397,19 +397,19 @@ $w_pp_cutoff
 <p>When you call <a href="https://sizespectrum.org/mizer/reference/newMultispeciesParams.html"><code>newMultispeciesParams()</code></a>, then mizer uses the information in <code>species_params</code>, <code>gear_params</code> and <code>resource_params</code> to set up various arrays that will later make it much faster to run simulations of the model. If you are not happy with how mizer fills these arrays, you can also change them directly. And again you can do that either with <code>@</code> notation or without.</p>
 <p>Let’s take the example of the maximum intake rate <span class="math inline">\(h(w)\)</span> that we already discussed earlier. This is stored in the <code>intake_max</code> slot of the MizerParams object, as a two-dimensional array, with one row for each species and one column for each size bin. You can get at this way in the two equivalent ways:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html">identical</a></span><span class="op">(</span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span>, <span class="va">params</span><span class="op">@</span><span class="va">intake_max</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html">identical</a></span><span class="op">(</span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/superseded_accessors.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span>, <span class="va">params</span><span class="op">@</span><span class="va">intake_max</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] FALSE</code></pre>
 </div>
 </div>
-<p>You may wonder, why the function is called <a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html"><code>getMaxIntakeRate()</code></a> rather than <a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html"><code>intake_max()</code></a>, and I am wondering too. Naming things is difficult, and I now think that I made a bad choice when choosing those names. It gets worse when we now look at the syntax for changing <code>intake_max</code>.</p>
+<p>You may wonder, why the function is called <a href="https://sizespectrum.org/mizer/reference/superseded_accessors.html"><code>getMaxIntakeRate()</code></a> rather than <a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html"><code>intake_max()</code></a>, and I am wondering too. Naming things is difficult, and I now think that I made a bad choice when choosing those names. It gets worse when we now look at the syntax for changing <code>intake_max</code>.</p>
 <p>We can either do it with the <code>@</code> notation, for example</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">intake_max</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">params</span><span class="op">@</span><span class="va">intake_max</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>or we can do it without <code>@</code> notation</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">setMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span>, intake_max <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMaxIntakeRate.html">setMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span>, intake_max <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/superseded_accessors.html">getMaxIntakeRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This is ugly, and in future versions of mizer I think we will also allow</p>
 <div class="cell">
@@ -440,7 +440,7 @@ $w_pp_cutoff
 <p>The reason for this is that the change in the species parameter has triggered a recalculation of the rate arrays from the species parameters, overwriting our manual change.</p>
 <p>Now let’s try the same with the proper way of changing the metabolic rate.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">metab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMetabolicRate.html">getMetabolicRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">metab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/superseded_accessors.html">getMetabolicRate</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
 <span><span class="va">metab</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
 <span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setMetabolicRate.html">setMetabolicRate</a></span><span class="op">(</span><span class="va">params</span>, metab <span class="op">=</span> <span class="va">metab</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
