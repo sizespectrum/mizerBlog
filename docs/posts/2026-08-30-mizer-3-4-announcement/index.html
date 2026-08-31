@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Gustav Delius">
+<meta name="dcterms.date" content="2026-08-30">
+<meta name="description" content="mizer 3.4 brings pure S3 objects, reconciles species parameters to eliminate silent overwriting, unifies steady-state residual metrics with biomass drift, and makes extension points and defaults more predictable.">
+<title>Announcing mizer 3.4 – mizer blog</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/favicon-16x16.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-1d4ab30d7b042ad80aa203d2f9b2bdb2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="../../mizer.css">
+<meta property="og:title" content="Announcing mizer 3.4 – mizer blog">
+<meta property="og:description" content="mizer 3.4 brings pure S3 objects, reconciles species parameters to eliminate silent overwriting, unifies steady-state residual metrics with biomass drift, and makes extension points and defaults more predictable.">
+<meta property="og:image" content="https://blog.mizer.sizespectrum.org/posts/2026-08-30-mizer-3-4-announcement/preview.png">
+<meta property="og:site_name" content="mizer blog">
+<meta property="og:image:height" content="675">
+<meta property="og:image:width" content="1050">
+<meta name="twitter:title" content="Announcing mizer 3.4 – mizer blog">
+<meta name="twitter:description" content="mizer 3.4 brings pure S3 objects, reconciles species parameters to eliminate silent overwriting, unifies steady-state residual metrics with biomass drift, and makes extension points and defaults more predictable.">
+<meta name="twitter:image" content="https://blog.mizer.sizespectrum.org/posts/2026-08-30-mizer-3-4-announcement/preview.png">
+<meta name="twitter:site" content="@mizer_model">
+<meta name="twitter:image-height" content="675">
+<meta name="twitter:image-width" content="1050">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">mizer blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link" href="https://sizespectrum.org/mizer/"> 
+<span class="menu-text">mizer home</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/mizer_model"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/sizespectrum/mizerBlog"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li>
+<a href="#no-more-silent-overwrites-reconciling-species-parameters" id="toc-no-more-silent-overwrites-reconciling-species-parameters" class="nav-link active" data-scroll-target="#no-more-silent-overwrites-reconciling-species-parameters">No more silent overwrites: reconciling species parameters</a>
+  <ul class="collapse">
+<li><a href="#the-solution-reconcilespeciesparams" id="toc-the-solution-reconcilespeciesparams" class="nav-link" data-scroll-target="#the-solution-reconcilespeciesparams">The solution: <code>reconcileSpeciesParams()</code></a></li>
+  </ul>
+</li>
+  <li>
+<a href="#mizerparams-and-mizersim-are-ordinary-s3-lists" id="toc-mizerparams-and-mizersim-are-ordinary-s3-lists" class="nav-link" data-scroll-target="#mizerparams-and-mizersim-are-ordinary-s3-lists"><code>MizerParams</code> and <code>MizerSim</code> are ordinary S3 lists</a>
+  <ul class="collapse">
+<li><a href="#full-backwards-compatibility" id="toc-full-backwards-compatibility" class="nav-link" data-scroll-target="#full-backwards-compatibility">Full backwards compatibility</a></li>
+  <li><a href="#standard-list-operations-and-cleaner-extensions" id="toc-standard-list-operations-and-cleaner-extensions" class="nav-link" data-scroll-target="#standard-list-operations-and-cleaner-extensions">Standard list operations and cleaner extensions</a></li>
+  </ul>
+</li>
+  <li><a href="#a-unified-size-resolved-steady-state-residual" id="toc-a-unified-size-resolved-steady-state-residual" class="nav-link" data-scroll-target="#a-unified-size-resolved-steady-state-residual">A unified, size-resolved steady-state residual</a></li>
+  <li>
+<a href="#cleaner-extension-hooks-and-predictable-defaults" id="toc-cleaner-extension-hooks-and-predictable-defaults" class="nav-link" data-scroll-target="#cleaner-extension-hooks-and-predictable-defaults">Cleaner extension hooks and predictable defaults</a>
+  <ul class="collapse">
+<li><a href="#other_mort-and-other_encounter" id="toc-other_mort-and-other_encounter" class="nav-link" data-scroll-target="#other_mort-and-other_encounter"><code>other_mort()</code> and <code>other_encounter()</code></a></li>
+  <li><a href="#reference-state-defaults-for-gamma-and-f0" id="toc-reference-state-defaults-for-gamma-and-f0" class="nav-link" data-scroll-target="#reference-state-defaults-for-gamma-and-f0">Reference-state defaults for <code>gamma</code> and <code>f0</code></a></li>
+  <li><a href="#informative-weight-length-defaults" id="toc-informative-weight-length-defaults" class="nav-link" data-scroll-target="#informative-weight-length-defaults">Informative weight-length defaults</a></li>
+  </ul>
+</li>
+  <li><a href="#summaries-and-plots" id="toc-summaries-and-plots" class="nav-link" data-scroll-target="#summaries-and-plots">Summaries and plots</a></li>
+  <li><a href="#upgrading-to-mizer-3.4" id="toc-upgrading-to-mizer-3.4" class="nav-link" data-scroll-target="#upgrading-to-mizer-3.4">Upgrading to mizer 3.4</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">Announcing mizer 3.4</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">release</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    <p>mizer 3.4 brings pure S3 objects, reconciles species parameters to eliminate silent overwriting, unifies steady-state residual metrics with biomass drift, and makes extension points and defaults more predictable.</p>
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Gustav Delius </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 30, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header><p>Recent releases of mizer have been driven by a single unifying theme: making mizer’s behaviour <strong>more uniform, more consistent, and more predictable</strong>.</p>
+<p>In mizer 3.1 we introduced second-order numerical accuracy in size and L-stable time steppers. In mizer 3.2 we resolved confusing setter behaviour and made resource setting behave identically to species parameter setting. In mizer 3.3 we renamed the steady-state finders after what each keeps fixed, introduced dynamic stability analysis and model scanning, and unified the AI agent skills with the user guides.</p>
+<p><strong>mizer 3.4</strong> continues this work. It cleans up the foundational data structures by transitioning <code>MizerParams</code> and <code>MizerSim</code> from S4 to transparent S3 lists, introduces <a href="https://sizespectrum.org/mizer/reference/reconcileSpeciesParams.html"><code>reconcileSpeciesParams()</code></a> to protect species parameters from being silently overwritten, aligns the size-resolved steady-state residual with the model’s actual biomass drift, and refines extension hooks and parameter defaults throughout the package.</p>
+<section id="no-more-silent-overwrites-reconciling-species-parameters" class="level2"><h2 class="anchored" data-anchor-id="no-more-silent-overwrites-reconciling-species-parameters">No more silent overwrites: reconciling species parameters</h2>
+<p>When you build or modify a mizer model, mizer maintains two views of your species parameters:</p>
+<ul>
+<li>
+<strong><code>given_species_params(params)</code></strong>: the parameters you explicitly supplied (or function argument defaults).</li>
+<li>
+<strong><code>species_params(params)</code></strong>: the complete table containing your given values with mizer’s calculated or defaulted values filling in the gaps.</li>
+</ul>
+<p>In earlier versions, it was all too easy for these two tables to drift out of step. If code modified the parameter table directly in the slot—such as <code>params@species_params$h[1] &lt;- 50</code>—the new value appeared in <a href="https://sizespectrum.org/mizer/reference/species_params.html"><code>species_params()</code></a>, but <a href="https://sizespectrum.org/mizer/reference/species_params.html"><code>given_species_params()</code></a> knew nothing about it. Even internal functions fell into this trap: <a href="https://sizespectrum.org/mizer/reference/scaleModel.html"><code>scaleModel()</code></a> (and functions built on it like <a href="https://sizespectrum.org/mizer/reference/calibrateBiomass.html"><code>calibrateBiomass()</code></a> and <a href="https://sizespectrum.org/mizer/reference/matchBiomasses.html"><code>matchBiomasses()</code></a>) rescaled <code>R_max</code> and <code>gamma</code> directly in <a href="https://sizespectrum.org/mizer/reference/species_params.html"><code>species_params()</code></a>, bypassing <a href="https://sizespectrum.org/mizer/reference/species_params.html"><code>given_species_params()</code></a>.</p>
+<p>The consequence was subtle and frustrating. As soon as you touched any species parameter later on—or even executed a harmless-looking <code>species_params(params) &lt;- species_params(params)</code>—mizer recalculated the species parameters from the old <a href="https://sizespectrum.org/mizer/reference/species_params.html"><code>given_species_params()</code></a>. The hand-edited or rescaled values were <strong>silently overwritten</strong> and reverted to their previous numbers without any warning.</p>
+<section id="the-solution-reconcilespeciesparams" class="level3"><h3 class="anchored" data-anchor-id="the-solution-reconcilespeciesparams">The solution: <a href="https://sizespectrum.org/mizer/reference/reconcileSpeciesParams.html"><code>reconcileSpeciesParams()</code></a>
+</h3>
+<p>mizer 3.4 introduces <a href="https://sizespectrum.org/mizer/reference/reconcileSpeciesParams.html"><code>reconcileSpeciesParams()</code></a> to eliminate this inconsistency:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">reconcileSpeciesParams</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://sizespectrum.org/mizer/reference/reconcileSpeciesParams.html"><code>reconcileSpeciesParams()</code></a> inspects the species parameter table, identifies every value that a recalculation would change, and records it among <a href="https://sizespectrum.org/mizer/reference/species_params.html"><code>given_species_params()</code></a> so that it is protected against future recalculations. It repeats this check iteratively until the species parameters form a <strong>fixed point</strong> under recalculation—ensuring that downstream parameters derived from your hand-set values are also caught and preserved.</p>
+<p>Crucially, <a href="https://sizespectrum.org/mizer/reference/reconcileSpeciesParams.html"><code>reconcileSpeciesParams()</code></a> leaves the model itself, its parameters, and all rate arrays completely untouched. It only updates the provenance record so that subsequent parameter updates behave predictably:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Modify h directly in the table</span></span>
+<span><span class="va">params</span><span class="op">$</span><span class="va">species_params</span><span class="op">$</span><span class="va">h</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
+<span></span>
+<span><span class="co"># Reconcile so the change is protected</span></span>
+<span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">reconcileSpeciesParams</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
+<span><span class="co">#&gt; The species parameter `h` holds a value that a recalculation would not</span></span>
+<span><span class="co">#&gt; reproduce. I have recorded it among the given species parameters so that it</span></span>
+<span><span class="co">#&gt; is not overwritten.</span></span>
+<span></span>
+<span><span class="co"># Subsequent recalculations now preserve your value</span></span>
+<span><span class="fu">species_params</span><span class="op">(</span><span class="va">params</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">species_params</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
+<span><span class="fu">species_params</span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">$</span><span class="va">h</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] 50</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Best of all, <strong><a href="https://sizespectrum.org/mizer/reference/saveParams.html"><code>readParams()</code></a> now calls <a href="https://sizespectrum.org/mizer/reference/reconcileSpeciesParams.html"><code>reconcileSpeciesParams()</code></a> automatically</strong> when loading saved models. Saved models created with earlier mizer versions or built with direct slot modifications will no longer suffer silent parameter reversions when you work with them.</p>
+<p>Alongside this, companion improvements make parameter management more robust:</p>
+<ul>
+<li>
+<strong><a href="https://sizespectrum.org/mizer/reference/scaleModel.html"><code>scaleModel()</code></a> and <a href="https://sizespectrum.org/mizer/reference/calibrateBiomass.html"><code>calibrateBiomass()</code></a></strong> now record rescaled <code>R_max</code> and <code>gamma</code> directly into <a href="https://sizespectrum.org/mizer/reference/species_params.html"><code>given_species_params()</code></a> at the time of scaling.</li>
+<li>
+<strong>Removing a column</strong> via <code>species_params(params)$col &lt;- NULL</code> or <code>given_species_params(params)$col &lt;- NULL</code> now cleanly drops custom columns from the model or resets standard parameters back to their calculated defaults.</li>
+</ul></section></section><section id="mizerparams-and-mizersim-are-ordinary-s3-lists" class="level2"><h2 class="anchored" data-anchor-id="mizerparams-and-mizersim-are-ordinary-s3-lists">
+<code>MizerParams</code> and <code>MizerSim</code> are ordinary S3 lists</h2>
+<p>The headline architectural change in mizer 3.4 is one you will barely feel: <code>MizerParams</code> and <code>MizerSim</code> are now pure <strong>S3 objects</strong> (named lists with a class attribute) rather than S4 objects.</p>
+<section id="full-backwards-compatibility" class="level3"><h3 class="anchored" data-anchor-id="full-backwards-compatibility">Full backwards compatibility</h3>
+<p>Every model result is unchanged, and slot access using <code>@</code> and <code>@&lt;-</code> continues to work transparently via custom S3 <code>@</code> operator methods:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">w</span>           <span class="co"># works exactly as before</span></span>
+<span><span class="va">params</span><span class="op">@</span><span class="va">w</span> <span class="op">&lt;-</span> <span class="va">new_w</span>  <span class="co"># works exactly as before</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Legacy S4 objects saved with earlier versions of mizer are automatically converted to S3 lists upon access or when loaded with <a href="https://sizespectrum.org/mizer/reference/saveParams.html"><code>readParams()</code></a> and <a href="https://sizespectrum.org/mizer/reference/saveParams.html"><code>readSim()</code></a>.</p>
+</section><section id="standard-list-operations-and-cleaner-extensions" class="level3"><h3 class="anchored" data-anchor-id="standard-list-operations-and-cleaner-extensions">Standard list operations and cleaner extensions</h3>
+<p>Because models are now standard R lists, standard list operators work directly:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params</span><span class="op">$</span><span class="va">species_params</span>    <span class="co"># standard list access</span></span>
+<span><span class="va">params</span><span class="op">[[</span><span class="st">"w"</span><span class="op">]</span><span class="op">]</span>            <span class="co"># standard subsetting</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span>            <span class="co"># lists all slot names</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This transition also vastly simplifies extension packages. Previously, extensions had to create dynamic S4 marker classes at runtime using <a href="https://rdrr.io/r/methods/setClass.html"><code>setClass()</code></a> and manipulate R’s search path. In mizer 3.4, an extension simply prepends its class name to the S3 class vector (for example, <code>c("mizerShelf", "MizerParams")</code>). Chaining multiple extensions together is now completely natural, and <a href="https://sizespectrum.org/mizer/reference/saveParams.html"><code>saveParams()</code></a> / <a href="https://sizespectrum.org/mizer/reference/saveParams.html"><code>saveSim()</code></a> preserve the full S3 class vector when serialising.</p>
+</section></section><section id="a-unified-size-resolved-steady-state-residual" class="level2"><h2 class="anchored" data-anchor-id="a-unified-size-resolved-steady-state-residual">A unified, size-resolved steady-state residual</h2>
+<p>In mizer 3.3 we added <a href="https://sizespectrum.org/mizer/reference/isSteady.html"><code>isSteady()</code></a> and <a href="https://sizespectrum.org/mizer/reference/getSteadyResidual.html"><code>getSteadyResidual()</code></a> to check whether a model is at its steady state. In mizer 3.4, we have made the residual metric completely consistent with the rest of mizer’s steady-state reporting.</p>
+<p><a href="https://sizespectrum.org/mizer/reference/getSteadyResidual.html"><code>getSteadyResidual()</code></a> now calculates, for each size class, its contribution to the relative rate of change of its species’ biomass, <span class="math inline">\((dB_i/dt) / B_i\)</span> in 1/year:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">params_unsteady</span> <span class="op">&lt;-</span> <span class="fu">matchGrowth</span><span class="op">(</span><span class="va">NS_params</span><span class="op">)</span></span>
+<span><span class="co">#&gt; `matchGrowth()` has rescaled the model and so moved it off its steady state.</span></span>
+<span><span class="co">#&gt; Run `tuneSteadyState()` to settle it again. You can check with</span></span>
+<span><span class="co">#&gt; `getSteadyResidual()`.</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu">getSteadyResidual</span><span class="op">(</span><span class="va">params_unsteady</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="residual.png" class="img-fluid"></p>
+<p>Under this definition, <code>rowSums(getSteadyResidual(params))</code> is <strong>identically equal</strong> to the species biomass drift judged by <a href="https://sizespectrum.org/mizer/reference/isSteady.html"><code>isSteady()</code></a>, reported in <code>summary(params)</code>, and checked by <code>project(check_steady = TRUE)</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span><span class="op">(</span><span class="fu">getSteadyResidual</span><span class="op">(</span><span class="va">params_unsteady</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="st">"N.pout"</span><span class="op">]</span></span>
+<span><span class="co">#&gt;    N.pout </span></span>
+<span><span class="co">#&gt; -4.580819 </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Steady state:
+    biomass drift:  4.6 /year   (not at steady state, largest in N.pout - run tuneSteadyState())</code></pre>
+<p>The residual array therefore tells you <em>where</em> in the size spectrum a model is gaining or losing biomass in the exact same currency mizer uses to decide <em>whether</em> it is settled. Because weighting by biomass naturally scales with density, every size class is reported without needing arbitrary density cutoffs. (The scale-free per-capita rate <span class="math inline">\((dN/dt)/N\)</span> remains available via <code>measure = "per_capita"</code>).</p>
+<p>Other steady-state refinements in 3.4 include:</p>
+<ul>
+<li>
+<strong>Separation of other components</strong>: Components registered via <a href="https://sizespectrum.org/mizer/reference/setComponent.html"><code>setComponent()</code></a> are now evaluated and reported separately via <code>attr(getSteadyResidual(params), "other")</code> and on their own lines in <a href="https://rdrr.io/r/base/summary.html"><code>summary()</code></a>, rather than being conflated with fish biomass drift.</li>
+<li>
+<strong>Trace density cutoff</strong>: In <a href="https://sizespectrum.org/mizer/reference/projectUntilSettled.html"><code>projectUntilSettled()</code></a>, size classes holding less than a <span class="math inline">\(10^{-8}\)</span> share of species biomass (<code>biomass_share_cutoff = 1e-8</code>) no longer prevent convergence when an exponential decay tail lingers above the maximum growth size.</li>
+</ul></section><section id="cleaner-extension-hooks-and-predictable-defaults" class="level2"><h2 class="anchored" data-anchor-id="cleaner-extension-hooks-and-predictable-defaults">Cleaner extension hooks and predictable defaults</h2>
+<p>mizer 3.4 brings several refinements to extension hooks and parameter defaults:</p>
+<section id="other_mort-and-other_encounter" class="level3"><h3 class="anchored" data-anchor-id="other_mort-and-other_encounter">
+<a href="https://sizespectrum.org/mizer/reference/other_mort.html"><code>other_mort()</code></a> and <a href="https://sizespectrum.org/mizer/reference/other_mort.html"><code>other_encounter()</code></a>
+</h3>
+<p>Previously, adding an extra mortality term (like starvation or senescence) or an extra encounter contribution required registering a dummy component with <a href="https://sizespectrum.org/mizer/reference/setComponent.html"><code>setComponent()</code></a>, complete with dummy dynamics and initial values. mizer 3.4 introduces clean accessors:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">other_mort</span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[[</span><span class="st">"starvation"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"starvMort"</span></span>
+<span><span class="fu">other_encounter</span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[[</span><span class="st">"scavenging"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"scavengingEncounter"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>These functions receive the simulation time <code>t</code> and are integrated into <a href="https://sizespectrum.org/mizer/reference/getMort.html"><code>getMort()</code></a> and <a href="https://sizespectrum.org/mizer/reference/getEncounter.html"><code>getEncounter()</code></a> without interfering with model components.</p>
+</section><section id="reference-state-defaults-for-gamma-and-f0" class="level3"><h3 class="anchored" data-anchor-id="reference-state-defaults-for-gamma-and-f0">Reference-state defaults for <code>gamma</code> and <code>f0</code>
+</h3>
+<p><a href="https://sizespectrum.org/mizer/reference/get_gamma_default.html"><code>get_gamma_default()</code></a> and <a href="https://sizespectrum.org/mizer/reference/get_f0_default.html"><code>get_f0_default()</code></a> are designed to calculate baseline search volume parameters against a standard power-law reference resource. In earlier versions, extension encounter modifiers and additive encounter contributions could leak into this calculation. On models where extensions modulated encounter (such as temperature multipliers in therMizer), this caused <code>gamma</code> to double repeatedly on each rebuild.</p>
+<p>In mizer 3.4, <a href="https://sizespectrum.org/mizer/reference/get_gamma_default.html"><code>get_gamma_default()</code></a> and <a href="https://sizespectrum.org/mizer/reference/get_f0_default.html"><code>get_f0_default()</code></a> always evaluate against mizer’s clean reference state using <a href="https://sizespectrum.org/mizer/reference/mizerEncounter.html"><code>mizerEncounter()</code></a>, making parameter defaults stable, reproducible, and immune to extension feedback loops.</p>
+</section><section id="informative-weight-length-defaults" class="level3"><h3 class="anchored" data-anchor-id="informative-weight-length-defaults">Informative weight-length defaults</h3>
+<p>When species parameters omit allometric parameters <code>a</code> and <code>b</code>, mizer defaults to <span class="math inline">\(a = 0.01\text{ g/cm}^3\)</span> and <span class="math inline">\(b = 3\)</span>. In mizer 3.4, mizer announces these defaults when building a model.</p>
+<p>Furthermore, if fishing gear selectivity is defined in terms of length (e.g.&nbsp;<code>sigmoid_length</code> or <code>knife_edge_length</code>), <a href="https://sizespectrum.org/mizer/reference/setFishing.html"><code>setFishing()</code></a> issues an explicit notification at <code>info_level = 1</code> if <code>a</code> or <code>b</code> were defaulted:</p>
+<pre><code>ℹ The gear selectivity for Cod is set by length, but `a` and `b` were not
+  supplied, so the conversion to weight used mizer's defaults (a = 0.01, b = 3).
+  The selectivity therefore sits at weights that are unlikely to be the ones you
+  intend. Supply the weight-length parameters in the species parameters.</code></pre>
+<p><img src="selectivity-shift.png" class="img-fluid"></p>
+<p>Because length-based selectivity curves convert lengths to weights via <span class="math inline">\(w = a l^b\)</span>, missing allometry shifts the selectivity curve along the weight axis and alters fishing mortality. This alert ensures you catch misplaced selectivity curves before running simulations.</p>
+</section></section><section id="summaries-and-plots" class="level2"><h2 class="anchored" data-anchor-id="summaries-and-plots">Summaries and plots</h2>
+<ul>
+<li>
+<strong><a href="https://sizespectrum.org/mizer/reference/getMeanWeight.html"><code>getMeanLength()</code></a></strong>: Calculates the mean length of the community or species, the natural counterpart to <a href="https://sizespectrum.org/mizer/reference/getMeanWeight.html"><code>getMeanWeight()</code></a>.</li>
+<li>
+<strong>Array <a href="https://rdrr.io/r/base/summary.html"><code>summary()</code></a> covers actual species size ranges</strong>: <a href="https://rdrr.io/r/base/summary.html"><code>summary()</code></a> on rate arrays (like encounter rates or feeding levels) now covers each species’ size range from <code>w_min</code> to <code>w_max</code>, matching what <a href="https://rdrr.io/r/graphics/plot.default.html"><code>plot()</code></a> displays rather than summarising unpopulated grid cells.</li>
+</ul>
+<p><img src="encounter-rate.png" class="img-fluid"></p>
+<ul>
+<li>
+<strong>Descriptive plot data</strong>: <code>plotSpectra(params, return_data = TRUE)</code> now returns descriptive column names such as <code>Biomass density</code> or <code>Number density [1/g]</code> rather than the generic placeholder <code>value</code>.</li>
+</ul></section><section id="upgrading-to-mizer-3.4" class="level2"><h2 class="anchored" data-anchor-id="upgrading-to-mizer-3.4">Upgrading to mizer 3.4</h2>
+<p>To install mizer 3.4 from CRAN:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"mizer"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Or install the development version from GitHub:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html">pak</a></span><span class="op">(</span><span class="st">"sizespectrum/mizer"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Existing models saved with earlier versions will load seamlessly with <a href="https://sizespectrum.org/mizer/reference/saveParams.html"><code>readParams()</code></a> and <a href="https://sizespectrum.org/mizer/reference/saveParams.html"><code>readSim()</code></a> and will be upgraded to S3 objects and reconciled automatically.</p>
+<p>For complete details on upgrading existing code and extension packages, consult the <a href="https://sizespectrum.org/mizer/articles/upgrading.html"><em>Upgrading mizer</em></a> guide. As always, if you encounter any issues or have questions, please reach out on <a href="https://github.com/sizespectrum/mizer/issues">GitHub Issues</a>.</p>
+
+
+</section></main><!-- /main --><div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = window.location.href;  
+        this.page.identifier = window.location.pathname; 
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://mizer.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/blog\.mizer\.sizespectrum\.org");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+</body></html>
